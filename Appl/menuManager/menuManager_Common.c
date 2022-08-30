@@ -35,6 +35,11 @@ extern "C" {
 
 extern osMessageQueueId_t ioButtonStateQueueHandle;
 
+const uint8_t MenuManager_Common_DoneStr[] =                          "DONE";
+
+const uint8_t MenuManager_Common_EnableStr[] =                        "ENABLE";
+const uint8_t MenuManager_Common_DisableStr[] =                       "DISABLE";
+
 
 
 /*===============================================================================================
@@ -227,10 +232,11 @@ void MenuManager_Common_LcdUpdateCountdownMenuDynamic(void)
 void MenuManager_Common_LcdShowMainTitle(const uint8_t *mainTitle)
 {
   uint8_t xPos;
+  
+  LCD_SetFont(LCD_FONT_BIG);
 
   xPos = LCD_GetXPosCenter((uint8_t *)mainTitle);
 
-  LCD_SetFont(LCD_FONT_BIG);
   LCD_SetCursorPos(xPos, 0, LCD_CURSOR_IN_PIXEL);
   LCD_PutString((uint8_t *)mainTitle);
 }

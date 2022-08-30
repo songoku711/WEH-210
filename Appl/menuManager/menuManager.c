@@ -33,8 +33,20 @@ extern tFsmEventEntry MenuManager_PowerOn_StateMachine[2];
 extern tFsmEventEntry MenuManager_Init_StateMachine[3];
 /** State home (2) */
 extern tFsmEventEntry MenuManager_Home_StateMachine[10];
-/** State mainSetting (2) */
+/** State mainSetting (3) */
 extern tFsmEventEntry MenuManager_MainSetting_StateMachine[7];
+/** State setToDefault (4) */
+extern tFsmEventEntry MenuManager_SetToDefault_StateMachine[7];
+/** State setDefaultParam (5) */
+extern tFsmEventEntry MenuManager_SetDefaultParam_StateMachine[5];
+/** State setDefaultProg (6) */
+extern tFsmEventEntry MenuManager_SetDefaultProg_StateMachine[5];
+/** State machineSetup (7) */
+extern tFsmEventEntry MenuManager_MachineSetup_StateMachine[13];
+/** State machineFuncSetup (8) */
+extern tFsmEventEntry MenuManager_MachineFuncSetup_StateMachine[11];
+/** State drainWhileDoorOpen (9) */
+extern tFsmEventEntry MenuManager_DrainWhileDoorOpen_StateMachine[7];
 
 
 
@@ -45,12 +57,18 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[4] =
+tFsmStateDefinition MenuManager_StateMachine[10] =
 {
-  { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine) },
-  { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine) },
-  { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(MenuManager_Home_StateMachine) },
-  { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(MenuManager_MainSetting_StateMachine) }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Home_StateMachine)                               },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MainSetting_StateMachine)                        },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SetToDefault_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SetDefaultParam_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SetDefaultProg_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineSetup_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineFuncSetup_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainWhileDoorOpen_StateMachine)                 }
 };
 
 void (*MenuManager_SubMainFunction)(void);

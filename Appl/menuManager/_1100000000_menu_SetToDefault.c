@@ -93,7 +93,7 @@ tFsmEventEntry MenuManager_SetToDefault_StateMachine[7] =
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_SetToDefault_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_SetToDefault_DownBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_SetToDefault_StartBut                                               ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_SetToDefault_StopBut,       MENUMANAGER_STATE_HOME                  )
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_SetToDefault_StopBut,       MENUMANAGER_STATE_MAIN_SETTING          )
 };
 
 
@@ -172,12 +172,20 @@ static tFsmGuard MenuManager_SetToDefault_Entry(tFsmContextPtr const pFsmContext
       MenuManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
     }
-    else
+    else if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MAIN_SETTING)
     {
+      /* Release previous state data hierachy */
+      MenuManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
+
       MenuManager_InternalDataPush(MENUMANAGER_SETTODEFAULT_INTERNALDATALENGTH);
 
       MenuManager_SetToDefault_ListIndex = (uint32_t)0U;
       MenuManager_SetToDefault_CurPos = MENUMANAGER_COMMON_LCD_CURSOR_MIN;
+    }
+    else
+    {
+      return kFsmGuard_False;
     }
 
     MenuManager_SetToDefault_LcdShowMainTitle();
@@ -192,7 +200,15 @@ static tFsmGuard MenuManager_SetToDefault_Entry(tFsmContextPtr const pFsmContext
 /*=============================================================================================*/
 static tFsmGuard MenuManager_SetToDefault_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
 {
-  
+  tFsmDataHierachy* dataHierachy;
+
+  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;
+
+  pFsmContext->dataHierachy = dataHierachy;
+
+  Fsm_TriggerEvent( &MenuManager_FsmContext, \
+                    (tFsmEvent)((*(MenuManager_SetToDefault_ChildMenuConf.childMenuCfg))[MenuManager_SetToDefault_ListIndex].childMenuEvent));
   
   return kFsmGuard_True;
 }
@@ -202,6 +218,13 @@ static tFsmGuard MenuManager_SetToDefault_StopBut(tFsmContextPtr const pFsmConte
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
+
+  tFsmDataHierachy* dataHierachy;
+
+  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;
+
+  pFsmContext->dataHierachy = dataHierachy;
 
   /* Free internal data */
   MenuManager_InternalDataPop();

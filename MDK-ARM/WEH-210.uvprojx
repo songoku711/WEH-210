@@ -409,6 +409,36 @@
               <FilePath>..\Appl\menuManager\_1000000000_menu_MainSetting.c</FilePath>
             </File>
             <File>
+              <FileName>_1100000000_menu_SetToDefault.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1100000000_menu_SetToDefault.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1110000000_menu_SetDefaultParam.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1110000000_menu_SetDefaultParam.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1120000000_menu_SetDefaultProg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1120000000_menu_SetDefaultProg.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1200000000_menu_MachineSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1200000000_menu_MachineSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1210000000_menu_MachineFuncSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1210000000_menu_MachineFuncSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1211000000_menu_DrainWhileDoorOpen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1211000000_menu_DrainWhileDoorOpen.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

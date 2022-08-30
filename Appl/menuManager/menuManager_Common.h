@@ -40,6 +40,13 @@ extern "C" {
 
 
 
+extern const uint8_t MenuManager_Common_DoneStr[];
+
+extern const uint8_t MenuManager_Common_EnableStr[];
+extern const uint8_t MenuManager_Common_DisableStr[];
+
+
+
 /*===============================================================================================
 *                                     FUNCTION PROTOTYPES
 ===============================================================================================*/

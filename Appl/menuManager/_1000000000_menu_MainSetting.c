@@ -190,8 +190,16 @@ static tFsmGuard MenuManager_MainSetting_Entry(tFsmContextPtr const pFsmContext,
 /*=============================================================================================*/
 static tFsmGuard MenuManager_MainSetting_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
 {
-  
-  
+  tFsmDataHierachy* dataHierachy;
+
+  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy->dataId = MENUMANAGER_STATE_MAIN_SETTING;
+
+  pFsmContext->dataHierachy = dataHierachy;
+
+  Fsm_TriggerEvent( &MenuManager_FsmContext, \
+                    (tFsmEvent)((*(MenuManager_MainSetting_ChildMenuConf.childMenuCfg))[MenuManager_MainSetting_ListIndex].childMenuEvent));
+
   return kFsmGuard_True;
 }
 

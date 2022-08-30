@@ -28,6 +28,7 @@ extern "C" {
 #include "cmsis_os.h"
 
 #include "ioManager.h"
+#include "programManager.h"
 #include "menuManager_Common.h"
 #include "menuManager_Types.h"
 
