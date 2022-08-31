@@ -120,7 +120,7 @@ void MenuManager_InternalDataPush(uint8_t length)
     MenuManager_InternalData.internalDataCurIdx++;
 
     MenuManager_InternalData.internalDataArr[MenuManager_InternalData.internalDataCurIdx].length = length;
-    MenuManager_InternalData.internalDataArr[MenuManager_InternalData.internalDataCurIdx].ptr = (uint32_t *)MenuManager_malloc(length);
+    MenuManager_InternalData.internalDataArr[MenuManager_InternalData.internalDataCurIdx].ptr = (uint32_t *)MenuManager_malloc((size_t)length * sizeof(uint32_t));
   }
 }
 
