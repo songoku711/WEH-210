@@ -70,7 +70,7 @@ static MenuManager_DrainWhileDoorOpen_IntValMapStruct MenuManager_DrainWhileDoor
 
 
 /** Menu manager main titles and child menu titles */
-const uint8_t MenuManager_DrainWhileDoorOpen_MainTitleStr[] =         "DRAIN D.OPEN";
+static const uint8_t MenuManager_DrainWhileDoorOpen_MainTitleStr[] =  "DRAIN D.OPEN";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_DrainWhileDoorOpen_ChildMenu[2] =
@@ -133,9 +133,9 @@ tFsmEventEntry MenuManager_DrainWhileDoorOpen_StateMachine[7] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-void MenuManager_DrainWhileDoorOpen_LcdShowMainTitle(void);
-void MenuManager_DrainWhileDoorOpen_LcdShowList(void);
-void MenuManager_DrainWhileDoorOpen_LcdShowDone(void);
+static void MenuManager_DrainWhileDoorOpen_LcdShowMainTitle(void);
+static void MenuManager_DrainWhileDoorOpen_LcdShowList(void);
+static void MenuManager_DrainWhileDoorOpen_LcdShowDone(void);
 
 static void MenuManager_DrainWhileDoorOpen_SubMainFunction(void);
 static void MenuManager_DrainWhileDoorOpen_SubTickHandler(void);
@@ -146,7 +146,7 @@ static void MenuManager_DrainWhileDoorOpen_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-void MenuManager_DrainWhileDoorOpen_LcdShowMainTitle(void)
+static void MenuManager_DrainWhileDoorOpen_LcdShowMainTitle(void)
 {
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
@@ -155,7 +155,7 @@ void MenuManager_DrainWhileDoorOpen_LcdShowMainTitle(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_DrainWhileDoorOpen_LcdShowList(void)
+static void MenuManager_DrainWhileDoorOpen_LcdShowList(void)
 {
   uint32_t currentListIndex;
   uint32_t currentCursorPos;
@@ -187,7 +187,7 @@ void MenuManager_DrainWhileDoorOpen_LcdShowList(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_DrainWhileDoorOpen_LcdShowDone(void)
+static void MenuManager_DrainWhileDoorOpen_LcdShowDone(void)
 {
   MenuManager_Common_LcdClearAll();
 

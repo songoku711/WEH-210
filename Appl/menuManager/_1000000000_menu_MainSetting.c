@@ -38,10 +38,10 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-const uint8_t MenuManager_SetToDefault_ChildTitleStr[] =              "SET TO DEFAULT";
-const uint8_t MenuManager_MachineSetup_ChildTitleStr[] =              "MACHINE SETUP";
+static const uint8_t MenuManager_SetToDefault_ChildTitleStr[] =       "SET TO DEFAULT";
+static const uint8_t MenuManager_MachineSetup_ChildTitleStr[] =       "MACHINE SETUP";
 
-const uint8_t MenuManager_MainSetting_MainTitleStr[] =                "SETTING";
+static const uint8_t MenuManager_MainSetting_MainTitleStr[] =         "SETTING";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_MainSetting_ChildMenu[2] =
@@ -102,8 +102,8 @@ tFsmEventEntry MenuManager_MainSetting_StateMachine[7] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-void MenuManager_MainSetting_LcdShowMainTitle(void);
-void MenuManager_MainSetting_LcdShowList(void);
+static void MenuManager_MainSetting_LcdShowMainTitle(void);
+static void MenuManager_MainSetting_LcdShowList(void);
 
 static void MenuManager_MainSetting_SubMainFunction(void);
 static void MenuManager_MainSetting_SubTickHandler(void);
@@ -114,7 +114,7 @@ static void MenuManager_MainSetting_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-void MenuManager_MainSetting_LcdShowMainTitle(void)
+static void MenuManager_MainSetting_LcdShowMainTitle(void)
 {
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
@@ -123,7 +123,7 @@ void MenuManager_MainSetting_LcdShowMainTitle(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_MainSetting_LcdShowList(void)
+static void MenuManager_MainSetting_LcdShowList(void)
 {
   uint32_t currentListIndex;
   uint32_t currentCursorPos;

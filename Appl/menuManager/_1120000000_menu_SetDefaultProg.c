@@ -47,10 +47,10 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-const uint8_t MenuManager_SetDefaultProg_MainTitleStr[] =             "PROG DEFAULT";
+static const uint8_t MenuManager_SetDefaultProg_MainTitleStr[] =      "PROG DEFAULT";
 
-const uint8_t MenuManager_SetDefaultProg_Notify1Str[] =               "RESET PROGS BACK";
-const uint8_t MenuManager_SetDefaultProg_Notify2Str[] =               "TO FACTORY DEFAULT";
+static const uint8_t MenuManager_SetDefaultProg_Notify1Str[] =        "RESET PROGS BACK";
+static const uint8_t MenuManager_SetDefaultProg_Notify2Str[] =        "TO FACTORY DEFAULT";
 
 
 
@@ -93,9 +93,9 @@ tFsmEventEntry MenuManager_SetDefaultProg_StateMachine[5] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-void MenuManager_SetDefaultProg_LcdShowMainTitle(void);
-void MenuManager_SetDefaultProg_LcdShowNotify(void);
-void MenuManager_SetDefaultProg_LcdShowDone(void);
+static void MenuManager_SetDefaultProg_LcdShowMainTitle(void);
+static void MenuManager_SetDefaultProg_LcdShowNotify(void);
+static void MenuManager_SetDefaultProg_LcdShowDone(void);
 
 static void MenuManager_SetDefaultProg_SubMainFunction(void);
 static void MenuManager_SetDefaultProg_SubTickHandler(void);
@@ -106,7 +106,7 @@ static void MenuManager_SetDefaultProg_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-void MenuManager_SetDefaultProg_LcdShowMainTitle(void)
+static void MenuManager_SetDefaultProg_LcdShowMainTitle(void)
 {
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
@@ -115,7 +115,7 @@ void MenuManager_SetDefaultProg_LcdShowMainTitle(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_SetDefaultProg_LcdShowNotify(void)
+static void MenuManager_SetDefaultProg_LcdShowNotify(void)
 {
   MenuManager_Common_LcdClearElementMenuDynamic();
 
@@ -131,7 +131,7 @@ void MenuManager_SetDefaultProg_LcdShowNotify(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_SetDefaultProg_LcdShowDone(void)
+static void MenuManager_SetDefaultProg_LcdShowDone(void)
 {
   MenuManager_Common_LcdClearElementMenuDynamic();
 

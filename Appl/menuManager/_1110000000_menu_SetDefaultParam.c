@@ -47,10 +47,10 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-const uint8_t MenuManager_SetDefaultParam_MainTitleStr[] =            "PARAM DEFAULT";
+static const uint8_t MenuManager_SetDefaultParam_MainTitleStr[] =     "PARAM DEFAULT";
 
-const uint8_t MenuManager_SetDefaultParam_Notify1Str[] =              "RESET PARAMS BACK";
-const uint8_t MenuManager_SetDefaultParam_Notify2Str[] =              "TO FACTORY DEFAULT";
+static const uint8_t MenuManager_SetDefaultParam_Notify1Str[] =       "RESET PARAMS BACK";
+static const uint8_t MenuManager_SetDefaultParam_Notify2Str[] =       "TO FACTORY DEFAULT";
 
 
 
@@ -93,9 +93,9 @@ tFsmEventEntry MenuManager_SetDefaultParam_StateMachine[5] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-void MenuManager_SetDefaultParam_LcdShowMainTitle(void);
-void MenuManager_SetDefaultParam_LcdShowNotify(void);
-void MenuManager_SetDefaultParam_LcdShowDone(void);
+static void MenuManager_SetDefaultParam_LcdShowMainTitle(void);
+static void MenuManager_SetDefaultParam_LcdShowNotify(void);
+static void MenuManager_SetDefaultParam_LcdShowDone(void);
 
 static void MenuManager_SetDefaultParam_SubMainFunction(void);
 static void MenuManager_SetDefaultParam_SubTickHandler(void);
@@ -106,7 +106,7 @@ static void MenuManager_SetDefaultParam_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-void MenuManager_SetDefaultParam_LcdShowMainTitle(void)
+static void MenuManager_SetDefaultParam_LcdShowMainTitle(void)
 {
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
@@ -115,7 +115,7 @@ void MenuManager_SetDefaultParam_LcdShowMainTitle(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_SetDefaultParam_LcdShowNotify(void)
+static void MenuManager_SetDefaultParam_LcdShowNotify(void)
 {
   MenuManager_Common_LcdClearElementMenuDynamic();
 
@@ -131,7 +131,7 @@ void MenuManager_SetDefaultParam_LcdShowNotify(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_SetDefaultParam_LcdShowDone(void)
+static void MenuManager_SetDefaultParam_LcdShowDone(void)
 {
   MenuManager_Common_LcdClearElementMenuDynamic();
 

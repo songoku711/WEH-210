@@ -38,14 +38,14 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-const uint8_t MenuManager_DrainWhileDoorOpen_ChildTitleStr[] =        "DRAIN W DOOR OPEN";
-const uint8_t MenuManager_HeatUseTimeout_ChildTitleStr[] =            "HEAT USE TIMEOUT";
-const uint8_t MenuManager_FillUseTimeout_ChildTitleStr[] =            "FILL USE TIMEOUT";
-const uint8_t MenuManager_ManOperateWhenAuto_ChildTitleStr[] =        "MAN OP WHEN AUTO";
-const uint8_t MenuManager_TempUnit_ChildTitleStr[] =                  "TEMP UNIT";
-const uint8_t MenuManager_DrainValveStatus_ChildTitleStr[] =          "DRAIN VALVE STAT";
+static const uint8_t MenuManager_DrainWhileDoorOpen_ChildTitleStr[] = "DRAIN W DOOR OPEN";
+static const uint8_t MenuManager_HeatUseTimeout_ChildTitleStr[] =     "HEAT USE TIMEOUT";
+static const uint8_t MenuManager_FillUseTimeout_ChildTitleStr[] =     "FILL USE TIMEOUT";
+static const uint8_t MenuManager_ManOperateWhenAuto_ChildTitleStr[] = "MAN OP WHEN AUTO";
+static const uint8_t MenuManager_TempUnit_ChildTitleStr[] =           "TEMP UNIT";
+static const uint8_t MenuManager_DrainValveStatus_ChildTitleStr[] =   "DRAIN VALVE STAT";
 
-const uint8_t MenuManager_MachineFuncSetup_MainTitleStr[] =           "MACHINE FUNCTION";
+static const uint8_t MenuManager_MachineFuncSetup_MainTitleStr[] =    "MACHINE FUNCTION";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_MachineFuncSetup_ChildMenu[6] =
@@ -114,8 +114,8 @@ tFsmEventEntry MenuManager_MachineFuncSetup_StateMachine[11] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-void MenuManager_MachineFuncSetup_LcdShowMainTitle(void);
-void MenuManager_MachineFuncSetup_LcdShowList(void);
+static void MenuManager_MachineFuncSetup_LcdShowMainTitle(void);
+static void MenuManager_MachineFuncSetup_LcdShowList(void);
 
 static void MenuManager_MachineFuncSetup_SubMainFunction(void);
 static void MenuManager_MachineFuncSetup_SubTickHandler(void);
@@ -126,7 +126,7 @@ static void MenuManager_MachineFuncSetup_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-void MenuManager_MachineFuncSetup_LcdShowMainTitle(void)
+static void MenuManager_MachineFuncSetup_LcdShowMainTitle(void)
 {
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
@@ -135,7 +135,7 @@ void MenuManager_MachineFuncSetup_LcdShowMainTitle(void)
 }
 
 /*=============================================================================================*/
-void MenuManager_MachineFuncSetup_LcdShowList(void)
+static void MenuManager_MachineFuncSetup_LcdShowList(void)
 {
   uint32_t currentListIndex;
   uint32_t currentCursorPos;

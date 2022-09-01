@@ -181,12 +181,6 @@ static tFsmGuard MenuManager_Home_DownBut(tFsmContextPtr const pFsmContext, tFsm
 /*=============================================================================================*/
 static tFsmGuard MenuManager_Home_UpDownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
 {
-//  uint8_t str[] = "UP DOWN    ";
-//  LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
-//  LCD_PutString((uint8_t *)str);
-//  
-//  MenuManager_Common_LcdUpdateElementMenuDynamic();
-
   Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
   
   return kFsmGuard_True;

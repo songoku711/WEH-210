@@ -40,6 +40,12 @@ const uint8_t MenuManager_Common_DoneStr[] =                          "DONE";
 const uint8_t MenuManager_Common_EnableStr[] =                        "ENABLE";
 const uint8_t MenuManager_Common_DisableStr[] =                       "DISABLE";
 
+const uint8_t MenuManager_Common_NormalOpenStr[] =                    "NORMAL OPEN";
+const uint8_t MenuManager_Common_NormalCloseStr[] =                   "NORMAL CLOSE";
+
+const uint8_t MenuManager_Common_ActiveLowStr[] =                     "ACTIVE LOW";
+const uint8_t MenuManager_Common_ActiveHighStr[] =                    "ACTIVE HIGH";
+
 
 
 /*===============================================================================================
@@ -80,6 +86,54 @@ void MenuManager_Common_ButEventMapHandler(MenuManager_ButEventMapConfStruct *bu
       }
     }
   }
+}
+
+
+
+/*=============================================================================================*/
+void MenuManager_Common_DecToBcdConv(uint32_t *inDec, uint32_t *outBcd, uint8_t unitNum)
+{
+  uint8_t tempUnitVal[10];
+  uint8_t unitNumUsed = (uint8_t)0U;
+  uint8_t unitNumIdx;
+  uint32_t decVal = *inDec;
+
+  while ((unitNumUsed < unitNum) && (decVal != (uint32_t)0U))
+  {
+    tempUnitVal[unitNumUsed++] = decVal % (uint32_t)10U;
+    decVal = decVal / (uint32_t)10U;
+  }
+
+  for (unitNumIdx = (uint8_t)0U; unitNumIdx < (unitNum - unitNumUsed); unitNumIdx++)
+  {
+    *(outBcd + unitNumIdx) = (uint32_t)0U;
+  }
+
+  for (; unitNumUsed > (uint8_t)0U; unitNumUsed--)
+  {
+    *(outBcd + unitNum - unitNumUsed) = tempUnitVal[unitNumUsed - 1U];
+  }
+}
+
+/*=============================================================================================*/
+void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t unitNum)
+{
+  uint8_t unitNumIdx;
+  uint32_t decVal;
+
+  decVal = (uint32_t)0U;
+
+  for (unitNumIdx = (uint8_t)0U; unitNumIdx < unitNum; unitNumIdx++)
+  {
+    decVal = decVal + *(inBcd + unitNumIdx);
+
+    if (unitNumIdx < (unitNum - 1U))
+    {
+      decVal = decVal * (uint32_t)10U;
+    }
+  }
+
+  *outDec = decVal;
 }
 
 
@@ -285,6 +339,43 @@ void MenuManager_Common_LcdShowListElementName
 			LCD_PutChar(' ');
 		}
 	}
+}
+
+/*=============================================================================================*/
+void MenuManager_Common_LcdShowAdjustUnitVal
+(
+  uint32_t xPos,
+  uint32_t yPos,
+  uint32_t *unitVal,
+  uint32_t length
+)
+{
+  uint32_t index;
+
+  LCD_SetFont(LCD_FONT_SMALL);
+
+  for (index = (uint32_t)0U; index < length; index++)
+  {
+    LCD_SetCursorPos((uint8_t)(xPos + index), (uint8_t)(yPos), LCD_CURSOR_BY_FONT);
+    LCD_PutChar((uint8_t)(*(unitVal + index) + FONT_NUMBER_TO_CHAR_OFFSET));
+  }
+}
+
+/*=============================================================================================*/
+void MenuManager_Common_LcdShowAdjustArrow
+(
+  uint32_t xPos,
+  uint32_t yPos,
+  uint32_t curPos
+)
+{
+  LCD_SetFont(LCD_FONT_SMALL);
+  
+  LCD_SetCursorPos((uint8_t)(xPos + curPos), (uint8_t)(yPos - 1U), LCD_CURSOR_BY_FONT);
+  LCD_PutChar(FONT_UP_ARROW_INDEX);
+  
+  LCD_SetCursorPos((uint8_t)(xPos + curPos), (uint8_t)(yPos + 1U), LCD_CURSOR_BY_FONT);
+  LCD_PutChar(FONT_DOWN_ARROW_INDEX);
 }
 
 /*=============================================================================================*/

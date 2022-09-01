@@ -47,6 +47,32 @@ extern tFsmEventEntry MenuManager_MachineSetup_StateMachine[13];
 extern tFsmEventEntry MenuManager_MachineFuncSetup_StateMachine[11];
 /** State drainWhileDoorOpen (9) */
 extern tFsmEventEntry MenuManager_DrainWhileDoorOpen_StateMachine[7];
+/** State heatUseTimeout (10) */
+extern tFsmEventEntry MenuManager_HeatUseTimeout_StateMachine[7];
+/** State fillUseTimeout (11) */
+extern tFsmEventEntry MenuManager_FillUseTimeout_StateMachine[7];
+/** State manOperateWhenAuto (12) */
+extern tFsmEventEntry MenuManager_ManOperateWhenAuto_StateMachine[7];
+/** State tempUnit (13) */
+extern tFsmEventEntry MenuManager_TempUnit_StateMachine[7];
+/** State drainValveStatus (14) */
+extern tFsmEventEntry MenuManager_DrainValveStatus_StateMachine[7];
+/** State inputStatusSetup (15) */
+extern tFsmEventEntry MenuManager_InputStatusSetup_StateMachine[9];
+/** State doorClosed (16) */
+extern tFsmEventEntry MenuManager_DoorClosed_StateMachine[7];
+/** State extractShock (17) */
+extern tFsmEventEntry MenuManager_ExtractShock_StateMachine[7];
+/** State emergencyStop (18) */
+extern tFsmEventEntry MenuManager_EmergencyStop_StateMachine[7];
+/** State inverterError (19) */
+extern tFsmEventEntry MenuManager_InverterError_StateMachine[7];
+/** State fillLevelSetup (20) */
+extern tFsmEventEntry MenuManager_FillLevelSetup_StateMachine[13];
+/** State autoRefillWhenLow (21) */
+extern tFsmEventEntry MenuManager_AutoRefillWhenLow_StateMachine[7];
+/** State zeroLevel (22) */
+extern tFsmEventEntry MenuManager_ZeroLevel_StateMachine[9];
 
 
 
@@ -57,7 +83,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[10] =
+tFsmStateDefinition MenuManager_StateMachine[23] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -68,7 +94,20 @@ tFsmStateDefinition MenuManager_StateMachine[10] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SetDefaultProg_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineSetup_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineFuncSetup_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainWhileDoorOpen_StateMachine)                 }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainWhileDoorOpen_StateMachine)                 },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatUseTimeout_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FillUseTimeout_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ManOperateWhenAuto_StateMachine)                 },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempUnit_StateMachine)                           },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainValveStatus_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_InputStatusSetup_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorClosed_StateMachine)                         },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ExtractShock_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_EmergencyStop_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_InverterError_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FillLevelSetup_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoRefillWhenLow_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ZeroLevel_StateMachine)                          }
 };
 
 void (*MenuManager_SubMainFunction)(void);

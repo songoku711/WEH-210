@@ -45,6 +45,12 @@ extern const uint8_t MenuManager_Common_DoneStr[];
 extern const uint8_t MenuManager_Common_EnableStr[];
 extern const uint8_t MenuManager_Common_DisableStr[];
 
+extern const uint8_t MenuManager_Common_NormalOpenStr[];
+extern const uint8_t MenuManager_Common_NormalCloseStr[];
+
+extern const uint8_t MenuManager_Common_ActiveLowStr[];
+extern const uint8_t MenuManager_Common_ActiveHighStr[];
+
 
 
 /*===============================================================================================
@@ -52,6 +58,9 @@ extern const uint8_t MenuManager_Common_DisableStr[];
 ===============================================================================================*/
 
 void MenuManager_Common_ButEventMapHandler(MenuManager_ButEventMapConfStruct *butEventMapConf);
+
+void MenuManager_Common_DecToBcdConv(uint32_t *inDec, uint32_t *outBcd, uint8_t unitNum);
+void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t unitNum);
 
 tFsmGuard MenuManager_Common_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event);
 
@@ -78,6 +87,8 @@ void MenuManager_Common_LcdUpdateCountdownMenuDynamic(void);
 void MenuManager_Common_LcdShowMainTitle(const uint8_t *mainTitle);
 void MenuManager_Common_LcdShowChosenMark(uint8_t curPos);
 void MenuManager_Common_LcdShowListElementName(uint8_t* str, uint8_t length, uint8_t xPos,	uint8_t yPos);
+void MenuManager_Common_LcdShowAdjustUnitVal( uint32_t xPos, uint32_t yPos, uint32_t *unitVal, uint32_t length);
+void MenuManager_Common_LcdShowAdjustArrow(uint32_t xPos, uint32_t yPos, uint32_t curPos);
 void MenuManager_Common_LcdShowExitChoice(void);
 void MenuManager_Common_LcdShowOkExitChoice(void);
 void MenuManager_Common_LcdShowStopExitChoice(void);
