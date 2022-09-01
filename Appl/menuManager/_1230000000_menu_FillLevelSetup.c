@@ -41,7 +41,7 @@ extern "C" {
 static const uint8_t MenuManager_AutoRefillWhenLow_ChildTitleStr[] =  "AUTO REFILL W LOW";
 static const uint8_t MenuManager_ZeroLevel_ChildTitleStr[] =          "ZERO LEVEL";
 static const uint8_t MenuManager_LowLevel_ChildTitleStr[] =           "LOW LEVEL";
-static const uint8_t MenuManager_MidLevel_ChildTitleStr[] =           "MID LEVEL";
+static const uint8_t MenuManager_MidLevel_ChildTitleStr[] =           "MIDDLE LEVEL";
 static const uint8_t MenuManager_HighLevel_ChildTitleStr[] =          "HIGH LEVEL";
 static const uint8_t MenuManager_OverbrimLevel_ChildTitleStr[] =      "OVERBRIM LEVEL";
 static const uint8_t MenuManager_LevelDiffRefill_ChildTitleStr[] =    "LEVEL DIFF REFILL";

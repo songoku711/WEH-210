@@ -161,6 +161,15 @@ typedef struct _ProgramManager_FillLevelSetupStruct
   uint16_t                                    maxTimeFill;                  /* If level is lower than set value after this amount of time, controller will alarm (minutes) */
 } ProgramManager_FillLevelSetupStruct;
 
+#define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MIN                 (0U)
+#define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX                 (100U)
+
+#define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MIN             (0U)
+#define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MAX             (100U)
+
+#define PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_MIN                 (0U)
+#define PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_MAX                 (256U)
+
 /* Program manager heat and temp setup structure */
 typedef struct _ProgramManager_HeatTempSetupStruct
 {

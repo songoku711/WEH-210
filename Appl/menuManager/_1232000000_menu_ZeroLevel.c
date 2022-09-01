@@ -201,8 +201,8 @@ static tFsmGuard MenuManager_ZeroLevel_Entry(tFsmContextPtr const pFsmContext, t
       MenuManager_ZeroLevel_Counter = (uint32_t)0U;
       MenuManager_ZeroLevel_CurPos = (uint32_t)0U;
 
-      MenuManager_ZeroLevel_ValueMin = (uint32_t)0U;
-      MenuManager_ZeroLevel_ValueMax = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.lowLevel);
+      MenuManager_ZeroLevel_ValueMin = (uint32_t)PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MIN;
+      MenuManager_ZeroLevel_ValueMax = (uint32_t)PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX;
 
       MenuManager_ZeroLevel_Value = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.zeroLevel);
 

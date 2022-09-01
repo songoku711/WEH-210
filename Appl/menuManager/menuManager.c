@@ -73,6 +73,18 @@ extern tFsmEventEntry MenuManager_FillLevelSetup_StateMachine[13];
 extern tFsmEventEntry MenuManager_AutoRefillWhenLow_StateMachine[7];
 /** State zeroLevel (22) */
 extern tFsmEventEntry MenuManager_ZeroLevel_StateMachine[9];
+/** State lowLevel (23) */
+extern tFsmEventEntry MenuManager_LowLevel_StateMachine[9];
+/** State midLevel (24) */
+extern tFsmEventEntry MenuManager_MidLevel_StateMachine[9];
+/** State highLevel (25) */
+extern tFsmEventEntry MenuManager_HighLevel_StateMachine[9];
+/** State overbrimLevel (26) */
+extern tFsmEventEntry MenuManager_OverbrimLevel_StateMachine[9];
+/** State levelDiffRefill (27) */
+extern tFsmEventEntry MenuManager_LevelDiffRefill_StateMachine[9];
+/** State maxTimeFill (28) */
+extern tFsmEventEntry MenuManager_MaxTimeFill_StateMachine[9];
 
 
 
@@ -83,7 +95,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[23] =
+tFsmStateDefinition MenuManager_StateMachine[29] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -107,7 +119,13 @@ tFsmStateDefinition MenuManager_StateMachine[23] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_InverterError_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FillLevelSetup_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoRefillWhenLow_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ZeroLevel_StateMachine)                          }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ZeroLevel_StateMachine)                          },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LowLevel_StateMachine)                           },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidLevel_StateMachine)                           },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighLevel_StateMachine)                          },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_OverbrimLevel_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LevelDiffRefill_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeFill_StateMachine)                        }
 };
 
 void (*MenuManager_SubMainFunction)(void);
