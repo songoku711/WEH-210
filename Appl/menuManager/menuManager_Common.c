@@ -46,6 +46,9 @@ const uint8_t MenuManager_Common_NormalCloseStr[] =                   "NORMAL CL
 const uint8_t MenuManager_Common_ActiveLowStr[] =                     "ACTIVE LOW";
 const uint8_t MenuManager_Common_ActiveHighStr[] =                    "ACTIVE HIGH";
 
+const uint8_t MenuManager_Common_CelsiusDegStr[] =                    "*C";
+const uint8_t MenuManager_Common_FahrenheitDegStr[] =                 "*F";
+
 
 
 /*===============================================================================================

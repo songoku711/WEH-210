@@ -85,6 +85,12 @@ extern tFsmEventEntry MenuManager_OverbrimLevel_StateMachine[9];
 extern tFsmEventEntry MenuManager_LevelDiffRefill_StateMachine[9];
 /** State maxTimeFill (28) */
 extern tFsmEventEntry MenuManager_MaxTimeFill_StateMachine[9];
+/** State heatTempSetup (29) */
+extern tFsmEventEntry MenuManager_HeatTempSetup_StateMachine[11];
+/** State autoReheatWhenLow (30) */
+extern tFsmEventEntry MenuManager_AutoReheatWhenLow_StateMachine[7];
+/** State minWaterTemp (31) */
+extern tFsmEventEntry MenuManager_MinWaterTemp_StateMachine[9];
 
 
 
@@ -95,7 +101,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[29] =
+tFsmStateDefinition MenuManager_StateMachine[32] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -125,7 +131,10 @@ tFsmStateDefinition MenuManager_StateMachine[29] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighLevel_StateMachine)                          },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_OverbrimLevel_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LevelDiffRefill_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeFill_StateMachine)                        }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeFill_StateMachine)                        },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatTempSetup_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoReheatWhenLow_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MinWaterTemp_StateMachine)                       }
 };
 
 void (*MenuManager_SubMainFunction)(void);

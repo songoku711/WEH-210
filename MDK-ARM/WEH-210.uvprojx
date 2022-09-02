@@ -534,6 +534,21 @@
               <FilePath>..\Appl\menuManager\_1238000000_menu_MaxTimeFill.c</FilePath>
             </File>
             <File>
+              <FileName>_1240000000_menu_HeatTempSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1240000000_menu_HeatTempSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1241000000_menu_AutoReheatWhenLow.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1241000000_menu_AutoReheatWhenLow.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1242000000_menu_MinWaterTemp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1242000000_menu_MinWaterTemp.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>
@@ -547,11 +562,6 @@
               <FileName>programManager.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\programManager.c</FilePath>
-            </File>
-            <File>
-              <FileName>programManager_Mem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\programManager_Mem.c</FilePath>
             </File>
             <File>
               <FileName>_A000000000_program_PowerOn.c</FileName>
@@ -577,6 +587,16 @@
               <FileName>_2000000000_program_Manual.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\_2000000000_program_Manual.c</FilePath>
+            </File>
+            <File>
+              <FileName>programManager_Mem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\programManager_Mem.c</FilePath>
+            </File>
+            <File>
+              <FileName>programManager_Common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\programManager_Common.c</FilePath>
             </File>
           </Files>
         </Group>

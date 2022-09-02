@@ -90,11 +90,11 @@ static MenuManager_ButEventMapConfStruct MenuManager_FillLevelSetup_ButEventMapC
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_FillLevelSetup_Entry                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_FillLevelSetup_StartBut                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_FillLevelSetup_StopBut                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_FillLevelSetup_UpBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_FillLevelSetup_DownBut                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static tFsmGuard MenuManager_FillLevelSetup_Entry                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static tFsmGuard MenuManager_FillLevelSetup_StartBut                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static tFsmGuard MenuManager_FillLevelSetup_StopBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static tFsmGuard MenuManager_FillLevelSetup_UpBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static tFsmGuard MenuManager_FillLevelSetup_DownBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
 
 /** Menu manager state machine */
 tFsmEventEntry MenuManager_FillLevelSetup_StateMachine[13] =

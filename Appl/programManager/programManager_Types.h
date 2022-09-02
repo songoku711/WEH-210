@@ -174,12 +174,18 @@ typedef struct _ProgramManager_FillLevelSetupStruct
 typedef struct _ProgramManager_HeatTempSetupStruct
 {
   bool                                        autoReheatWhenLow;            /* Automatically re-heat when temperature is lower than set value (1) */
-  uint16_t                                    minWaterTemp;                 /* The minimum value of water set temperature */
-  uint16_t                                    maxWaterTemp;                 /* The maxumum value of water set temperature */
-  uint16_t                                    tempThreshold;                /* The water temperature threshold */
-  uint16_t                                    tempDiffReheat;               /* Auto re-heat when difference between current and set is larger than this value */
+  uint8_t                                     minWaterTemp;                 /* The minimum value of water set temperature */
+  uint8_t                                     maxWaterTemp;                 /* The maxumum value of water set temperature */
+  uint8_t                                     tempThreshold;                /* The water temperature threshold */
+  uint8_t                                     tempDiffReheat;               /* Auto re-heat when difference between current and set is larger than this value */
   uint16_t                                    maxTimeHeat;                  /* If temperature is lower than set value after this amount of time, controller will alarm (minutes) */
 } ProgramManager_HeatTempSetupStruct;
+
+#define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MIN                 (0U)
+#define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MAX                 (100U)
+
+#define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MIN                 (32U)
+#define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MAX                 (210U)
 
 /* Program manager chemical supply (soap) setup structure */
 typedef struct _ProgramManager_SoapSetupStruct
@@ -289,7 +295,7 @@ typedef struct _ProgramManager_NormStepConfigStruct
   ProgramManager_WashModeType                 washTimeMode;                 /* Wash time mode */
   ProgramManager_LevelModeType                levelMode;                    /* Water level mode */
   uint8_t                                     washNum;                      /* Number of wash time */
-  uint16_t                                    tempThreshold;                /* Water temperature threshold */
+  uint8_t                                     tempThreshold;                /* Water temperature threshold */
   uint16_t                                    levelThreshold;               /* Water level threshold */
   uint16_t                                    balanceTime;                  /* Balance time at extract */
   uint16_t                                    midExtractTime;               /* Time of middle extract */

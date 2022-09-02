@@ -212,7 +212,7 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_GetData(ProgramManager_ParamCo
   (void)ProgramManager_MachineFuncSetup_GetData (&(data->machineFuncCfg));
   (void)ProgramManager_InputStatusSetup_GetData (&(data->inputStatusCfg));
   (void)ProgramManager_FillLevelSetup_GetData   (&(data->fillLevelCfg));
-  (void)ProgramManager_HeatTempSetup_GetData    (&(data->heatTempCfg));
+  (void)ProgramManager_HeatTempSetup_GetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_SoapSetup_GetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_GetData        (&(data->washCfg));
   (void)ProgramManager_ExtractSetup_GetData     (&(data->extractCfg));
@@ -226,7 +226,7 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_SetData(ProgramManager_ParamCo
   (void)ProgramManager_MachineFuncSetup_SetData (&(data->machineFuncCfg));
   (void)ProgramManager_InputStatusSetup_SetData (&(data->inputStatusCfg));
   (void)ProgramManager_FillLevelSetup_SetData   (&(data->fillLevelCfg));
-  (void)ProgramManager_HeatTempSetup_SetData    (&(data->heatTempCfg));
+  (void)ProgramManager_HeatTempSetup_SetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_SoapSetup_SetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_SetData        (&(data->washCfg));
   (void)ProgramManager_ExtractSetup_SetData     (&(data->extractCfg));
@@ -617,49 +617,101 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_MaxTimeFill_SetData(uint16_t *da
 
 
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSetupStruct *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSetupStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
 
   extMemIf.readByteArray(PROGRAMMANAGER_HEATTEMPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
-  data->autoReheatWhenLow   = (bool)recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET];
+  data->autoReheatWhenLow     = (bool)recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET];
 
-  data->minWaterTemp        = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET]) << 8U;
-  data->minWaterTemp       |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1]);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    data->minWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET];
+    data->maxWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET];
+    data->tempThreshold       = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET];
+    data->tempDiffReheat      = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET];
+  }
+  else
+  {
+    data->minWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1];
+    data->maxWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1];
+    data->tempThreshold       = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1];
+    data->tempDiffReheat      = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1];
+  }
 
-  data->maxWaterTemp        = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET]) << 8U;
-  data->maxWaterTemp       |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1]);
-
-  data->tempThreshold       = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET]) << 8U;
-  data->tempThreshold      |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1]);
-
-  data->tempDiffReheat      = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET]) << 8U;
-  data->tempDiffReheat     |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1]);
-
-  data->maxTimeHeat         = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET]) << 8U;
-  data->maxTimeHeat        |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET + 1]);
+  data->maxTimeHeat           = (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET]) << 8U;
+  data->maxTimeHeat          |= (uint16_t)(recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET + 1]);
 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSetupStruct *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSetupStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET]  = (uint8_t)(data->autoReheatWhenLow);
+  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET]      = (uint8_t)(data->autoReheatWhenLow);
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET]       = (uint8_t)(data->minWaterTemp >> 8U);
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1]   = (uint8_t)(data->minWaterTemp & (uint16_t)0x00FFU);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET]         = data->minWaterTemp;
+    ProgramManager_Common_CelsiusToFahrenheitConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1)
+    );
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET]       = (uint8_t)(data->maxWaterTemp >> 8U);
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1]   = (uint8_t)(data->maxWaterTemp & (uint16_t)0x00FFU);
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET]         = data->maxWaterTemp;
+    ProgramManager_Common_CelsiusToFahrenheitConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1)
+    );
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET]      = (uint8_t)(data->tempThreshold >> 8U);
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1]  = (uint8_t)(data->tempThreshold & (uint16_t)0x00FFU);
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET]        = data->tempThreshold;
+    ProgramManager_Common_CelsiusToFahrenheitConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1)
+    );
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET]     = (uint8_t)(data->tempDiffReheat >> 8U);
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1] = (uint8_t)(data->tempDiffReheat & (uint16_t)0x00FFU);
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET]       = data->tempDiffReheat;
+    ProgramManager_Common_CelsiusToFahrenheitConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1)
+    );
+  }
+  else
+  {
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1]     = data->minWaterTemp;
+    ProgramManager_Common_FahrenheitToCelsiusConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET)
+    );
+
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1]     = data->maxWaterTemp;
+    ProgramManager_Common_FahrenheitToCelsiusConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET)
+    );
+
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1]    = data->tempThreshold;
+    ProgramManager_Common_FahrenheitToCelsiusConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET)
+    );
+
+    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1]   = data->tempDiffReheat;
+    ProgramManager_Common_FahrenheitToCelsiusConv
+    (
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1),
+      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET)
+    );
+  }
 
   recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET]        = (uint8_t)(data->maxTimeHeat >> 8U);
   recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_OFFSET + 1]    = (uint8_t)(data->maxTimeHeat & (uint16_t)0x00FFU);
@@ -683,58 +735,146 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_AutoReheatWhenLow_SetData(bool *d
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR);
+  }
+  else
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR, *data);
+  uint8_t temp;
+
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR, *data);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR, temp);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1, *data);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR);
+  }
+  else
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR, *data);
+  uint8_t temp;
+
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR, *data);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR, temp);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1, *data);
+  }
+
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
+{
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR);
+  }
+  else
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR + 1);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR);
+  uint8_t temp;
+
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR, *data);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR, temp);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR + 1, *data);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_BASE_ADDR, *data);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR);
+  }
+  else
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR + 1);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR);
-  
-  return HAL_OK;
-}
+  uint8_t temp;
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR, *data);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR, *data);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR, temp);
+    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_BASE_ADDR + 1, *data);
+  }
   
   return HAL_OK;
 }
@@ -1641,7 +1781,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_GetData(ProgramManager_AutoSeqCon
 
   for (stepIndex = (uint8_t)0U; stepIndex < PROGRAMMANAGER_STEP_NUM_MAX; stepIndex++)
   {
-    ProgramManager_NormStepConfig_GetData(data->sequenceIndex, stepIndex, &(data->normStep)[stepIndex]);
+    ProgramManager_NormStepConfig_GetData(data->sequenceIndex, stepIndex, &(data->normStep)[stepIndex], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
   }
 
   ProgramManager_UnloadStepConfig_GetData(data->sequenceIndex, &(data->unloadStep));
@@ -1660,7 +1800,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqCon
   {
     for (stepIndex = (uint8_t)0U; stepIndex < PROGRAMMANAGER_STEP_NUM_MAX; stepIndex++)
     {
-      ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[stepIndex]);
+      ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[stepIndex], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
     }
 
     ProgramManager_UnloadStepConfig_SetData(sequenceIndex, &(data->unloadStep));
@@ -1683,7 +1823,7 @@ HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t *data)
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
   uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
@@ -1716,83 +1856,105 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
     data->drainMode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
   }
 
-  data->timeoutCountMode    = false;
-  data->timeoutMinute       = (uint8_t)0U;
-  data->timeoutSecond       = (uint8_t)0U;
+  data->timeoutCountMode      = false;
+  data->timeoutMinute         = (uint8_t)0U;
+  data->timeoutSecond         = (uint8_t)0U;
 
-  data->isActive            = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
-  data->useColdWater        = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]);
-  data->useHotWater         = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]);
-  data->useSoap1            = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]);
-  data->useSoap2            = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]);
-  data->useSoap3            = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]);
+  data->isActive              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
+  data->useColdWater          = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]);
+  data->useHotWater           = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]);
+  data->useSoap1              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]);
+  data->useSoap2              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]);
+  data->useSoap3              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]);
 
-  data->washTimeMode        = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]);
-  data->levelMode           = (ProgramManager_LevelModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]);
+  data->washTimeMode          = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]);
+  data->levelMode             = (ProgramManager_LevelModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]);
 
-  data->washNum             = recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET];
+  data->washNum               = recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET];
 
-  data->tempThreshold       = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET]) << 8U;
-  data->tempThreshold      |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1]);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    data->tempThreshold       = recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET];
+  }
+  else
+  {
+    data->tempThreshold       = recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1];
+  }
 
-  data->levelThreshold      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]) << 8U;
-  data->levelThreshold     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]);
+  data->levelThreshold        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]) << 8U;
+  data->levelThreshold       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]);
 
-  data->balanceTime         = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]) << 8U;
-  data->balanceTime        |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]);
+  data->balanceTime           = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]) << 8U;
+  data->balanceTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]);
 
-  data->midExtractTime      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]) << 8U;
-  data->midExtractTime     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]);
+  data->midExtractTime        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]) << 8U;
+  data->midExtractTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]);
 
-  data->highExtractTime1    = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
-  data->highExtractTime1   |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]);
+  data->highExtractTime1      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
+  data->highExtractTime1     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]);
 
-  data->highExtractTime2    = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
-  data->highExtractTime2   |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]);
+  data->highExtractTime2      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
+  data->highExtractTime2     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]);
 
-  data->highExtractTime3    = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
-  data->highExtractTime3   |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]);
+  data->highExtractTime3      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
+  data->highExtractTime3     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]);
 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
   uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]              = (uint8_t)(data->isActive    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]          = (uint8_t)(data->useColdWater);
-  recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]           = (uint8_t)(data->useHotWater );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]              = (uint8_t)(data->useSoap1    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]              = (uint8_t)(data->useSoap2    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]              = (uint8_t)(data->useSoap3    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]                    = (uint8_t)(data->isActive    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]                = (uint8_t)(data->useColdWater);
+  recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]                 = (uint8_t)(data->useHotWater );
+  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]                    = (uint8_t)(data->useSoap1    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]                    = (uint8_t)(data->useSoap2    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]                    = (uint8_t)(data->useSoap3    );
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]          = (uint8_t)(data->washTimeMode);
-  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]             = (uint8_t)(data->levelMode   );
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]                = (uint8_t)(data->washTimeMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]                   = (uint8_t)(data->levelMode   );
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET]               = (uint8_t)(data->washNum     );
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET]                     = (uint8_t)(data->washNum     );
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET]         = (uint8_t)(data->tempThreshold >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1]     = (uint8_t)(data->tempThreshold & (uint16_t)0x00FFU);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET]             = data->tempThreshold;
+    ProgramManager_Common_CelsiusToFahrenheitConv
+    (
+      (recvArr + PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET),
+      (recvArr + PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1)
+    );
+  }
+  else
+  {
+    recvArr[PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1]         = data->tempThreshold;
+    ProgramManager_Common_FahrenheitToCelsiusConv
+    (
+      (recvArr + PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET + 1),
+      (recvArr + PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET)
+    );
+  }
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]        = (uint8_t)(data->levelThreshold >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]    = (uint8_t)(data->levelThreshold & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]              = (uint8_t)(data->levelThreshold >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]          = (uint8_t)(data->levelThreshold & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]           = (uint8_t)(data->balanceTime >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]       = (uint8_t)(data->balanceTime & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]                 = (uint8_t)(data->balanceTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]             = (uint8_t)(data->balanceTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]        = (uint8_t)(data->midExtractTime >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]    = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]              = (uint8_t)(data->midExtractTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]          = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]      = (uint8_t)(data->highExtractTime1 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]  = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]            = (uint8_t)(data->highExtractTime1 >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]        = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]      = (uint8_t)(data->highExtractTime2 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]  = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]            = (uint8_t)(data->highExtractTime2 >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]        = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]      = (uint8_t)(data->highExtractTime3 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]  = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]            = (uint8_t)(data->highExtractTime3 >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]        = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
@@ -2055,7 +2217,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_SetData(uint8_t seqIdx, 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
 
@@ -2064,13 +2226,21 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t se
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET;
 
-  *data = extMemIf.readInteger(addr);
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(addr);
+  }
+  else
+  {
+    *data = extMemIf.readByte(addr + 1);
+  }
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
+  uint8_t temp;
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
@@ -2078,8 +2248,21 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t se
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET;
 
-  extMemIf.writeInteger(addr, *data);
-  
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(addr, *data);
+    extMemIf.writeByte(addr + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(addr, temp);
+    extMemIf.writeByte(addr + 1, *data);
+  }
+
   return HAL_OK;
 }
 
@@ -2283,14 +2466,14 @@ HAL_StatusTypeDef ProgramManager_UnloadStepConfig_SetData(uint8_t seqIdx, Progra
 
 HAL_StatusTypeDef ProgramManager_ManualSeqConfig_GetData(ProgramManager_ManualSeqConfigStruct *data)
 {
-  ProgramManager_NormStepConfig_GetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep));
+  ProgramManager_NormStepConfig_GetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
   
   return HAL_OK;
 }
 
 HAL_StatusTypeDef ProgramManager_ManualSeqConfig_SetData(ProgramManager_ManualSeqConfigStruct *data)
 {
-  ProgramManager_NormStepConfig_SetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep));
+  ProgramManager_NormStepConfig_SetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
   
   return HAL_OK;
 }

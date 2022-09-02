@@ -51,6 +51,9 @@ extern const uint8_t MenuManager_Common_NormalCloseStr[];
 extern const uint8_t MenuManager_Common_ActiveLowStr[];
 extern const uint8_t MenuManager_Common_ActiveHighStr[];
 
+extern const uint8_t MenuManager_Common_CelsiusDegStr[];
+extern const uint8_t MenuManager_Common_FahrenheitDegStr[];
+
 
 
 /*===============================================================================================

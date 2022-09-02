@@ -390,19 +390,19 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_MaxTimeFill_SetData(uint16_t *da
 
 
 
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSetupStruct *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSetupStruct *data);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSetupStruct *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSetupStruct *data, ProgramManager_TempUnitType tempUnit);
 
 HAL_StatusTypeDef ProgramManager_HeatTempSetup_AutoReheatWhenLow_GetData(bool *data);
 HAL_StatusTypeDef ProgramManager_HeatTempSetup_AutoReheatWhenLow_SetData(bool *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_SetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempThreshold_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_HeatTempSetup_TempDiffReheat_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxTimeHeat_GetData(uint16_t *data);
 HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxTimeHeat_SetData(uint16_t *data);
 
@@ -524,8 +524,8 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqCon
 HAL_StatusTypeDef ProgramManager_SequenceIndex_GetData(uint8_t *data);
 HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t *data);
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);
 
 HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
@@ -545,8 +545,8 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_GetData(uint8_t seqIdx
 HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);

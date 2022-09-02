@@ -184,11 +184,11 @@ HAL_StatusTypeDef MemIf_Init(void)
     for (index = (uint16_t)0U; index < (EXT_MEM_BYTE_NUM / EXT_MEM_BYTE_SECT); index++)
     {
       extMemIf.writeByteArray((index * EXT_MEM_BYTE_SECT), zeroArr, EXT_MEM_BYTE_SECT);
-      extMemIf.writeByteArray((index * EXT_MEM_BYTE_SECT), readArr, EXT_MEM_BYTE_SECT);
+      extMemIf.readByteArray((index * EXT_MEM_BYTE_SECT), readArr, EXT_MEM_BYTE_SECT);
 
       if (memcmp(readArr, zeroArr, EXT_MEM_BYTE_SECT) != (int8_t)0U)
       {
-        return HAL_ERROR;;
+        return HAL_ERROR;
       }
     }
 
