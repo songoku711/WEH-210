@@ -91,6 +91,14 @@ extern tFsmEventEntry MenuManager_HeatTempSetup_StateMachine[11];
 extern tFsmEventEntry MenuManager_AutoReheatWhenLow_StateMachine[7];
 /** State minWaterTemp (31) */
 extern tFsmEventEntry MenuManager_MinWaterTemp_StateMachine[9];
+/** State maxWaterTemp (32) */
+extern tFsmEventEntry MenuManager_MaxWaterTemp_StateMachine[9];
+/** State tempThreshold (33) */
+extern tFsmEventEntry MenuManager_TempThreshold_StateMachine[9];
+/** State tempDiffReheat (34) */
+extern tFsmEventEntry MenuManager_TempDiffReheat_StateMachine[9];
+/** State maxTimeHeat (35) */
+extern tFsmEventEntry MenuManager_MaxTimeHeat_StateMachine[9];
 
 
 
@@ -101,7 +109,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[32] =
+tFsmStateDefinition MenuManager_StateMachine[36] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -134,7 +142,11 @@ tFsmStateDefinition MenuManager_StateMachine[32] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeFill_StateMachine)                        },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatTempSetup_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoReheatWhenLow_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MinWaterTemp_StateMachine)                       }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MinWaterTemp_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxWaterTemp_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempThreshold_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempDiffReheat_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeHeat_StateMachine)                        }
 };
 
 void (*MenuManager_SubMainFunction)(void);

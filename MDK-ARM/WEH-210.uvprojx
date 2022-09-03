@@ -549,6 +549,26 @@
               <FilePath>..\Appl\menuManager\_1242000000_menu_MinWaterTemp.c</FilePath>
             </File>
             <File>
+              <FileName>_1243000000_menu_MaxWaterTemp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1243000000_menu_MaxWaterTemp.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1244000000_menu_TempThreshold.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1244000000_menu_TempThreshold.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1245000000_menu_TempDiffReheat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1245000000_menu_TempDiffReheat.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1246000000_menu_MaxTimeHeat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1246000000_menu_MaxTimeHeat.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

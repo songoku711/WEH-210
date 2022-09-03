@@ -187,6 +187,9 @@ typedef struct _ProgramManager_HeatTempSetupStruct
 #define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MIN                 (32U)
 #define PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MAX                 (210U)
 
+#define PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_MIN                  (0U)
+#define PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_MAX                  (256U)
+
 /* Program manager chemical supply (soap) setup structure */
 typedef struct _ProgramManager_SoapSetupStruct
 {
