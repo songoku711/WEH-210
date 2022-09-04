@@ -200,7 +200,7 @@ typedef struct _ProgramManager_SoapSetupStruct
 } ProgramManager_SoapSetupStruct;
 
 #define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MIN                        (0U)
-#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MAX                        (256U)
+#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MAX                        (255U)
 
 /* Program manager wash setup structure */
 typedef struct _ProgramManager_WashSetupStruct
