@@ -1058,7 +1058,7 @@ HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruc
   recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET]         = (uint8_t)(data->hvyWashSpeed);
   recvArr[PROGRAMMANAGER_WASHSETUP_MAXWASHSPEED_OFFSET]         = (uint8_t)(data->maxWashSpeed);
 
-  extMemIf.writeByteArray(PROGRAMMANAGER_SOAPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.writeByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
   
   return HAL_OK;
 }

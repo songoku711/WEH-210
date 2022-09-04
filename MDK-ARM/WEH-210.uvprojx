@@ -569,6 +569,31 @@
               <FilePath>..\Appl\menuManager\_1246000000_menu_MaxTimeHeat.c</FilePath>
             </File>
             <File>
+              <FileName>_1250000000_menu_SoapSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1250000000_menu_SoapSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1251000000_menu_StopFillWhenSoap.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1251000000_menu_StopFillWhenSoap.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1252000000_menu_TimeSoap1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1252000000_menu_TimeSoap1.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1253000000_menu_TimeSoap2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1253000000_menu_TimeSoap2.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1254000000_menu_TimeSoap3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1254000000_menu_TimeSoap3.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

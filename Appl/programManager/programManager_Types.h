@@ -199,6 +199,9 @@ typedef struct _ProgramManager_SoapSetupStruct
   uint16_t                                    timeSoap3;                    /* Default set time of soap 3 (seconds) */
 } ProgramManager_SoapSetupStruct;
 
+#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MIN                        (0U)
+#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MAX                        (256U)
+
 /* Program manager wash setup structure */
 typedef struct _ProgramManager_WashSetupStruct
 {

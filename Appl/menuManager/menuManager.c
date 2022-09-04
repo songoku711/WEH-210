@@ -99,6 +99,16 @@ extern tFsmEventEntry MenuManager_TempThreshold_StateMachine[9];
 extern tFsmEventEntry MenuManager_TempDiffReheat_StateMachine[9];
 /** State maxTimeHeat (35) */
 extern tFsmEventEntry MenuManager_MaxTimeHeat_StateMachine[9];
+/** State soapSetup (36) */
+extern tFsmEventEntry MenuManager_SoapSetup_StateMachine[9];
+/** State stopFillWhenSoap (37) */
+extern tFsmEventEntry MenuManager_StopFillWhenSoap_StateMachine[7];
+/** State timeSoap1 (38) */
+extern tFsmEventEntry MenuManager_TimeSoap1_StateMachine[9];
+/** State timeSoap2 (39) */
+extern tFsmEventEntry MenuManager_TimeSoap2_StateMachine[9];
+/** State timeSoap3 (40) */
+extern tFsmEventEntry MenuManager_TimeSoap3_StateMachine[9];
 
 
 
@@ -109,7 +119,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[36] =
+tFsmStateDefinition MenuManager_StateMachine[41] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -146,7 +156,12 @@ tFsmStateDefinition MenuManager_StateMachine[36] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxWaterTemp_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempThreshold_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempDiffReheat_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeHeat_StateMachine)                        }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeHeat_StateMachine)                        },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SoapSetup_StateMachine)                          },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StopFillWhenSoap_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap1_StateMachine)                          },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap2_StateMachine)                          },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap3_StateMachine)                          }
 };
 
 void (*MenuManager_SubMainFunction)(void);
