@@ -103,7 +103,7 @@ static tFsmGuard MenuManager_WashSetup_UpBut                          (tFsmConte
 static tFsmGuard MenuManager_WashSetup_DownBut                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_WashSetup_StateMachine[9] =
+tFsmEventEntry MenuManager_WashSetup_StateMachine[16] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_WashSetup_Entry                                                     ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_MIN_PAUSE_FWD_REV     ),

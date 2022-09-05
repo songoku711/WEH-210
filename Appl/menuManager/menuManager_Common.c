@@ -51,6 +51,8 @@ const uint8_t MenuManager_Common_FahrenheitDegStr[] =                 "*F";
 
 const uint8_t MenuManager_Common_SecondStr[] =                        "SECONDS";
 
+const uint8_t MenuManager_Common_LevelStr[] =                         "LEVEL:";
+
 
 
 /*===============================================================================================
@@ -240,27 +242,27 @@ void MenuManager_Common_LcdUpdateElementMenuDynamic(void)
 /*=============================================================================================*/
 void MenuManager_Common_LcdClearAdjustMenuStatic(void)
 {
-  LCD_ClearPage(0, 4);
+  LCD_ClearPage(0, 2);
   LCD_ClearPage(7, 1);
 }
 
 /*=============================================================================================*/
 void MenuManager_Common_LcdClearAdjustMenuDynamic(void)
 {
-  LCD_ClearPage(4, 3);
+  LCD_ClearPage(2, 5);
 }
 
 /*=============================================================================================*/
 void MenuManager_Common_LcdUpdateAdjustMenuStatic(void)
 {
-  LCD_FillPage(0, 4, LCD_FILL_IMMEDIATE);
+  LCD_FillPage(0, 2, LCD_FILL_IMMEDIATE);
   LCD_FillPage(7, 1, LCD_FILL_IMMEDIATE);
 }
 
 /*=============================================================================================*/
 void MenuManager_Common_LcdUpdateAdjustMenuDynamic(void)
 {
-  LCD_FillPage(4, 3, LCD_FILL_POLLING);
+  LCD_FillPage(2, 5, LCD_FILL_POLLING);
 }
 
 /*=============================================================================================*/

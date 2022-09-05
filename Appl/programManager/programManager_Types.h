@@ -218,6 +218,9 @@ typedef struct _ProgramManager_WashSetupStruct
   ProgramManager_MotorSpeedType               maxWashSpeed;                 /* Max speed of wash. Wash at max speed when the set value is larger than max speed */
 } ProgramManager_WashSetupStruct;
 
+#define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MIN                      (0U)
+#define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MAX                      (256U)
+
 /* Program manager extract setup structure */
 typedef struct _ProgramManager_ExtractSetupStruct
 {
@@ -245,6 +248,15 @@ typedef struct _ProgramManager_ExtractSetupStruct
   ProgramManager_MotorSpeedType               maxMidExtractSpeed;           /* Max speed of mid extract */
   ProgramManager_MotorSpeedType               maxHighExtractSpeed;          /* Max speed of high extract */
 } ProgramManager_ExtractSetupStruct;
+
+#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_LEVEL_MIN                  (0U)
+#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_LEVEL_MAX                  (100U)
+
+#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_TIME_MIN                   (0U)
+#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_TIME_MAX                   (256U)
+
+#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_MIN           (10U)
+#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_MAX           (255U)
 
 /* Program manager door lock setup structure */
 typedef struct _ProgramManager_DoorLockSetupStruct

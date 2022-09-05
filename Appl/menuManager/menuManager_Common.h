@@ -56,6 +56,8 @@ extern const uint8_t MenuManager_Common_FahrenheitDegStr[];
 
 extern const uint8_t MenuManager_Common_SecondStr[];
 
+extern const uint8_t MenuManager_Common_LevelStr[];
+
 
 
 /*===============================================================================================

@@ -421,6 +421,14 @@ static void MenuManager_MinWaterTemp_SubMainFunction(void)
 
       ProgramManager_HeatTempSetup_MinWaterTemp_GetData(&(ProgramManager_gParamConfig.heatTempCfg.minWaterTemp), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
 
+      /* Check if temp threshold is lower than current minimum water temp, then correct it */
+      if (ProgramManager_gParamConfig.heatTempCfg.tempThreshold < ProgramManager_gParamConfig.heatTempCfg.minWaterTemp)
+      {
+        ProgramManager_HeatTempSetup_TempThreshold_SetData(&tempMinWaterTemp, ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
+
+        ProgramManager_HeatTempSetup_TempThreshold_GetData(&(ProgramManager_gParamConfig.heatTempCfg.tempThreshold), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
+      }
+
       MenuManager_MinWaterTemp_InternalState = MENUMANAGER_MINWATERTEMP_INTERNALSTATE_DONE;
       
       break;

@@ -393,7 +393,7 @@ static void MenuManager_TimeSoap2_SubMainFunction(void)
 
       MenuManager_Common_BcdToDecConv(&(MenuManager_TimeSoap2_Value), &(MenuManager_TimeSoap2_UnitVal(0)), (uint8_t)MENUMANAGER_TIMESOAP2_UNITVAL_LENGTH);
 
-      tempTimeSoap2 = (uint8_t)MenuManager_TimeSoap2_Value;
+      tempTimeSoap2 = (uint16_t)MenuManager_TimeSoap2_Value;
 
       ProgramManager_SoapSetup_TimeSoap2_SetData(&tempTimeSoap2);
 

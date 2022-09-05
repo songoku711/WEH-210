@@ -62,7 +62,7 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_HighLevel_MainTitleStr[] =           "ZERO LEVEL";
+static const uint8_t MenuManager_HighLevel_MainTitleStr[] =           "HIGH LEVEL";
 
 
 

@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -592,6 +592,111 @@
               <FileName>_1254000000_menu_TimeSoap3.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1254000000_menu_TimeSoap3.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1260000000_menu_WashSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1260000000_menu_WashSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1261000000_menu_MinPauseFwdRev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1261000000_menu_MinPauseFwdRev.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1262000000_menu_StdWashRunTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1262000000_menu_StdWashRunTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1263000000_menu_StdWashStopTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1263000000_menu_StdWashStopTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1264000000_menu_DelWashRunTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1264000000_menu_DelWashRunTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1265000000_menu_DelWashStopTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1265000000_menu_DelWashStopTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1266000000_menu_HvyWashRunTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1266000000_menu_HvyWashRunTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1267000000_menu_HvyWashStopTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1267000000_menu_HvyWashStopTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1268000000_menu_StdWashSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1268000000_menu_StdWashSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1269000000_menu_DelWashSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1269000000_menu_DelWashSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_126A000000_menu_HvyWashSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_126A000000_menu_HvyWashSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_126B000000_menu_MaxWashSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_126B000000_menu_MaxWashSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1270000000_menu_ExtractSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1270000000_menu_ExtractSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1271000000_menu_BalanceLevel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1271000000_menu_BalanceLevel.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1272000000_menu_BalanceDrainLevel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1272000000_menu_BalanceDrainLevel.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1273000000_menu_BalanceWithWaterTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1273000000_menu_BalanceWithWaterTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1274000000_menu_BalanceDrainWaterTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1274000000_menu_BalanceDrainWaterTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1275000000_menu_BalanceDelayTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1275000000_menu_BalanceDelayTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1276000000_menu_FwdRunTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1276000000_menu_FwdRunTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1277000000_menu_MidExtractTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1277000000_menu_MidExtractTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1278000000_menu_MidExtractDelayTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1278000000_menu_MidExtractDelayTime.c</FilePath>
             </File>
             <File>
               <FileName>menuManager_Common.c</FileName>

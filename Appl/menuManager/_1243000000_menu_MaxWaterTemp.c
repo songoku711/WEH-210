@@ -421,6 +421,14 @@ static void MenuManager_MaxWaterTemp_SubMainFunction(void)
 
       ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(&(ProgramManager_gParamConfig.heatTempCfg.maxWaterTemp), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
 
+      /* Check if temp threshold is greater than current maximum water temp, then correct it */
+      if (ProgramManager_gParamConfig.heatTempCfg.tempThreshold > ProgramManager_gParamConfig.heatTempCfg.maxWaterTemp)
+      {
+        ProgramManager_HeatTempSetup_TempThreshold_SetData(&tempMaxWaterTemp, ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
+
+        ProgramManager_HeatTempSetup_TempThreshold_GetData(&(ProgramManager_gParamConfig.heatTempCfg.tempThreshold), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
+      }
+
       MenuManager_MaxWaterTemp_InternalState = MENUMANAGER_MAXWATERTEMP_INTERNALSTATE_DONE;
       
       break;
