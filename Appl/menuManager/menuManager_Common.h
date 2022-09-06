@@ -55,8 +55,10 @@ extern const uint8_t MenuManager_Common_CelsiusDegStr[];
 extern const uint8_t MenuManager_Common_FahrenheitDegStr[];
 
 extern const uint8_t MenuManager_Common_SecondStr[];
+extern const uint8_t MenuManager_Common_MinuteStr[];
 
 extern const uint8_t MenuManager_Common_LevelStr[];
+extern const uint8_t MenuManager_Common_TimeStr[];
 
 
 

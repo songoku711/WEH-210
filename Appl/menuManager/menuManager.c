@@ -151,6 +151,32 @@ extern tFsmEventEntry MenuManager_FwdRunTime_StateMachine[9];
 extern tFsmEventEntry MenuManager_MidExtractTime_StateMachine[9];
 /** State midExtractDelayTime (61) */
 extern tFsmEventEntry MenuManager_MidExtractDelayTime_StateMachine[9];
+/** State highExtractTime1 (62) */
+extern tFsmEventEntry MenuManager_HighExtractTime1_StateMachine[9];
+/** State highExtractTime2 (63) */
+extern tFsmEventEntry MenuManager_HighExtractTime2_StateMachine[9];
+/** State highExtractTime3 (64) */
+extern tFsmEventEntry MenuManager_HighExtractTime3_StateMachine[9];
+/** State highExtractDelayTime (65) */
+extern tFsmEventEntry MenuManager_HighExtractDelayTime_StateMachine[9];
+/** State maxExtractTime (66) */
+extern tFsmEventEntry MenuManager_MaxExtractTime_StateMachine[9];
+/** State reextractTime (67) */
+extern tFsmEventEntry MenuManager_ReextractTime_StateMachine[7];
+/** State reextractWashTime (68) */
+extern tFsmEventEntry MenuManager_ReextractWashTime_StateMachine[9];
+/** State balanceSpeed (69) */
+extern tFsmEventEntry MenuManager_BalanceSpeed_StateMachine[7];
+/** State fwdRunSpeed (70) */
+extern tFsmEventEntry MenuManager_FwdRunSpeed_StateMachine[7];
+/** State midExtractSpeed (71) */
+extern tFsmEventEntry MenuManager_MidExtractSpeed_StateMachine[7];
+/** State highExtractSpeed1 (72) */
+extern tFsmEventEntry MenuManager_HighExtractSpeed1_StateMachine[7];
+/** State highExtractSpeed2 (73) */
+extern tFsmEventEntry MenuManager_HighExtractSpeed2_StateMachine[7];
+/** State highExtractSpeed3 (74) */
+extern tFsmEventEntry MenuManager_HighExtractSpeed3_StateMachine[7];
 
 
 
@@ -161,7 +187,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 tFsmContext MenuManager_FsmContext;
 
 /** List of all states */
-tFsmStateDefinition MenuManager_StateMachine[62] =
+tFsmStateDefinition MenuManager_StateMachine[75] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -224,7 +250,20 @@ tFsmStateDefinition MenuManager_StateMachine[62] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceDelayTime_StateMachine)                   },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FwdRunTime_StateMachine)                         },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractDelayTime_StateMachine)                }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractDelayTime_StateMachine)                },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime1_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime2_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime3_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractDelayTime_StateMachine)               },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxExtractTime_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReextractTime_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReextractWashTime_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceSpeed_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FwdRunSpeed_StateMachine)                        },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractSpeed_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed1_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed2_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed3_StateMachine)                  }
 };
 
 void (*MenuManager_SubMainFunction)(void);

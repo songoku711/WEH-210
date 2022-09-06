@@ -67,8 +67,6 @@ extern "C" {
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_MaxTimeFill_MainTitleStr[] =         "MAX TIME FILL";
 
-static const uint8_t MenuManager_MaxTimeFill_MinutesStr[] =           "MINUTES";
-
 
 
 /** Menu manager button event mapping array */
@@ -165,7 +163,7 @@ static void MenuManager_MaxTimeFill_LcdShowAdjust(void)
   );
 
   LCD_SetCursorPos(MENUMANAGER_MAXTIMEFILL_UNIT_XPOS, MENUMANAGER_MAXTIMEFILL_UNIT_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString((uint8_t *)MenuManager_MaxTimeFill_MinutesStr);
+  LCD_PutString((uint8_t *)MenuManager_Common_MinuteStr);
 
   MenuManager_Common_LcdUpdateAdjustMenuDynamic();
 }
@@ -184,7 +182,7 @@ static void MenuManager_MaxTimeFill_LcdShowDone(void)
   );
 
   LCD_SetCursorPos(MENUMANAGER_MAXTIMEFILL_UNIT_XPOS, MENUMANAGER_MAXTIMEFILL_UNIT_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString((uint8_t *)MenuManager_MaxTimeFill_MinutesStr);
+  LCD_PutString((uint8_t *)MenuManager_Common_MinuteStr);
 
   MenuManager_Common_LcdUpdateAll();
 }

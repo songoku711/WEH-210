@@ -67,8 +67,6 @@ extern "C" {
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_MaxTimeHeat_MainTitleStr[] =         "MAX TIME HEAT";
 
-static const uint8_t MenuManager_MaxTimeHeat_MinutesStr[] =           "MINUTES";
-
 
 
 /** Menu manager button event mapping array */
@@ -165,7 +163,7 @@ static void MenuManager_MaxTimeHeat_LcdShowAdjust(void)
   );
 
   LCD_SetCursorPos(MENUMANAGER_MAXTIMEHEAT_UNIT_XPOS, MENUMANAGER_MAXTIMEHEAT_UNIT_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString((uint8_t *)MenuManager_MaxTimeHeat_MinutesStr);
+  LCD_PutString((uint8_t *)MenuManager_Common_MinuteStr);
 
   MenuManager_Common_LcdUpdateAdjustMenuDynamic();
 }
@@ -184,7 +182,7 @@ static void MenuManager_MaxTimeHeat_LcdShowDone(void)
   );
 
   LCD_SetCursorPos(MENUMANAGER_MAXTIMEHEAT_UNIT_XPOS, MENUMANAGER_MAXTIMEHEAT_UNIT_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString((uint8_t *)MenuManager_MaxTimeHeat_MinutesStr);
+  LCD_PutString((uint8_t *)MenuManager_Common_MinuteStr);
 
   MenuManager_Common_LcdUpdateAll();
 }

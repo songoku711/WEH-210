@@ -699,6 +699,71 @@
               <FilePath>..\Appl\menuManager\_1278000000_menu_MidExtractDelayTime.c</FilePath>
             </File>
             <File>
+              <FileName>_1279000000_menu_HighExtractTime1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1279000000_menu_HighExtractTime1.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127A000000_menu_HighExtractTime2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127A000000_menu_HighExtractTime2.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127B000000_menu_HighExtractTime3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127B000000_menu_HighExtractTime3.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127C000000_menu_HighExtractDelayTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127C000000_menu_HighExtractDelayTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127D000000_menu_MaxExtractTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127D000000_menu_MaxExtractTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127E000000_menu_ReextractTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127E000000_menu_ReextractTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127F000000_menu_ReextractWashTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127F000000_menu_ReextractWashTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127G000000_menu_BalanceSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127G000000_menu_BalanceSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127H000000_menu_FwdRunSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127H000000_menu_FwdRunSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127I000000_menu_MidExtractSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127I000000_menu_MidExtractSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127J000000_menu_HighExtractSpeed1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127J000000_menu_HighExtractSpeed1.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127K000000_menu_HighExtractSpeed2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127K000000_menu_HighExtractSpeed2.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127L000000_menu_HighExtractSpeed3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127L000000_menu_HighExtractSpeed3.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

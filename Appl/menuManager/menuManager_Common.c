@@ -50,8 +50,10 @@ const uint8_t MenuManager_Common_CelsiusDegStr[] =                    "*C";
 const uint8_t MenuManager_Common_FahrenheitDegStr[] =                 "*F";
 
 const uint8_t MenuManager_Common_SecondStr[] =                        "SECONDS";
+const uint8_t MenuManager_Common_MinuteStr[] =                        "MINUTES";
 
 const uint8_t MenuManager_Common_LevelStr[] =                         "LEVEL:";
+const uint8_t MenuManager_Common_TimeStr[] =                          "TIME:";
 
 
 
