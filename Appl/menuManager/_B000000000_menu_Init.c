@@ -45,11 +45,11 @@ static const uint8_t MenuManager_Init_InitializeStr[] =               "INITIALIZ
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_Init_Entry                               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Init_Exit                                (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_Init_Entry                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Init_Exit                                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_Init_StateMachine[3] =
+Fsm_EventEntryStruct MenuManager_Init_StateMachine[3] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_Init_Entry                                                          ),
   FSM_TRIGGER_EXIT            (                                       MenuManager_Init_Exit                                                           ),
@@ -71,7 +71,7 @@ static void MenuManager_Init_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard MenuManager_Init_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Init_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   /* Allocate and initialize internal data value */
   MenuManager_InternalDataPush(MENUMANAGER_INIT_INTERNALDATALENGTH);
@@ -89,11 +89,11 @@ static tFsmGuard MenuManager_Init_Entry(tFsmContextPtr const pFsmContext, tFsmEv
   
   MenuManager_Common_LcdUpdateAll();
   
-	return kFsmGuard_True;
+	return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Init_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Init_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
@@ -101,7 +101,7 @@ static tFsmGuard MenuManager_Init_Exit(tFsmContextPtr const pFsmContext, tFsmEve
   /* Free internal data */
   MenuManager_InternalDataPop();
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -121,7 +121,7 @@ static void MenuManager_Init_SubTickHandler(void)
   {
     MenuManager_Init_Countdown = (uint32_t)0U;
 
-    Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_NEXT);
+    Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_NEXT);
   }
 }
 

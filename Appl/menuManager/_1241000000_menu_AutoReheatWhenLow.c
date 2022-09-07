@@ -107,16 +107,16 @@ static MenuManager_ButEventMapConfStruct MenuManager_AutoReheatWhenLow_ButEventM
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_AutoReheatWhenLow_Entry                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_Exit                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_Submenu1               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_StartBut               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_StopBut                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_UpBut                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_AutoReheatWhenLow_DownBut                (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Entry                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Exit                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Submenu1               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_StartBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_StopBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_UpBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_AutoReheatWhenLow_StateMachine[7] =
+Fsm_EventEntryStruct MenuManager_AutoReheatWhenLow_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_AutoReheatWhenLow_Entry                                             ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_AutoReheatWhenLow_Exit                                              ),
@@ -207,7 +207,7 @@ static void MenuManager_AutoReheatWhenLow_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_AutoReheatWhenLow_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_AutoReheatWhenLow_SubTickHandler;
@@ -240,27 +240,27 @@ static tFsmGuard MenuManager_AutoReheatWhenLow_Entry(tFsmContextPtr const pFsmCo
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_AutoReheatWhenLow_LcdShowMainTitle();
     MenuManager_AutoReheatWhenLow_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_AUTO_REHEAT_WHEN_LOW;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -268,41 +268,41 @@ static tFsmGuard MenuManager_AutoReheatWhenLow_Exit(tFsmContextPtr const pFsmCon
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_AutoReheatWhenLow_InternalState == MENUMANAGER_AUTOREHEATWHENLOW_INTERNALSTATE_READY)
   {
     MenuManager_AutoReheatWhenLow_InternalState = MENUMANAGER_AUTOREHEATWHENLOW_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_AutoReheatWhenLow_InternalState != MENUMANAGER_AUTOREHEATWHENLOW_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_AutoReheatWhenLow_ListIndex > (uint32_t)0U)
   {
@@ -316,11 +316,11 @@ static tFsmGuard MenuManager_AutoReheatWhenLow_UpBut(tFsmContextPtr const pFsmCo
 
   MenuManager_AutoReheatWhenLow_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_AutoReheatWhenLow_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_AutoReheatWhenLow_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_AutoReheatWhenLow_ListIndex < ((uint32_t)(MenuManager_AutoReheatWhenLow_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -334,7 +334,7 @@ static tFsmGuard MenuManager_AutoReheatWhenLow_DownBut(tFsmContextPtr const pFsm
   
   MenuManager_AutoReheatWhenLow_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -383,7 +383,7 @@ static void MenuManager_AutoReheatWhenLow_SubTickHandler(void)
     {
       MenuManager_AutoReheatWhenLow_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

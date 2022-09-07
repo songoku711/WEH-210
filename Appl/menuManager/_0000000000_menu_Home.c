@@ -53,17 +53,17 @@ static MenuManager_ButEventMapConfStruct MenuManager_Home_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_Home_Entry                               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_StartBut                            (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_StopBut                             (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_LongStartBut                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_LongStopBut                         (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_UpBut                               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_DownBut                             (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_Home_UpDownBut                           (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_Home_Entry                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_StartBut                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_StopBut                             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_LongStartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_LongStopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_UpBut                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_DownBut                             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_UpDownBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_Home_StateMachine[10] =
+Fsm_EventEntryStruct MenuManager_Home_StateMachine[10] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_Home_Entry                                                          ),
   FSM_TRIGGER_EXIT            (                                       MenuManager_Common_Exit                                                         ),
@@ -92,7 +92,7 @@ static void MenuManager_Home_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard MenuManager_Home_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_Home_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_Home_SubTickHandler;
@@ -103,11 +103,11 @@ static tFsmGuard MenuManager_Home_Entry(tFsmContextPtr const pFsmContext, tFsmEv
   
   MenuManager_Common_LcdUpdateAll();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "START      ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -115,11 +115,11 @@ static tFsmGuard MenuManager_Home_StartBut(tFsmContextPtr const pFsmContext, tFs
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "STOP       ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -127,11 +127,11 @@ static tFsmGuard MenuManager_Home_StopBut(tFsmContextPtr const pFsmContext, tFsm
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_LongStartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_LongStartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "START LONG ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -139,11 +139,11 @@ static tFsmGuard MenuManager_Home_LongStartBut(tFsmContextPtr const pFsmContext,
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_LongStopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "STOP LONG  ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -151,11 +151,11 @@ static tFsmGuard MenuManager_Home_LongStopBut(tFsmContextPtr const pFsmContext, 
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "UP         ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -163,11 +163,11 @@ static tFsmGuard MenuManager_Home_UpBut(tFsmContextPtr const pFsmContext, tFsmEv
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint8_t str[] = "DOWN       ";
   LCD_SetCursorPos(24, 24, LCD_CURSOR_IN_PIXEL);
@@ -175,15 +175,15 @@ static tFsmGuard MenuManager_Home_DownBut(tFsmContextPtr const pFsmContext, tFsm
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_Home_UpDownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_Home_UpDownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+  Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

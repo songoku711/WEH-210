@@ -110,16 +110,16 @@ static MenuManager_ButEventMapConfStruct MenuManager_TempUnit_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_TempUnit_Entry                           (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_Exit                            (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_Submenu1                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_StartBut                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_StopBut                         (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_UpBut                           (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TempUnit_DownBut                         (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_TempUnit_Entry                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_Exit                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_Submenu1                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_StartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_StopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_UpBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempUnit_DownBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_TempUnit_StateMachine[7] =
+Fsm_EventEntryStruct MenuManager_TempUnit_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_TempUnit_Entry                                                      ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_TempUnit_Exit                                                       ),
@@ -210,7 +210,7 @@ static void MenuManager_TempUnit_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_TempUnit_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_TempUnit_SubTickHandler;
@@ -243,27 +243,27 @@ static tFsmGuard MenuManager_TempUnit_Entry(tFsmContextPtr const pFsmContext, tF
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_TempUnit_LcdShowMainTitle();
     MenuManager_TempUnit_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_TEMP_UNIT;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -271,41 +271,41 @@ static tFsmGuard MenuManager_TempUnit_Exit(tFsmContextPtr const pFsmContext, tFs
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TempUnit_InternalState == MENUMANAGER_TEMPUNIT_INTERNALSTATE_READY)
   {
     MenuManager_TempUnit_InternalState = MENUMANAGER_TEMPUNIT_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TempUnit_InternalState != MENUMANAGER_TEMPUNIT_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TempUnit_ListIndex > (uint32_t)0U)
   {
@@ -319,11 +319,11 @@ static tFsmGuard MenuManager_TempUnit_UpBut(tFsmContextPtr const pFsmContext, tF
 
   MenuManager_TempUnit_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TempUnit_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TempUnit_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TempUnit_ListIndex < ((uint32_t)(MenuManager_TempUnit_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -337,7 +337,7 @@ static tFsmGuard MenuManager_TempUnit_DownBut(tFsmContextPtr const pFsmContext, 
   
   MenuManager_TempUnit_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -389,7 +389,7 @@ static void MenuManager_TempUnit_SubTickHandler(void)
     {
       MenuManager_TempUnit_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

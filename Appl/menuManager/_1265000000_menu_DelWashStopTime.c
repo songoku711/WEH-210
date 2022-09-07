@@ -90,18 +90,18 @@ static MenuManager_ButEventMapConfStruct MenuManager_DelWashStopTime_ButEventMap
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_DelWashStopTime_Entry                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_Exit                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_Submenu1                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_StartBut                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_StopBut                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_UpBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_DownBut                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_AddBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_DelWashStopTime_SubBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_DelWashStopTime_Entry                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_Exit                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_Submenu1                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_StartBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_StopBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_UpBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_DownBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_AddBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DelWashStopTime_SubBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_DelWashStopTime_StateMachine[9] =
+Fsm_EventEntryStruct MenuManager_DelWashStopTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_DelWashStopTime_Entry                                               ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_DelWashStopTime_Exit                                                ),
@@ -190,7 +190,7 @@ static void MenuManager_DelWashStopTime_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_DelWashStopTime_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_DelWashStopTime_SubTickHandler;
@@ -223,27 +223,27 @@ static tFsmGuard MenuManager_DelWashStopTime_Entry(tFsmContextPtr const pFsmCont
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_DelWashStopTime_LcdShowMainTitle();
     MenuManager_DelWashStopTime_LcdShowAdjust();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_DEL_WASH_STOP_TIME;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -251,41 +251,41 @@ static tFsmGuard MenuManager_DelWashStopTime_Exit(tFsmContextPtr const pFsmConte
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_DelWashStopTime_InternalState == MENUMANAGER_DELWASHSTOPTIME_INTERNALSTATE_READY)
   {
     MenuManager_DelWashStopTime_InternalState = MENUMANAGER_DELWASHSTOPTIME_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_DelWashStopTime_InternalState != MENUMANAGER_DELWASHSTOPTIME_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -311,11 +311,11 @@ static tFsmGuard MenuManager_DelWashStopTime_UpBut(tFsmContextPtr const pFsmCont
     MenuManager_DelWashStopTime_LcdShowAdjust();
   }
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -341,11 +341,11 @@ static tFsmGuard MenuManager_DelWashStopTime_DownBut(tFsmContextPtr const pFsmCo
     MenuManager_DelWashStopTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_AddBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_DelWashStopTime_InternalState == MENUMANAGER_DELWASHSTOPTIME_INTERNALSTATE_READY)
   {
@@ -357,11 +357,11 @@ static tFsmGuard MenuManager_DelWashStopTime_AddBut(tFsmContextPtr const pFsmCon
     MenuManager_DelWashStopTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_DelWashStopTime_SubBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_DelWashStopTime_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_DelWashStopTime_InternalState == MENUMANAGER_DELWASHSTOPTIME_INTERNALSTATE_READY)
   {
@@ -373,7 +373,7 @@ static tFsmGuard MenuManager_DelWashStopTime_SubBut(tFsmContextPtr const pFsmCon
     MenuManager_DelWashStopTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -428,7 +428,7 @@ static void MenuManager_DelWashStopTime_SubTickHandler(void)
     {
       MenuManager_DelWashStopTime_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

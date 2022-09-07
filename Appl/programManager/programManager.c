@@ -41,7 +41,7 @@ extern "C" {
 ===============================================================================================*/
 
 /** Context Structure of the Finite State Machine (FSM) */
-tFsmContext ProgramManager_FsmContext;
+Fsm_ContextStruct ProgramManager_FsmContext;
 
 void (*ProgramManager_SubMainFunction)(void);
 void (*ProgramManager_SubTickHandler)(void);
@@ -50,18 +50,18 @@ void (*ProgramManager_SubTickHandler)(void);
 
 /** Application state machine */
 /** State powerOn (0) */
-extern tFsmEventEntry ProgramManager_ApplState_PowerOn[2];
+extern Fsm_EventEntryStruct ProgramManager_ApplState_PowerOn[2];
 /** State init (1) */
-extern tFsmEventEntry ProgramManager_ApplState_Init[2];
+extern Fsm_EventEntryStruct ProgramManager_ApplState_Init[2];
 /** State idle (2) */
-extern tFsmEventEntry ProgramManager_ApplState_Idle[4];
+extern Fsm_EventEntryStruct ProgramManager_ApplState_Idle[4];
 /** State auto (3) */
-extern tFsmEventEntry ProgramManager_ApplState_Auto[3];
+extern Fsm_EventEntryStruct ProgramManager_ApplState_Auto[3];
 /** State manual (4) */
-extern tFsmEventEntry ProgramManager_ApplState_Manual[3];
+extern Fsm_EventEntryStruct ProgramManager_ApplState_Manual[3];
 
 /** List of all states */
-tFsmStateDefinition ProgramManager_ApplFsmStates[5] =
+Fsm_StateDefStruct ProgramManager_ApplFsmStates[5] =
 {
   { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(ProgramManager_ApplState_PowerOn) },
   { FSM_DEFAULT_STATE, FSM_SIZE_AND_ARRAY(ProgramManager_ApplState_Init) },
@@ -93,14 +93,14 @@ void ProgramManager_Init(void)
 	ProgramManager_FsmContext.stateCount = FSM_ARRAY_SIZE(ProgramManager_ApplFsmStates);
   
   /* Execute POWER ON state */
-	Fsm_Init(&ProgramManager_FsmContext, (tFsmState)PROGRAMMANAGER_APPL_STATE_POWER_ON);
+	Fsm_Init(&ProgramManager_FsmContext, (Fsm_StateType)PROGRAMMANAGER_APPL_STATE_POWER_ON);
 
   /* Execute INIT state */
-  Fsm_TriggerEvent(&ProgramManager_FsmContext, (tFsmEvent)PROGRAMMANAGER_APPL_EVENT_NEXT);
+  Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_APPL_EVENT_NEXT);
   Fsm_StateTask(&ProgramManager_FsmContext);
 
   /* Trigger transition to IDLE state */
-  Fsm_TriggerEvent(&ProgramManager_FsmContext, (tFsmEvent)PROGRAMMANAGER_APPL_EVENT_NEXT);
+  Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_APPL_EVENT_NEXT);
 }
 
 void ProgramManager_MainFunction(void)

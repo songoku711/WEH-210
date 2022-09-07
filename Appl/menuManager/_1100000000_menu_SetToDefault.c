@@ -78,14 +78,14 @@ static MenuManager_ButEventMapConfStruct MenuManager_SetToDefault_ButEventMapCon
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_SetToDefault_Entry                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetToDefault_StartBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetToDefault_StopBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetToDefault_UpBut                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetToDefault_DownBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_SetToDefault_Entry                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_StartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_StopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_UpBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_DownBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_SetToDefault_StateMachine[7] =
+Fsm_EventEntryStruct MenuManager_SetToDefault_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_SetToDefault_Entry                                                  ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_SET_DEFAULT_PARAM     ),
@@ -157,7 +157,7 @@ static void MenuManager_SetToDefault_LcdShowList(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetToDefault_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetToDefault_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_SetToDefault_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_SetToDefault_SubTickHandler;
@@ -185,43 +185,43 @@ static tFsmGuard MenuManager_SetToDefault_Entry(tFsmContextPtr const pFsmContext
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_SetToDefault_LcdShowMainTitle();
     MenuManager_SetToDefault_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetToDefault_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetToDefault_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;
 
   pFsmContext->dataHierachy = dataHierachy;
 
   Fsm_TriggerEvent( &MenuManager_FsmContext, \
-                    (tFsmEvent)((*(MenuManager_SetToDefault_ChildMenuConf.childMenuCfg))[MenuManager_SetToDefault_ListIndex].childMenuEvent));
+                    (Fsm_EventType)((*(MenuManager_SetToDefault_ChildMenuConf.childMenuCfg))[MenuManager_SetToDefault_ListIndex].childMenuEvent));
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetToDefault_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetToDefault_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -229,11 +229,11 @@ static tFsmGuard MenuManager_SetToDefault_StopBut(tFsmContextPtr const pFsmConte
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetToDefault_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetToDefault_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_SetToDefault_ListIndex > (uint32_t)0U)
   {
@@ -247,11 +247,11 @@ static tFsmGuard MenuManager_SetToDefault_UpBut(tFsmContextPtr const pFsmContext
 
   MenuManager_SetToDefault_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetToDefault_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetToDefault_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_SetToDefault_ListIndex < ((uint32_t)(MenuManager_SetToDefault_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -265,7 +265,7 @@ static tFsmGuard MenuManager_SetToDefault_DownBut(tFsmContextPtr const pFsmConte
   
   MenuManager_SetToDefault_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

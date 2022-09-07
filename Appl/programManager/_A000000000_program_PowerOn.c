@@ -36,10 +36,10 @@ typedef struct
 
 
 /** Application event handlers */
-static tFsmGuard ProgramManager_Appl_PowerOn_Entry            (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType ProgramManager_Appl_PowerOn_Entry            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Application state machine */
-tFsmEventEntry ProgramManager_ApplState_PowerOn[2] =
+Fsm_EventEntryStruct ProgramManager_ApplState_PowerOn[2] =
 {
   FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_PowerOn_Entry                                         ),
   FSM_TRIGGER_TRANSITION    (PROGRAMMANAGER_APPL_EVENT_NEXT,                                                    PROGRAMMANAGER_APPL_STATE_INIT)
@@ -58,7 +58,7 @@ tFsmEventEntry ProgramManager_ApplState_PowerOn[2] =
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard ProgramManager_Appl_PowerOn_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_PowerOn_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t magicNum;
   ProgramManager_Appl_PowerOn_DataHierachy* dataHierachy;
@@ -79,9 +79,9 @@ static tFsmGuard ProgramManager_Appl_PowerOn_Entry(tFsmContextPtr const pFsmCont
     dataHierachy->isMemReady = false;
   }
 
-  pFsmContext->dataHierachy = (tFsmDataHierachy *)dataHierachy;
+  pFsmContext->dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

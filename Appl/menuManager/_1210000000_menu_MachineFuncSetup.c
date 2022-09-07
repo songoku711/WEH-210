@@ -86,14 +86,14 @@ static MenuManager_ButEventMapConfStruct MenuManager_MachineFuncSetup_ButEventMa
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_MachineFuncSetup_Entry                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_MachineFuncSetup_StartBut                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_MachineFuncSetup_StopBut                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_MachineFuncSetup_UpBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_MachineFuncSetup_DownBut                 (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_MachineFuncSetup_Entry                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MachineFuncSetup_StartBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MachineFuncSetup_StopBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MachineFuncSetup_UpBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MachineFuncSetup_DownBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_MachineFuncSetup_StateMachine[11] =
+Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[11] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_MachineFuncSetup_Entry                                              ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_DRAIN_WHILE_DOOR_OPEN ),
@@ -169,7 +169,7 @@ static void MenuManager_MachineFuncSetup_LcdShowList(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_MachineFuncSetup_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_MachineFuncSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_MachineFuncSetup_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_MachineFuncSetup_SubTickHandler;
@@ -201,43 +201,43 @@ static tFsmGuard MenuManager_MachineFuncSetup_Entry(tFsmContextPtr const pFsmCon
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_MachineFuncSetup_LcdShowMainTitle();
     MenuManager_MachineFuncSetup_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_MachineFuncSetup_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_MachineFuncSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MACHINE_FUNC_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
 
   Fsm_TriggerEvent( &MenuManager_FsmContext, \
-                    (tFsmEvent)((*(MenuManager_MachineFuncSetup_ChildMenuConf.childMenuCfg))[MenuManager_MachineFuncSetup_ListIndex].childMenuEvent));
+                    (Fsm_EventType)((*(MenuManager_MachineFuncSetup_ChildMenuConf.childMenuCfg))[MenuManager_MachineFuncSetup_ListIndex].childMenuEvent));
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_MachineFuncSetup_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_MachineFuncSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MACHINE_FUNC_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -245,11 +245,11 @@ static tFsmGuard MenuManager_MachineFuncSetup_StopBut(tFsmContextPtr const pFsmC
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_MachineFuncSetup_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_MachineFuncSetup_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_MachineFuncSetup_ListIndex > (uint32_t)0U)
   {
@@ -263,11 +263,11 @@ static tFsmGuard MenuManager_MachineFuncSetup_UpBut(tFsmContextPtr const pFsmCon
 
   MenuManager_MachineFuncSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_MachineFuncSetup_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_MachineFuncSetup_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_MachineFuncSetup_ListIndex < ((uint32_t)(MenuManager_MachineFuncSetup_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -281,7 +281,7 @@ static tFsmGuard MenuManager_MachineFuncSetup_DownBut(tFsmContextPtr const pFsmC
   
   MenuManager_MachineFuncSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

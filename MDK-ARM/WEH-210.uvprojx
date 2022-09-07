@@ -764,6 +764,46 @@
               <FilePath>..\Appl\menuManager\_127L000000_menu_HighExtractSpeed3.c</FilePath>
             </File>
             <File>
+              <FileName>_127M000000_menu_MaxMidExtractSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127M000000_menu_MaxMidExtractSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_127N000000_menu_MaxHighExtractSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_127N000000_menu_MaxHighExtractSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1280000000_menu_DoorLockSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1280000000_menu_DoorLockSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1281000000_menu_UseLockStopButton.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1281000000_menu_UseLockStopButton.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1282000000_menu_DoorLockValveStatus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1282000000_menu_DoorLockValveStatus.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1283000000_menu_UnlockDoorTemp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1283000000_menu_UnlockDoorTemp.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1284000000_menu_UnlockDoorLevel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1284000000_menu_UnlockDoorLevel.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1300000000_menu_ProgramSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1300000000_menu_ProgramSetup.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

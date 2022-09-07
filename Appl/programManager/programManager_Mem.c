@@ -1739,17 +1739,39 @@ HAL_StatusTypeDef ProgramManager_DoorLockSetup_DoorLockValveStatus_SetData(Progr
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET);
-  
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET);
+  }
+  else
+  {
+    *data = extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1);
+  }
+
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET, *data);
-  
+  uint8_t temp;
+
+  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+  {
+    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET, *data);
+    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1, temp);
+  }
+  else
+  {
+    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
+
+    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET, temp);
+    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1, *data);
+  }
+
   return HAL_OK;
 }
 

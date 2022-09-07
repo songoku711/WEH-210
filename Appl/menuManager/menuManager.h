@@ -47,7 +47,7 @@ extern "C" {
 extern MenuManager_InternalDataStruct MenuManager_InternalData;
 
 /** Context Structure of the Finite State Machine (FSM) */
-extern tFsmContext MenuManager_FsmContext;
+extern Fsm_ContextStruct MenuManager_FsmContext;
 
 extern void (*MenuManager_SubMainFunction)(void);
 extern void (*MenuManager_SubTickHandler)(void);

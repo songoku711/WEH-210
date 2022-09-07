@@ -27,12 +27,12 @@ extern "C" {
 ===============================================================================================*/
 
 /** Application event handlers */
-static tFsmGuard ProgramManager_Appl_Auto_Entry               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard ProgramManager_Appl_Auto_Exit                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard ProgramManager_Appl_Auto_Prev                (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType ProgramManager_Appl_Auto_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Appl_Auto_Exit                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Appl_Auto_Prev                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Application state machine */
-tFsmEventEntry ProgramManager_ApplState_Auto[3] =
+Fsm_EventEntryStruct ProgramManager_ApplState_Auto[3] =
 {
   FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_Auto_Entry                                            ),
   FSM_TRIGGER_EXIT          (                                       ProgramManager_Appl_Auto_Exit                                             ),
@@ -54,25 +54,25 @@ static void ProgramManager_Appl_Auto_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard ProgramManager_Appl_Auto_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Auto_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_SubMainFunction = ProgramManager_Appl_Auto_SubMainFunction;
   ProgramManager_SubTickHandler = ProgramManager_Appl_Auto_SubTickHandler;
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
-static tFsmGuard ProgramManager_Appl_Auto_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Auto_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_SubMainFunction = NULL;
   ProgramManager_SubTickHandler = NULL;
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
-static tFsmGuard ProgramManager_Appl_Auto_Prev(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Auto_Prev(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 static void ProgramManager_Appl_Auto_SubMainFunction(void)

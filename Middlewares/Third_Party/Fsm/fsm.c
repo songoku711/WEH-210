@@ -1,5 +1,5 @@
 /* 
- * File:   fsm.c
+ * File:   Fsm.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -29,9 +29,9 @@ extern "C" {
 /** Type to select whether super-states should be iterated in case no matching event handler was found */
 typedef enum
 {
-  kFsmIterateHierarchy_Disabled,   /**< Do not iterate super-states */
-  kFsmIterateHierarchy_Enabled     /**< Iterate super-states until matching event handler was found */
-} tFsmIterateHierarchy;
+  FSM_ITERATEHIERARCHY_DISABLED,   /**< Do not iterate super-states */
+  FSM_ITERATEHIERARCHY_ENABLED     /**< Iterate super-states until matching event handler was found */
+} Fsm_IterateHierarchyType;
 
 
 
@@ -41,7 +41,7 @@ typedef enum
 
 #if defined( FSM_ENABLE_DEBUGGING )
 /** Global state machine instance counter */
-static tFsmInstance g_Instance;
+static Fsm_InstanceType g_Instance;
 #endif
 
 
@@ -50,8 +50,8 @@ static tFsmInstance g_Instance;
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-static void Fsm_HandleEvent(tFsmContextPtr const pFsmContext, tFsmEvent event, tFsmIterateHierarchy iterate);
-static uint8_t Fsm_GetStateHierachy(const tFsmContext* const pFsmContext, tFsmState state, tFsmState* hierarchy);
+static void Fsm_HandleEvent(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event, Fsm_IterateHierarchyType iterate);
+static uint8_t Fsm_GetStateHierachy(const Fsm_ContextStruct* const pFsmContext, Fsm_StateType state, Fsm_StateType* hierarchy);
 
 
 
@@ -67,7 +67,7 @@ static uint8_t Fsm_GetStateHierachy(const tFsmContext* const pFsmContext, tFsmSt
  *  \param[in]    state The current state
  *  \param[out]   hierarchy The returned state hierarchy
  ***********************************************************************************************/
-static uint8_t Fsm_GetStateHierachy(const tFsmContext* const pFsmContext, tFsmState state, tFsmState* hierarchy)
+static uint8_t Fsm_GetStateHierachy(const Fsm_ContextStruct* const pFsmContext, Fsm_StateType state, Fsm_StateType* hierarchy)
 {
   uint8_t index;
 
@@ -106,14 +106,14 @@ static uint8_t Fsm_GetStateHierachy(const tFsmContext* const pFsmContext, tFsmSt
  *  \param[in]    event The event to be handled
  *  \param[out]   iterate Indicates whether state hierarchy iteration is allowed
  ***********************************************************************************************/
-static void Fsm_HandleEvent(tFsmContextPtr const pFsmContext, tFsmEvent event, tFsmIterateHierarchy iterate)
+static void Fsm_HandleEvent(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event, Fsm_IterateHierarchyType iterate)
 {
   uint16_t index;
   uint16_t hierarchy;
-  tFsmState state;
-  tFsmGuard guard;
-  tFsmStateDefinition* stateDef;
-  tFsmEventEntry* triggers;
+  Fsm_StateType state;
+  Fsm_GuardType guard;
+  Fsm_StateDefStruct* stateDef;
+  Fsm_EventEntryStruct* triggers;
 
   state = pFsmContext->state;
   hierarchy = 0u;
@@ -130,21 +130,21 @@ static void Fsm_HandleEvent(tFsmContextPtr const pFsmContext, tFsmEvent event, t
     for (index = 0u; index < stateDef->triggerCount; index++)
     {
       if ((triggers[index].trigger == event)
-        || (triggers[index].trigger == kFsmDefaultEvent_Any))
+        || (triggers[index].trigger == FSM_DEFAULTEVENT_ANY))
       {
         /* Handler matching event found, now execute handler */
         guard = triggers[index].handler(pFsmContext, event);
 
         FSM_DEBUG_PRINT3(pFsmContext->instance, guard);
 
-        if (kFsmGuard_False != guard)
+        if (FSM_GUARD_FALSE != guard)
         {
-          if (kFsmGuard_True == guard)
+          if (FSM_GUARD_TRUE == guard)
           {
             /* Pending state may be "none" */
             pFsmContext->pendingState = triggers[index].nextState;
           }
-          else /* kFsmGuard_Overwrite */
+          else /* FSM_GUARD_OVERWRITE */
           {
             /* Do not set pendingState, this is (has to be) done by the event handler */
           }
@@ -154,7 +154,7 @@ static void Fsm_HandleEvent(tFsmContextPtr const pFsmContext, tFsmEvent event, t
 
           break;
         }
-        else /* kFsmGuard_False */
+        else /* FSM_GUARD_FALSE */
         {
           /* State shall not be left, continue to search for other matching event handlers */
         }
@@ -164,9 +164,9 @@ static void Fsm_HandleEvent(tFsmContextPtr const pFsmContext, tFsmEvent event, t
     /* Check if event has been already handled */
     if (FSM_DEFAULT_STATE != state)
     {
-      /* No matching event handler returning kFsmGuard_True could be found for current state,
+      /* No matching event handler returning FSM_GUARD_TRUE could be found for current state,
       * continue search in (encapsulating) super state, if possible */
-      if (kFsmIterateHierarchy_Enabled == iterate)
+      if (FSM_ITERATEHIERARCHY_ENABLED == iterate)
       {
         hierarchy++;
 
@@ -226,7 +226,7 @@ void Fsm_InitPowerOn( void )
  *  \param[in]    pFsmContext Pointer to context of state machine
  *  \param[in]    initialState The initial state of the state machine
  ***********************************************************************************************/
-void Fsm_Init( tFsmContextPtr const pFsmContext, tFsmState initialState )
+void Fsm_Init( Fsm_ContextStructPtr const pFsmContext, Fsm_StateType initialState )
 {
 #if defined( FSM_ENABLE_DEBUGGING )
    pFsmContext->instance = g_Instance;
@@ -236,7 +236,7 @@ void Fsm_Init( tFsmContextPtr const pFsmContext, tFsmState initialState )
    /* Start with internal default state */
    pFsmContext->state = FSM_DEFAULT_STATE;
    pFsmContext->pendingState = initialState;
-   pFsmContext->pendingEvent = kFsmDefaultEvent_None;
+   pFsmContext->pendingEvent = FSM_DEFAULTEVENT_NONE;
 
    /* Enter provided initial state */
    Fsm_StateTask(pFsmContext);
@@ -248,12 +248,12 @@ void Fsm_Init( tFsmContextPtr const pFsmContext, tFsmState initialState )
 /*! \brief        State machine deinitialization
  *  \param[in]    pFsmContext Pointer to context of state machine
  *********************************************************************************************************************/
-void Fsm_DeInit( tFsmContextPtr const pFsmContext )
+void Fsm_DeInit( Fsm_ContextStructPtr const pFsmContext )
 {
    /* Switch to internal default state to avoid further processing */
    pFsmContext->state = FSM_DEFAULT_STATE;
    pFsmContext->pendingState = FSM_DEFAULT_STATE;
-   pFsmContext->pendingEvent = kFsmDefaultEvent_None;
+   pFsmContext->pendingEvent = FSM_DEFAULTEVENT_NONE;
 }
 
 /**********************************************************************************************************************
@@ -263,15 +263,15 @@ void Fsm_DeInit( tFsmContextPtr const pFsmContext )
  *  \details      This function checks for pending events / state transitions and handles them appropriately.
  *  \param[in]    pFsmContext Pointer to context of state machine
  *********************************************************************************************************************/
-void Fsm_StateTask( tFsmContextPtr const pFsmContext )
+void Fsm_StateTask( Fsm_ContextStructPtr const pFsmContext )
 {
-   tFsmEvent   event;
+   Fsm_EventType   event;
 
-   tFsmState   stateHierarchyExit[FSM_MAX_HIERARCHY_DEPTH];
-   tFsmState   stateHierarchyEntry[FSM_MAX_HIERARCHY_DEPTH];
+   Fsm_StateType   stateHierarchyExit[FSM_MAX_HIERARCHY_DEPTH];
+   Fsm_StateType   stateHierarchyEntry[FSM_MAX_HIERARCHY_DEPTH];
 
-   tFsmState   currentState;
-   tFsmState   pendingState;
+   Fsm_StateType   currentState;
+   Fsm_StateType   pendingState;
 
    int8_t      index;
    uint8_t     exitCount;
@@ -282,13 +282,13 @@ void Fsm_StateTask( tFsmContextPtr const pFsmContext )
    /* Check for pending event, which could cause state change */
    event = pFsmContext->pendingEvent;
 
-   if (kFsmDefaultEvent_None != event)
+   if (FSM_DEFAULTEVENT_NONE != event)
    {
       /* Reset event */
-      pFsmContext->pendingEvent = kFsmDefaultEvent_None;
+      pFsmContext->pendingEvent = FSM_DEFAULTEVENT_NONE;
 
       /* Process event and trigger state change if necessary */
-      Fsm_HandleEvent(pFsmContext, event, kFsmIterateHierarchy_Enabled);
+      Fsm_HandleEvent(pFsmContext, event, FSM_ITERATEHIERARCHY_ENABLED);
    }
 
    /* Check whether state has to be changed */
@@ -337,7 +337,7 @@ void Fsm_StateTask( tFsmContextPtr const pFsmContext )
          pFsmContext->state = stateHierarchyExit[index];
 
          /* Leave previous state by calling exit handler */
-         Fsm_HandleEvent(pFsmContext, kFsmDefaultEvent_Exit, kFsmIterateHierarchy_Disabled);
+         Fsm_HandleEvent(pFsmContext, FSM_DEFAULTEVENT_EXIT, FSM_ITERATEHIERARCHY_DISABLED);
       }
 
       /* Enter all super-states
@@ -347,7 +347,7 @@ void Fsm_StateTask( tFsmContextPtr const pFsmContext )
          pFsmContext->state = stateHierarchyEntry[index];
 
          /* Now enter new state by calling entry handler */
-         Fsm_HandleEvent(pFsmContext, kFsmDefaultEvent_Entry, kFsmIterateHierarchy_Disabled);
+         Fsm_HandleEvent(pFsmContext, FSM_DEFAULTEVENT_ENTRY, FSM_ITERATEHIERARCHY_DISABLED);
       }
 
       /* Set final state, necessary if new state is super-state of previous state (no re-entry) */
@@ -362,7 +362,7 @@ void Fsm_StateTask( tFsmContextPtr const pFsmContext )
  *  \param[in]    pFsmContext Pointer to context of state machine
  *  \param[in]    event The event to be triggered
  *********************************************************************************************************************/
-void Fsm_TriggerEvent( tFsmContextPtr const pFsmContext, tFsmEvent event )
+void Fsm_TriggerEvent( Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event )
 {
    pFsmContext->pendingEvent = event;
 }
@@ -374,7 +374,7 @@ void Fsm_TriggerEvent( tFsmContextPtr const pFsmContext, tFsmEvent event )
  *  \param[in]    pFsmContext Pointer to context of state machine
  *  \param[in]    event The event that triggered the handler execution
  *********************************************************************************************************************/
-tFsmGuard Fsm_EventHandlerDefault(tFsmContextPtr const pFsmContext, tFsmEvent event)
+Fsm_GuardType Fsm_EventHandlerDefault(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
 #if defined( V_ENABLE_USE_DUMMY_STATEMENT )
    (void)pFsmContext;
@@ -383,5 +383,5 @@ tFsmGuard Fsm_EventHandlerDefault(tFsmContextPtr const pFsmContext, tFsmEvent ev
 
    /* Do nothing, but allow state transition */
 
-   return kFsmGuard_True;
+   return FSM_GUARD_TRUE;
 }

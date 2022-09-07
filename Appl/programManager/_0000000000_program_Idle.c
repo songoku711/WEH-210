@@ -27,13 +27,13 @@ extern "C" {
 ===============================================================================================*/
 
 /** Application event handlers */
-static tFsmGuard ProgramManager_Appl_Idle_Entry               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard ProgramManager_Appl_Idle_Exit                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard ProgramManager_Appl_Idle_Next                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard ProgramManager_Appl_Idle_Next_2              (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType ProgramManager_Appl_Idle_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Appl_Idle_Exit                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Appl_Idle_Next                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Appl_Idle_Next_2              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Application state machine */
-tFsmEventEntry ProgramManager_ApplState_Idle[4] =
+Fsm_EventEntryStruct ProgramManager_ApplState_Idle[4] =
 {
   FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_Idle_Entry                                            ),
   FSM_TRIGGER_EXIT          (                                       ProgramManager_Appl_Idle_Exit                                             ),
@@ -56,30 +56,30 @@ static void ProgramManager_Appl_Idle_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard ProgramManager_Appl_Idle_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Idle_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_SubMainFunction = ProgramManager_Appl_Idle_SubMainFunction;
   ProgramManager_SubTickHandler = ProgramManager_Appl_Idle_SubTickHandler;
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
-static tFsmGuard ProgramManager_Appl_Idle_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Idle_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_SubMainFunction = NULL;
   ProgramManager_SubTickHandler = NULL;
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
-static tFsmGuard ProgramManager_Appl_Idle_Next(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Idle_Next(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
-static tFsmGuard ProgramManager_Appl_Idle_Next_2(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Idle_Next_2(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 static void ProgramManager_Appl_Idle_SubMainFunction(void)

@@ -106,16 +106,16 @@ static MenuManager_ButEventMapConfStruct MenuManager_InverterError_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_InverterError_Entry                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_Exit                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_Submenu1                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_StartBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_StopBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_UpBut                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_InverterError_DownBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_InverterError_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_Exit                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_Submenu1                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_InverterError_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_InverterError_StateMachine[7] =
+Fsm_EventEntryStruct MenuManager_InverterError_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_InverterError_Entry                                                 ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_InverterError_Exit                                                  ),
@@ -206,7 +206,7 @@ static void MenuManager_InverterError_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_InverterError_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_InverterError_SubTickHandler;
@@ -239,27 +239,27 @@ static tFsmGuard MenuManager_InverterError_Entry(tFsmContextPtr const pFsmContex
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_InverterError_LcdShowMainTitle();
     MenuManager_InverterError_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_INVERTER_ERROR;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -267,41 +267,41 @@ static tFsmGuard MenuManager_InverterError_Exit(tFsmContextPtr const pFsmContext
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_InverterError_InternalState == MENUMANAGER_INVERTERERROR_INTERNALSTATE_READY)
   {
     MenuManager_InverterError_InternalState = MENUMANAGER_INVERTERERROR_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_InverterError_InternalState != MENUMANAGER_INVERTERERROR_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_InverterError_ListIndex > (uint32_t)0U)
   {
@@ -315,11 +315,11 @@ static tFsmGuard MenuManager_InverterError_UpBut(tFsmContextPtr const pFsmContex
 
   MenuManager_InverterError_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_InverterError_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_InverterError_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_InverterError_ListIndex < ((uint32_t)(MenuManager_InverterError_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -333,7 +333,7 @@ static tFsmGuard MenuManager_InverterError_DownBut(tFsmContextPtr const pFsmCont
   
   MenuManager_InverterError_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -382,7 +382,7 @@ static void MenuManager_InverterError_SubTickHandler(void)
     {
       MenuManager_InverterError_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

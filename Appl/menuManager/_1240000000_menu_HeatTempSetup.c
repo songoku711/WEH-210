@@ -86,14 +86,14 @@ static MenuManager_ButEventMapConfStruct MenuManager_HeatTempSetup_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_HeatTempSetup_Entry                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HeatTempSetup_StartBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HeatTempSetup_StopBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HeatTempSetup_UpBut                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HeatTempSetup_DownBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_HeatTempSetup_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_HeatTempSetup_StateMachine[11] =
+Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[11] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_HeatTempSetup_Entry                                                ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_AUTO_REHEAT_WHEN_LOW  ),
@@ -169,7 +169,7 @@ static void MenuManager_HeatTempSetup_LcdShowList(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HeatTempSetup_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HeatTempSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_HeatTempSetup_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_HeatTempSetup_SubTickHandler;
@@ -201,43 +201,43 @@ static tFsmGuard MenuManager_HeatTempSetup_Entry(tFsmContextPtr const pFsmContex
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_HeatTempSetup_LcdShowMainTitle();
     MenuManager_HeatTempSetup_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HeatTempSetup_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HeatTempSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_HEAT_TEMP_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
 
   Fsm_TriggerEvent( &MenuManager_FsmContext, \
-                    (tFsmEvent)((*(MenuManager_HeatTempSetup_ChildMenuConf.childMenuCfg))[MenuManager_HeatTempSetup_ListIndex].childMenuEvent));
+                    (Fsm_EventType)((*(MenuManager_HeatTempSetup_ChildMenuConf.childMenuCfg))[MenuManager_HeatTempSetup_ListIndex].childMenuEvent));
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HeatTempSetup_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HeatTempSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_HEAT_TEMP_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -245,11 +245,11 @@ static tFsmGuard MenuManager_HeatTempSetup_StopBut(tFsmContextPtr const pFsmCont
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HeatTempSetup_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HeatTempSetup_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HeatTempSetup_ListIndex > (uint32_t)0U)
   {
@@ -263,11 +263,11 @@ static tFsmGuard MenuManager_HeatTempSetup_UpBut(tFsmContextPtr const pFsmContex
 
   MenuManager_HeatTempSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HeatTempSetup_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HeatTempSetup_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HeatTempSetup_ListIndex < ((uint32_t)(MenuManager_HeatTempSetup_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -281,7 +281,7 @@ static tFsmGuard MenuManager_HeatTempSetup_DownBut(tFsmContextPtr const pFsmCont
   
   MenuManager_HeatTempSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

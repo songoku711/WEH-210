@@ -36,10 +36,10 @@ typedef struct
 
 
 /** Application event handlers */
-static tFsmGuard ProgramManager_Appl_Init_Entry               (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType ProgramManager_Appl_Init_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Application state machine */
-tFsmEventEntry ProgramManager_ApplState_Init[2] =
+Fsm_EventEntryStruct ProgramManager_ApplState_Init[2] =
 {
   FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_Init_Entry                                            ),
   FSM_TRIGGER_TRANSITION    (PROGRAMMANAGER_APPL_EVENT_NEXT,                                                    PROGRAMMANAGER_APPL_STATE_IDLE)
@@ -58,20 +58,20 @@ tFsmEventEntry ProgramManager_ApplState_Init[2] =
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard ProgramManager_Appl_Init_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType ProgramManager_Appl_Init_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_Appl_Init_EnterDataHierachy* enterDataHierachy;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy == NULL)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
 
   /* Check if previous state data hierachy ID is correct */
   if (pFsmContext->dataHierachy->dataId != PROGRAMMANAGER_APPL_STATE_POWER_ON)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
 
   enterDataHierachy = (ProgramManager_Appl_Init_EnterDataHierachy *)(pFsmContext->dataHierachy);
@@ -96,7 +96,7 @@ static tFsmGuard ProgramManager_Appl_Init_Entry(tFsmContextPtr const pFsmContext
   /* Release previous state data hierachy */
   ProgramManager_free(enterDataHierachy);
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

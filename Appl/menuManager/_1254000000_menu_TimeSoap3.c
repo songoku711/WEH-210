@@ -90,18 +90,18 @@ static MenuManager_ButEventMapConfStruct MenuManager_TimeSoap3_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_TimeSoap3_Entry                          (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_Exit                           (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_Submenu1                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_StartBut                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_StopBut                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_UpBut                          (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_DownBut                        (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_AddBut                         (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_TimeSoap3_SubBut                         (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_TimeSoap3_Entry                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_Exit                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_Submenu1                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_StartBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_StopBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_UpBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_DownBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_AddBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_SubBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_TimeSoap3_StateMachine[9] =
+Fsm_EventEntryStruct MenuManager_TimeSoap3_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_TimeSoap3_Entry                                                     ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_TimeSoap3_Exit                                                      ),
@@ -190,7 +190,7 @@ static void MenuManager_TimeSoap3_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_TimeSoap3_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_TimeSoap3_SubTickHandler;
@@ -223,27 +223,27 @@ static tFsmGuard MenuManager_TimeSoap3_Entry(tFsmContextPtr const pFsmContext, t
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_TimeSoap3_LcdShowMainTitle();
     MenuManager_TimeSoap3_LcdShowAdjust();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_TIME_SOAP_3;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -251,41 +251,41 @@ static tFsmGuard MenuManager_TimeSoap3_Exit(tFsmContextPtr const pFsmContext, tF
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TimeSoap3_InternalState == MENUMANAGER_TIMESOAP3_INTERNALSTATE_READY)
   {
     MenuManager_TimeSoap3_InternalState = MENUMANAGER_TIMESOAP3_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TimeSoap3_InternalState != MENUMANAGER_TIMESOAP3_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -311,11 +311,11 @@ static tFsmGuard MenuManager_TimeSoap3_UpBut(tFsmContextPtr const pFsmContext, t
     MenuManager_TimeSoap3_LcdShowAdjust();
   }
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -341,11 +341,11 @@ static tFsmGuard MenuManager_TimeSoap3_DownBut(tFsmContextPtr const pFsmContext,
     MenuManager_TimeSoap3_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_AddBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TimeSoap3_InternalState == MENUMANAGER_TIMESOAP3_INTERNALSTATE_READY)
   {
@@ -357,11 +357,11 @@ static tFsmGuard MenuManager_TimeSoap3_AddBut(tFsmContextPtr const pFsmContext, 
     MenuManager_TimeSoap3_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_TimeSoap3_SubBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_TimeSoap3_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_TimeSoap3_InternalState == MENUMANAGER_TIMESOAP3_INTERNALSTATE_READY)
   {
@@ -373,7 +373,7 @@ static tFsmGuard MenuManager_TimeSoap3_SubBut(tFsmContextPtr const pFsmContext, 
     MenuManager_TimeSoap3_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -428,7 +428,7 @@ static void MenuManager_TimeSoap3_SubTickHandler(void)
     {
       MenuManager_TimeSoap3_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

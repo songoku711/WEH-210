@@ -32,10 +32,10 @@ static const uint8_t MenuManager_PowerOn_TitleStr[] =                 "WASHER EX
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_PowerOn_Entry                            (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_PowerOn_Entry                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_PowerOn_StateMachine[2] =
+Fsm_EventEntryStruct MenuManager_PowerOn_StateMachine[2] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_PowerOn_Entry                                                       ),
   FSM_TRIGGER_TRANSITION      ( MENUMANAGER_EVENT_NEXT,                                                       MENUMANAGER_STATE_INIT                  )
@@ -54,7 +54,7 @@ tFsmEventEntry MenuManager_PowerOn_StateMachine[2] =
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static tFsmGuard MenuManager_PowerOn_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_PowerOn_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_Common_LcdClearAll();
 
@@ -67,7 +67,7 @@ static tFsmGuard MenuManager_PowerOn_Entry(tFsmContextPtr const pFsmContext, tFs
   
   MenuManager_Common_LcdUpdateAll();
   
-	return kFsmGuard_True;
+	return FSM_GUARD_TRUE;
 }
 
 

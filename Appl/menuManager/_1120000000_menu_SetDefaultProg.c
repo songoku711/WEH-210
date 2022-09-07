@@ -71,14 +71,14 @@ static MenuManager_ButEventMapConfStruct MenuManager_SetDefaultProg_ButEventMapC
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_SetDefaultProg_Entry                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetDefaultProg_Exit                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetDefaultProg_Submenu1                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetDefaultProg_StartBut                  (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_SetDefaultProg_StopBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_SetDefaultProg_Entry                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_Exit                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_Submenu1                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_StartBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_StopBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_SetDefaultProg_StateMachine[5] =
+Fsm_EventEntryStruct MenuManager_SetDefaultProg_StateMachine[5] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_SetDefaultProg_Entry                                               ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_SetDefaultProg_Exit                                                ),
@@ -145,7 +145,7 @@ static void MenuManager_SetDefaultProg_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetDefaultProg_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetDefaultProg_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_SetDefaultProg_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_SetDefaultProg_SubTickHandler;
@@ -166,27 +166,27 @@ static tFsmGuard MenuManager_SetDefaultProg_Entry(tFsmContextPtr const pFsmConte
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_SetDefaultProg_LcdShowMainTitle();
     MenuManager_SetDefaultProg_LcdShowNotify();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetDefaultProg_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetDefaultProg_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_DEFAULT_PROG;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -194,37 +194,37 @@ static tFsmGuard MenuManager_SetDefaultProg_Exit(tFsmContextPtr const pFsmContex
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetDefaultProg_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetDefaultProg_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
 
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetDefaultProg_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetDefaultProg_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_SetDefaultProg_InternalState == MENUMANAGER_SETDEFAULTPROG_INTERNALSTATE_READY)
   {
     MenuManager_SetDefaultProg_InternalState = MENUMANAGER_SETDEFAULTPROG_INTERNALSTATE_RESETTING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_SetDefaultProg_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_SetDefaultProg_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_SetDefaultProg_InternalState != MENUMANAGER_SETDEFAULTPROG_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -277,7 +277,7 @@ static void MenuManager_SetDefaultProg_SubTickHandler(void)
     {
       MenuManager_SetDefaultProg_Counter = (uint32_t)0U;
 
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

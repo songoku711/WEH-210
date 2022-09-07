@@ -60,6 +60,8 @@ extern const uint8_t MenuManager_Common_MinuteStr[];
 extern const uint8_t MenuManager_Common_LevelStr[];
 extern const uint8_t MenuManager_Common_TimeStr[];
 
+extern const uint8_t MenuManager_Common_ProgramStr[];
+
 
 
 /*===============================================================================================
@@ -71,7 +73,7 @@ void MenuManager_Common_ButEventMapHandler(MenuManager_ButEventMapConfStruct *bu
 void MenuManager_Common_DecToBcdConv(uint32_t *inDec, uint32_t *outBcd, uint8_t unitNum);
 void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t unitNum);
 
-tFsmGuard MenuManager_Common_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event);
+Fsm_GuardType MenuManager_Common_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 uint32_t MenuManager_Common_LcdGetCurPosFirstTime(uint32_t listIndex, uint32_t listItemNumber);
 uint32_t MenuManager_Common_LcdGetStartListIndex(uint32_t listIndex, uint32_t cursorPos);

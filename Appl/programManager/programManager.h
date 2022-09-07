@@ -56,7 +56,7 @@ typedef enum
 /** Program manager application events */
 typedef enum
 {
-  PROGRAMMANAGER_APPL_EVENT_PREV = kFsmDefaultEvent_Count,
+  PROGRAMMANAGER_APPL_EVENT_PREV = FSM_DEFAULTEVENT_NUM,
   PROGRAMMANAGER_APPL_EVENT_NEXT,
   PROGRAMMANAGER_APPL_EVENT_NEXT_2
 } ProgramManager_ApplEvent;
@@ -74,7 +74,7 @@ extern ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqConfig;
 
 
 /** Context Structure of the Finite State Machine (FSM) */
-extern tFsmContext ProgramManager_FsmContext;
+extern Fsm_ContextStruct ProgramManager_FsmContext;
 
 extern void (*ProgramManager_SubMainFunction)(void);
 extern void (*ProgramManager_SubTickHandler)(void);

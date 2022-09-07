@@ -90,18 +90,18 @@ static MenuManager_ButEventMapConfStruct MenuManager_HighExtractDelayTime_ButEve
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_HighExtractDelayTime_Entry               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_Exit                (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_Submenu1            (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_StartBut            (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_StopBut             (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_UpBut               (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_DownBut             (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_AddBut              (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_HighExtractDelayTime_SubBut              (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Exit                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Submenu1            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_StartBut            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_StopBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_UpBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_DownBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_AddBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HighExtractDelayTime_SubBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_HighExtractDelayTime_StateMachine[9] =
+Fsm_EventEntryStruct MenuManager_HighExtractDelayTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_HighExtractDelayTime_Entry                                          ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_HighExtractDelayTime_Exit                                           ),
@@ -190,7 +190,7 @@ static void MenuManager_HighExtractDelayTime_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_HighExtractDelayTime_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_HighExtractDelayTime_SubTickHandler;
@@ -223,27 +223,27 @@ static tFsmGuard MenuManager_HighExtractDelayTime_Entry(tFsmContextPtr const pFs
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_HighExtractDelayTime_LcdShowMainTitle();
     MenuManager_HighExtractDelayTime_LcdShowAdjust();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_HIGH_EXTRACT_DELAY_TIME;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -251,41 +251,41 @@ static tFsmGuard MenuManager_HighExtractDelayTime_Exit(tFsmContextPtr const pFsm
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HighExtractDelayTime_InternalState == MENUMANAGER_HIGHEXTRACTDELAYTIME_INTERNALSTATE_READY)
   {
     MenuManager_HighExtractDelayTime_InternalState = MENUMANAGER_HIGHEXTRACTDELAYTIME_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HighExtractDelayTime_InternalState != MENUMANAGER_HIGHEXTRACTDELAYTIME_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -311,11 +311,11 @@ static tFsmGuard MenuManager_HighExtractDelayTime_UpBut(tFsmContextPtr const pFs
     MenuManager_HighExtractDelayTime_LcdShowAdjust();
   }
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -341,11 +341,11 @@ static tFsmGuard MenuManager_HighExtractDelayTime_DownBut(tFsmContextPtr const p
     MenuManager_HighExtractDelayTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_AddBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HighExtractDelayTime_InternalState == MENUMANAGER_HIGHEXTRACTDELAYTIME_INTERNALSTATE_READY)
   {
@@ -357,11 +357,11 @@ static tFsmGuard MenuManager_HighExtractDelayTime_AddBut(tFsmContextPtr const pF
     MenuManager_HighExtractDelayTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_HighExtractDelayTime_SubBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_HighExtractDelayTime_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_HighExtractDelayTime_InternalState == MENUMANAGER_HIGHEXTRACTDELAYTIME_INTERNALSTATE_READY)
   {
@@ -373,7 +373,7 @@ static tFsmGuard MenuManager_HighExtractDelayTime_SubBut(tFsmContextPtr const pF
     MenuManager_HighExtractDelayTime_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -428,7 +428,7 @@ static void MenuManager_HighExtractDelayTime_SubTickHandler(void)
     {
       MenuManager_HighExtractDelayTime_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

@@ -55,6 +55,8 @@ const uint8_t MenuManager_Common_MinuteStr[] =                        "MINUTES";
 const uint8_t MenuManager_Common_LevelStr[] =                         "LEVEL:";
 const uint8_t MenuManager_Common_TimeStr[] =                          "TIME:";
 
+const uint8_t MenuManager_Common_ProgramStr[] =                       "PROGRAM %02d";
+
 
 
 /*===============================================================================================
@@ -89,7 +91,7 @@ void MenuManager_Common_ButEventMapHandler(MenuManager_ButEventMapConfStruct *bu
     {
       if (ioButtonState == (*(butEventMapConf->butEventMapCfg))[butEventMapIdx].butState)
       {
-        Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)((*(butEventMapConf->butEventMapCfg))[butEventMapIdx].butEvent));
+        Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)((*(butEventMapConf->butEventMapCfg))[butEventMapIdx].butEvent));
       
         break;
       }
@@ -148,12 +150,12 @@ void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t 
 
 
 /*=============================================================================================*/
-tFsmGuard MenuManager_Common_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+Fsm_GuardType MenuManager_Common_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

@@ -39,20 +39,20 @@ extern "C" {
 
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_BalanceLevel_ChildTitleStr[] =                           "BALANCE LEVEL";
-static const uint8_t MenuManager_BalanceDrainLevel_ChildTitleStr[] =                      "BAL. DRAIN LEVEL";
-static const uint8_t MenuManager_BalanceWithWaterTime_ChildTitleStr[] =                   "BAL. W WATER TIME";
-static const uint8_t MenuManager_BalanceDrainWaterTime_ChildTitleStr[] =                  "BAL. D WATER TIME";
-static const uint8_t MenuManager_BalanceDelayTime_ChildTitleStr[] =                       "BAL. DELAY TIME";
+static const uint8_t MenuManager_BalanceDrainLevel_ChildTitleStr[] =                      "BAL DRAIN LEVEL";
+static const uint8_t MenuManager_BalanceWithWaterTime_ChildTitleStr[] =                   "BAL W WATER TIME";
+static const uint8_t MenuManager_BalanceDrainWaterTime_ChildTitleStr[] =                  "BAL D WATER TIME";
+static const uint8_t MenuManager_BalanceDelayTime_ChildTitleStr[] =                       "BAL DELAY TIME";
 static const uint8_t MenuManager_FwdRunTime_ChildTitleStr[] =                             "FWD RUN TIME";
 static const uint8_t MenuManager_MidExtractTime_ChildTitleStr[] =                         "MID EXTRACT TIME";
-static const uint8_t MenuManager_MidExtractDelayTime_ChildTitleStr[] =                    "MID EX DELAY TIME";
+static const uint8_t MenuManager_MidExtractDelayTime_ChildTitleStr[] =                    "MID EXT DELAY TIME";
 static const uint8_t MenuManager_HighExtractTime1_ChildTitleStr[] =                       "HIGH EXT TIME 1";
 static const uint8_t MenuManager_HighExtractTime2_ChildTitleStr[] =                       "HIGH EXT TIME 2";
 static const uint8_t MenuManager_HighExtractTime3_ChildTitleStr[] =                       "HIGH EXT TIME 3";
-static const uint8_t MenuManager_HighExtractDelayTime_ChildTitleStr[] =                   "HIGH EX DLY TIME";
+static const uint8_t MenuManager_HighExtractDelayTime_ChildTitleStr[] =                   "HIGH EXT DLY TIME";
 static const uint8_t MenuManager_MaxExtractTime_ChildTitleStr[] =                         "MAX EXTRACT TIME";
 static const uint8_t MenuManager_ReextractTime_ChildTitleStr[] =                          "RE-EXTRACT TIME";
-static const uint8_t MenuManager_ReextractWashTime_ChildTitleStr[] =                      "RE_EXT WASH TIME";
+static const uint8_t MenuManager_ReextractWashTime_ChildTitleStr[] =                      "RE-EXT WASH TIME";
 static const uint8_t MenuManager_BalanceSpeed_ChildTitleStr[] =                           "BALANCE SPEED";
 static const uint8_t MenuManager_FwdRunSpeed_ChildTitleStr[] =                            "FWD RUN SPEED";
 static const uint8_t MenuManager_MidExtractSpeed_ChildTitleStr[] =                        "MID EXTRACT SPEED";
@@ -60,7 +60,7 @@ static const uint8_t MenuManager_HighExtractSpeed1_ChildTitleStr[] =            
 static const uint8_t MenuManager_HighExtractSpeed2_ChildTitleStr[] =                      "HIGH EXT SPEED 2";
 static const uint8_t MenuManager_HighExtractSpeed3_ChildTitleStr[] =                      "HIGH EXT SPEED 3";
 static const uint8_t MenuManager_MaxMidExtractSpeed_ChildTitleStr[] =                     "MAX MID EXT SPEED";
-static const uint8_t MenuManager_MaxHighExtractSpeed_ChildTitleStr[] =                    "MAX HIGH EX SPEED";
+static const uint8_t MenuManager_MaxHighExtractSpeed_ChildTitleStr[] =                    "MAX HIGH EXT SPEED";
 
 static const uint8_t MenuManager_ExtractSetup_MainTitleStr[] =                            "EXTRACT SETUP";
 
@@ -120,14 +120,14 @@ static MenuManager_ButEventMapConfStruct MenuManager_ExtractSetup_ButEventMapCon
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_ExtractSetup_Entry                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_ExtractSetup_StartBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_ExtractSetup_StopBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_ExtractSetup_UpBut                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_ExtractSetup_DownBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_ExtractSetup_Entry                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_ExtractSetup_StartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_ExtractSetup_StopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_ExtractSetup_UpBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_ExtractSetup_DownBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_ExtractSetup_StateMachine[28] =
+Fsm_EventEntryStruct MenuManager_ExtractSetup_StateMachine[28] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_ExtractSetup_Entry                                                    ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_BALANCE_LEVEL           ),
@@ -220,7 +220,7 @@ static void MenuManager_ExtractSetup_LcdShowList(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_ExtractSetup_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_ExtractSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_ExtractSetup_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_ExtractSetup_SubTickHandler;
@@ -269,43 +269,43 @@ static tFsmGuard MenuManager_ExtractSetup_Entry(tFsmContextPtr const pFsmContext
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_ExtractSetup_LcdShowMainTitle();
     MenuManager_ExtractSetup_LcdShowList();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_ExtractSetup_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_ExtractSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_EXTRACT_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
 
   Fsm_TriggerEvent( &MenuManager_FsmContext, \
-                    (tFsmEvent)((*(MenuManager_ExtractSetup_ChildMenuConf.childMenuCfg))[MenuManager_ExtractSetup_ListIndex].childMenuEvent));
+                    (Fsm_EventType)((*(MenuManager_ExtractSetup_ChildMenuConf.childMenuCfg))[MenuManager_ExtractSetup_ListIndex].childMenuEvent));
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_ExtractSetup_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_ExtractSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_EXTRACT_SETUP;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -313,11 +313,11 @@ static tFsmGuard MenuManager_ExtractSetup_StopBut(tFsmContextPtr const pFsmConte
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_ExtractSetup_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_ExtractSetup_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_ExtractSetup_ListIndex > (uint32_t)0U)
   {
@@ -331,11 +331,11 @@ static tFsmGuard MenuManager_ExtractSetup_UpBut(tFsmContextPtr const pFsmContext
 
   MenuManager_ExtractSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_ExtractSetup_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_ExtractSetup_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_ExtractSetup_ListIndex < ((uint32_t)(MenuManager_ExtractSetup_ChildMenuConf.childMenuNum) - (uint32_t)1U))
   {
@@ -349,7 +349,7 @@ static tFsmGuard MenuManager_ExtractSetup_DownBut(tFsmContextPtr const pFsmConte
   
   MenuManager_ExtractSetup_LcdShowList();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 

@@ -87,18 +87,18 @@ static MenuManager_ButEventMapConfStruct MenuManager_OverbrimLevel_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static tFsmGuard MenuManager_OverbrimLevel_Entry                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_Exit                       (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_Submenu1                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_StartBut                   (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_StopBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_UpBut                      (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_DownBut                    (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_AddBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
-static tFsmGuard MenuManager_OverbrimLevel_SubBut                     (tFsmContextPtr const pFsmContext, tFsmEvent event);
+static Fsm_GuardType MenuManager_OverbrimLevel_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_Exit                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_Submenu1                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_AddBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_OverbrimLevel_SubBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-tFsmEventEntry MenuManager_OverbrimLevel_StateMachine[9] =
+Fsm_EventEntryStruct MenuManager_OverbrimLevel_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_OverbrimLevel_Entry                                                 ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_OverbrimLevel_Exit                                                  ),
@@ -181,7 +181,7 @@ static void MenuManager_OverbrimLevel_LcdShowDone(void)
 
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_Entry(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = MenuManager_OverbrimLevel_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_OverbrimLevel_SubTickHandler;
@@ -215,27 +215,27 @@ static tFsmGuard MenuManager_OverbrimLevel_Entry(tFsmContextPtr const pFsmContex
     }
     else
     {
-      return kFsmGuard_False;
+      return FSM_GUARD_FALSE;
     }
 
     MenuManager_OverbrimLevel_LcdShowMainTitle();
     MenuManager_OverbrimLevel_LcdShowAdjust();
 
-    return kFsmGuard_True;
+    return FSM_GUARD_TRUE;
   }
 
-  return kFsmGuard_False;
+  return FSM_GUARD_FALSE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_Exit(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  tFsmDataHierachy* dataHierachy;
+  Fsm_DataHierachyStruct* dataHierachy;
 
-  dataHierachy = (tFsmDataHierachy *)MenuManager_malloc(sizeof(tFsmDataHierachy));
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_OVERBRIM_LEVEL;
 
   pFsmContext->dataHierachy = dataHierachy;
@@ -243,41 +243,41 @@ static tFsmGuard MenuManager_OverbrimLevel_Exit(tFsmContextPtr const pFsmContext
   /* Free internal data */
   MenuManager_InternalDataPop();
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_Submenu1(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_StartBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_OverbrimLevel_InternalState == MENUMANAGER_OVERBRIMLEVEL_INTERNALSTATE_READY)
   {
     MenuManager_OverbrimLevel_InternalState = MENUMANAGER_OVERBRIMLEVEL_INTERNALSTATE_RUNNING;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_StopBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_OverbrimLevel_InternalState != MENUMANAGER_OVERBRIMLEVEL_INTERNALSTATE_READY)
   {
-    return kFsmGuard_False;
+    return FSM_GUARD_FALSE;
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_UpBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -303,11 +303,11 @@ static tFsmGuard MenuManager_OverbrimLevel_UpBut(tFsmContextPtr const pFsmContex
     MenuManager_OverbrimLevel_LcdShowAdjust();
   }
 
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_DownBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t tempUnitVal;
   uint32_t tempVal;
@@ -333,11 +333,11 @@ static tFsmGuard MenuManager_OverbrimLevel_DownBut(tFsmContextPtr const pFsmCont
     MenuManager_OverbrimLevel_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_AddBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_OverbrimLevel_InternalState == MENUMANAGER_OVERBRIMLEVEL_INTERNALSTATE_READY)
   {
@@ -349,11 +349,11 @@ static tFsmGuard MenuManager_OverbrimLevel_AddBut(tFsmContextPtr const pFsmConte
     MenuManager_OverbrimLevel_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static tFsmGuard MenuManager_OverbrimLevel_SubBut(tFsmContextPtr const pFsmContext, tFsmEvent event)
+static Fsm_GuardType MenuManager_OverbrimLevel_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (MenuManager_OverbrimLevel_InternalState == MENUMANAGER_OVERBRIMLEVEL_INTERNALSTATE_READY)
   {
@@ -365,7 +365,7 @@ static tFsmGuard MenuManager_OverbrimLevel_SubBut(tFsmContextPtr const pFsmConte
     MenuManager_OverbrimLevel_LcdShowAdjust();
   }
   
-  return kFsmGuard_True;
+  return FSM_GUARD_TRUE;
 }
 
 
@@ -420,7 +420,7 @@ static void MenuManager_OverbrimLevel_SubTickHandler(void)
     {
       MenuManager_OverbrimLevel_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (tFsmEvent)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
     }
   }
 }

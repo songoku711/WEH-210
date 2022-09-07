@@ -272,7 +272,7 @@ typedef struct _ProgramManager_DoorLockSetupStruct
 {
   bool                                        useLockStopButton;            /* Use door lock controlled by pressing STOP button */
   ProgramManager_RelayEnableStatusType        doorLockValveStatus;          /* Door lock valve status when door is closed */
-  uint16_t                                    unlockDoorTemp;               /* Can't unlock the door when temperature is higher than safety temperature */
+  uint8_t                                     unlockDoorTemp;               /* Can't unlock the door when temperature is higher than safety temperature */
   uint16_t                                    unlockDoorLevel;              /* Can't unlock the door when level is higher than safety level */
 } ProgramManager_DoorLockSetupStruct;
 
