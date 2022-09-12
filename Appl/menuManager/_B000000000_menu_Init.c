@@ -32,10 +32,17 @@ extern "C" {
 #define MENUMANAGER_INIT_INTERNALDATALENGTH                           (uint8_t)2U
 
 #define MENUMANAGER_INIT_COUNTDOWN_IDX                                0U
-#define MENUMANAGER_INIT_INITDONE_IDX                                 1U
+#define MENUMANAGER_INIT_INITSTATE_IDX                                1U
 
 #define MenuManager_Init_Countdown                                    MenuManager_GetInternalDataPtr(MENUMANAGER_INIT_COUNTDOWN_IDX)
-#define MenuManager_Init_InitDone                                     MenuManager_GetInternalDataPtr(MENUMANAGER_INIT_INITDONE_IDX)
+#define MenuManager_Init_InitState                                    MenuManager_GetInternalDataPtr(MENUMANAGER_INIT_INITSTATE_IDX)
+
+#define MENUMANAGER_INIT_INITSTATE_READY                              (uint32_t)0U
+#define MENUMANAGER_INIT_INITSTATE_WAIT_IO                            (uint32_t)1U
+#define MENUMANAGER_INIT_INITSTATE_WAIT_PROG                          (uint32_t)2U
+#define MENUMANAGER_INIT_INITSTATE_DONE                               (uint32_t)3U
+#define MENUMANAGER_INIT_INITSTATE_EXITING                            (uint32_t)4U
+#define MENUMANAGER_INIT_INITSTATE_FAIL                               (uint32_t)255U
 
 
 
@@ -45,8 +52,8 @@ static const uint8_t MenuManager_Init_InitializeStr[] =               "INITIALIZ
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_Init_Entry                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Init_Exit                                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Init_Entry                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Init_Exit                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_Init_StateMachine[3] =
@@ -77,14 +84,14 @@ static Fsm_GuardType MenuManager_Init_Entry(Fsm_ContextStructPtr const pFsmConte
   MenuManager_InternalDataPush(MENUMANAGER_INIT_INTERNALDATALENGTH);
 
   MenuManager_Init_Countdown = (uint32_t)0U;
-  MenuManager_Init_InitDone = (uint32_t)0U;
+  MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_READY;
 
   /* Store pointer function */
   MenuManager_SubMainFunction = MenuManager_Init_SubMainFunction;
   MenuManager_SubTickHandler = MenuManager_Init_SubTickHandler;
   
   LCD_SetFont(LCD_FONT_SMALL);
-  LCD_SetCursorPos(32, 32, LCD_CURSOR_IN_PIXEL);
+  LCD_SetCursorPos(4, 4, LCD_CURSOR_BY_FONT);
   LCD_PutString((uint8_t *)MenuManager_Init_InitializeStr);
   
   MenuManager_Common_LcdUpdateAll();
@@ -109,7 +116,37 @@ static Fsm_GuardType MenuManager_Init_Exit(Fsm_ContextStructPtr const pFsmContex
 /*=============================================================================================*/
 static void MenuManager_Init_SubMainFunction(void)
 {
-  /* In development */
+  switch (MenuManager_Init_InitState)
+  {
+    case MENUMANAGER_INIT_INITSTATE_READY:
+    {
+      MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_WAIT_IO;
+      break;
+    }
+    case MENUMANAGER_INIT_INITSTATE_WAIT_IO:
+    {
+      if (IoManager_GetCurrentState() >= IOMANAGER_STATE_INIT)
+      {
+        MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_WAIT_PROG;
+      }
+
+      break;
+    }
+    case MENUMANAGER_INIT_INITSTATE_WAIT_PROG:
+    {
+      if (ProgramManager_GetCurrentState() >= PROGRAMMANAGER_STATE_IDLE)
+      {
+        MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_DONE;
+      }
+
+      break;
+    }
+    case MENUMANAGER_INIT_INITSTATE_DONE:
+    case MENUMANAGER_INIT_INITSTATE_FAIL:
+    case MENUMANAGER_INIT_INITSTATE_EXITING:
+    default:
+      break;
+  }
 }
 
 /*=============================================================================================*/
@@ -121,7 +158,12 @@ static void MenuManager_Init_SubTickHandler(void)
   {
     MenuManager_Init_Countdown = (uint32_t)0U;
 
-    Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_NEXT);
+    if (MenuManager_Init_InitState == MENUMANAGER_INIT_INITSTATE_DONE)
+    {
+      MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_EXITING;
+
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_NEXT);
+    }
   }
 }
 

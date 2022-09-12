@@ -184,12 +184,13 @@ static Fsm_GuardType MenuManager_ProgramSetup_Entry(Fsm_ContextStructPtr const p
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_ProgramSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  Fsm_DataHierachyStruct* dataHierachy;
+  MenuManager_Common_ProgramSetupStruct* dataHierachy;
 
-  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
+  dataHierachy = (MenuManager_Common_ProgramSetupStruct *)MenuManager_malloc(sizeof(MenuManager_Common_ProgramSetupStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_PROGRAM_SETUP;
+  dataHierachy->seqIdx = MenuManager_ProgramSetup_ListIndex;
 
-  pFsmContext->dataHierachy = dataHierachy;
+  pFsmContext->dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
   Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
   

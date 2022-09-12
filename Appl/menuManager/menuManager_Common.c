@@ -56,6 +56,8 @@ const uint8_t MenuManager_Common_LevelStr[] =                         "LEVEL:";
 const uint8_t MenuManager_Common_TimeStr[] =                          "TIME:";
 
 const uint8_t MenuManager_Common_ProgramStr[] =                       "PROGRAM %02d";
+const uint8_t MenuManager_Common_StepStr[] =                          "STEP %02d";
+const uint8_t MenuManager_Common_ProgramStepStr[] =                   "PROG %02d STP %02d";
 
 
 

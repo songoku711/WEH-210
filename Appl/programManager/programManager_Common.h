@@ -31,6 +31,12 @@ extern "C" {
 *                                     DEFINES AND MACROS
 ===============================================================================================*/
 
+/** Memory initialization data hierachy structure */
+typedef struct
+{
+  uint32_t                    stateId;
+  bool                        isMemReady;
+} ProgramManager_Common_MemInit_DataHierachyStruct;
 
 
 

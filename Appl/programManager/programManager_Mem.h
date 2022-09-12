@@ -304,21 +304,22 @@ extern "C" {
 
 /* Offset address of normal step elements in program sequence configuration */
 #define PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET                       (uint16_t)0x00
-#define PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET                   (uint16_t)0x01
-#define PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET                    (uint16_t)0x02
-#define PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET                       (uint16_t)0x03
-#define PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET                       (uint16_t)0x04
-#define PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET                       (uint16_t)0x05
-#define PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET                   (uint16_t)0x06
-#define PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET                      (uint16_t)0x07
-#define PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET                        (uint16_t)0x08
-#define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0A
-#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x0C
-#define PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET                    (uint16_t)0x0E
-#define PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET                 (uint16_t)0x10
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET               (uint16_t)0x12
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET               (uint16_t)0x14
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET               (uint16_t)0x16
+#define PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET                      (uint16_t)0x01
+#define PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET                       (uint16_t)0x02
+#define PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET                       (uint16_t)0x03
+#define PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET                       (uint16_t)0x04
+#define PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET                      (uint16_t)0x05
+#define PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET                        (uint16_t)0x06
+#define PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET                    (uint16_t)0x07
+#define PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET                   (uint16_t)0x09
+#define PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET                      (uint16_t)0x0B
+#define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0C
+#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x0E
+#define PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET                    (uint16_t)0x10
+#define PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET                 (uint16_t)0x12
+#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET               (uint16_t)0x14
+#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET               (uint16_t)0x16
+#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET               (uint16_t)0x18
 
 /* Offset address of unload step configuration in program sequence configuration */
 #define PROGRAMMANAGER_UNLOADSTEP_OFFSET                              (uint16_t)0x13E
@@ -527,38 +528,40 @@ HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useColdWater_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useColdWater_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useHotWater_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useHotWater_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap1_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap1_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap2_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap2_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap3_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap3_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washTimeMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washTimeMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_IsActive_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_IsActive_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashStopTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashStopTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashSpeed_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashSpeed_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 
 
 

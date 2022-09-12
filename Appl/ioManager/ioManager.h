@@ -39,6 +39,13 @@ extern "C" {
 
 typedef enum
 {
+  IOMANAGER_STATE_FAIL,
+  IOMANAGER_STATE_INIT,
+  IOMANAGER_STATE_READY
+} IoManager_StateType;
+
+typedef enum
+{
   IOMANAGER_BUTTON_STATE_START                        = (uint32_t)0x0001,
   IOMANAGER_BUTTON_STATE_STOP                         = (uint32_t)0x0002,
   IOMANAGER_BUTTON_STATE_UP                           = (uint32_t)0x0004,
@@ -70,6 +77,8 @@ typedef enum
 ===============================================================================================*/
 
 void IoManager_Init(void);
+
+IoManager_StateType IoManager_GetCurrentState(void);
 
 void IoManager_MainFunction(void);
 void IoManager_ExtIrptMainFunction(void);

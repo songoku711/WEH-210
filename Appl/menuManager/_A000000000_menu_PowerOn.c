@@ -32,7 +32,7 @@ static const uint8_t MenuManager_PowerOn_TitleStr[] =                 "WASHER EX
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_PowerOn_Entry                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_PowerOn_Entry                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_PowerOn_StateMachine[2] =
@@ -62,7 +62,7 @@ static Fsm_GuardType MenuManager_PowerOn_Entry(Fsm_ContextStructPtr const pFsmCo
   LCD_PutRectangle(128, 64);
   
   LCD_SetFont(LCD_FONT_SMALL);
-  LCD_SetCursorPos(16, 16, LCD_CURSOR_IN_PIXEL);
+  LCD_SetCursorPos(2, 2, LCD_CURSOR_BY_FONT);
   LCD_PutString((uint8_t *)MenuManager_PowerOn_TitleStr);
   
   MenuManager_Common_LcdUpdateAll();

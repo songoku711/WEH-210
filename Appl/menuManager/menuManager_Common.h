@@ -40,6 +40,15 @@ extern "C" {
 
 
 
+typedef struct
+{
+  uint32_t                    dataId;
+  uint32_t                    seqIdx;
+  uint32_t                    stepIdx;
+} MenuManager_Common_ProgramSetupStruct;
+
+
+
 extern const uint8_t MenuManager_Common_DoneStr[];
 
 extern const uint8_t MenuManager_Common_EnableStr[];
@@ -61,6 +70,8 @@ extern const uint8_t MenuManager_Common_LevelStr[];
 extern const uint8_t MenuManager_Common_TimeStr[];
 
 extern const uint8_t MenuManager_Common_ProgramStr[];
+extern const uint8_t MenuManager_Common_StepStr[];
+extern const uint8_t MenuManager_Common_ProgramStepStr[];
 
 
 

@@ -804,6 +804,16 @@
               <FilePath>..\Appl\menuManager\_1300000000_menu_ProgramSetup.c</FilePath>
             </File>
             <File>
+              <FileName>_1310000000_menu_ProgramStepSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1310000000_menu_ProgramStepSetup.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311000000_menu_ProgramMainSetup.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311000000_menu_ProgramMainSetup.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

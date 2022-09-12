@@ -20,8 +20,6 @@ extern "C" {
 
 #include "programManager.h"
 
-#include "memIf.h"
-
 
 
 /*===============================================================================================
@@ -145,14 +143,15 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
   .normStep[0] =
   {
     .isActive                   = false,                                    /* This step is active during AUTO mode */
-    .useColdWater               = true,                                     /* This step uses cold water */
-    .useHotWater                = false,                                    /* This step uses hot water */
-    .useSoap1                   = false,                                    /* This step uses soap 1 */
-    .useSoap2                   = false,                                    /* This step uses soap 2 */
-    .useSoap3                   = false,                                    /* This step uses soap 3 */
-    .washTimeMode               = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash time mode */
-    .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode */
+    .waterMode                  = (uint8_t)0x01U,                           /* Water mode - cold water */
+    .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
+    .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
+    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
+    .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
     .washNum                    = (uint8_t)3U,                              /* Number of wash time */
+    .washRunTime                = (uint16_t)20U,                            /* Wash run time */
+    .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
+    .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
     .balanceTime                = (uint16_t)10U,                            /* Balance time at extract */
@@ -172,14 +171,15 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
   .normStep =
   {
     .isActive                   = false,                                    /* This step is active during AUTO mode */
-    .useColdWater               = true,                                     /* This step uses cold water */
-    .useHotWater                = false,                                    /* This step uses hot water */
-    .useSoap1                   = false,                                    /* This step uses soap 1 */
-    .useSoap2                   = false,                                    /* This step uses soap 2 */
-    .useSoap3                   = false,                                    /* This step uses soap 3 */
-    .washTimeMode               = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash time mode */
-    .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode */
+    .waterMode                  = (uint8_t)0x01U,                           /* Water mode - cold water */
+    .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
+    .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
+    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
+    .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
     .washNum                    = (uint8_t)3U,                              /* Number of wash time */
+    .washRunTime                = (uint16_t)20U,                            /* Wash run time */
+    .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
+    .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
     .balanceTime                = (uint16_t)10U,                            /* Balance time at extract */
@@ -1883,16 +1883,22 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->timeoutSecond         = (uint8_t)0U;
 
   data->isActive              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
-  data->useColdWater          = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]);
-  data->useHotWater           = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]);
-  data->useSoap1              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]);
-  data->useSoap2              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]);
-  data->useSoap3              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]);
 
-  data->washTimeMode          = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]);
+  data->waterMode             = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]);
+  data->soapMode              = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]);
+  data->washMode              = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]);
+  data->tempMode              = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]);
   data->levelMode             = (ProgramManager_LevelModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]);
 
   data->washNum               = recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET];
+
+  data->washRunTime           = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET]) << 8U;
+  data->washRunTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET + 1]);
+
+  data->washStopTime          = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET]) << 8U;
+  data->washStopTime         |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET + 1]);
+
+  data->washSpeed             = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET]);
 
   if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
   {
@@ -1930,16 +1936,22 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
   uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
 
   recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]                    = (uint8_t)(data->isActive    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET]                = (uint8_t)(data->useColdWater);
-  recvArr[PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET]                 = (uint8_t)(data->useHotWater );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET]                    = (uint8_t)(data->useSoap1    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET]                    = (uint8_t)(data->useSoap2    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET]                    = (uint8_t)(data->useSoap3    );
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET]                = (uint8_t)(data->washTimeMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]                   = (uint8_t)(data->waterMode   );
+  recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]                    = (uint8_t)(data->soapMode    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]                    = (uint8_t)(data->washMode    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]                    = (uint8_t)(data->tempMode    );
   recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]                   = (uint8_t)(data->levelMode   );
 
   recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET]                     = (uint8_t)(data->washNum     );
+
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET]                 = (uint8_t)(data->washRunTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET + 1]             = (uint8_t)(data->washRunTime & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET]                = (uint8_t)(data->washStopTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET + 1]            = (uint8_t)(data->washStopTime & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET]                   = (uint8_t)(data->washSpeed   );
 
   if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
   {
@@ -1987,7 +1999,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_IsActive_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
 {
   uint16_t addr;
 
@@ -2001,7 +2013,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_GetData(uint8_t seqIdx,
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_IsActive_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
 {
   uint16_t addr;
 
@@ -2015,175 +2027,119 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_isActive_SetData(uint8_t seqIdx,
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useColdWater_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET;
 
   *data = (bool)(extMemIf.readByte(addr));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useColdWater_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USECOLDWATER_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET;
 
   extMemIf.writeByte(addr, (uint8_t) *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useHotWater_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET;
 
   *data = (bool)(extMemIf.readByte(addr));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useHotWater_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USEHOTWATER_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET;
 
   extMemIf.writeByte(addr, (uint8_t) *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap1_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET;
-
-  *data = (bool)(extMemIf.readByte(addr));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap1_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP1_OFFSET;
-
-  extMemIf.writeByte(addr, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap2_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET;
-
-  *data = (bool)(extMemIf.readByte(addr));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap2_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP2_OFFSET;
-
-  extMemIf.writeByte(addr, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap3_GetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET;
-
-  *data = (bool)(extMemIf.readByte(addr));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_useSoap3_SetData(uint8_t seqIdx, uint8_t stepIdx, bool *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_USESOAP3_OFFSET;
-
-  extMemIf.writeByte(addr, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washTimeMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET;
 
   *data = (ProgramManager_WashModeType)(extMemIf.readByte(addr));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washTimeMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_WASHTIMEMODE_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET;
 
   extMemIf.writeByte(addr, (uint8_t) *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET;
+
+  *data = (ProgramManager_TempModeType)(extMemIf.readByte(addr));
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET;
+
+  extMemIf.writeByte(addr, (uint8_t) *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data)
 {
   uint16_t addr;
 
@@ -2197,7 +2153,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_GetData(uint8_t seqIdx
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data)
 {
   uint16_t addr;
 
@@ -2211,7 +2167,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_levelMode_SetData(uint8_t seqIdx
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
@@ -2225,7 +2181,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_GetData(uint8_t seqIdx, 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
 {
   uint16_t addr;
 
@@ -2239,7 +2195,91 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_washNum_SetData(uint8_t seqIdx, 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET;
+
+  *data = extMemIf.readInteger(addr);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET;
+
+  extMemIf.writeInteger(addr, *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashStopTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET;
+
+  *data = extMemIf.readInteger(addr);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashStopTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET;
+
+  extMemIf.writeInteger(addr, *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashSpeed_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_MotorSpeedType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET;
+
+  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(addr));
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashSpeed_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_MotorSpeedType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET;
+
+  extMemIf.writeByte(addr, (uint8_t) *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
 
@@ -2260,7 +2300,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_GetData(uint8_t se
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit)
 {
   uint8_t temp;
   uint16_t addr;
@@ -2288,7 +2328,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_tempThreshold_SetData(uint8_t se
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2302,7 +2342,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_GetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2316,7 +2356,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_levelThreshold_SetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2330,7 +2370,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_GetData(uint8_t seqI
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2344,7 +2384,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_balanceTime_SetData(uint8_t seqI
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2358,7 +2398,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_GetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2372,7 +2412,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_midExtractTime_SetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2386,7 +2426,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_GetData(uint8_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2400,7 +2440,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime1_SetData(uint8_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2414,7 +2454,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_GetData(uint8_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2428,7 +2468,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime2_SetData(uint8_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -2442,7 +2482,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime3_GetData(uint8_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_highExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 

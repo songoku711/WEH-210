@@ -27,18 +27,18 @@ extern "C" {
 ===============================================================================================*/
 
 /** Application event handlers */
-static Fsm_GuardType ProgramManager_Appl_Idle_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType ProgramManager_Appl_Idle_Exit                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType ProgramManager_Appl_Idle_Next                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType ProgramManager_Appl_Idle_Next_2              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Idle_Entry                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Idle_Exit                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Idle_Next                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType ProgramManager_Idle_Next_2                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Application state machine */
-Fsm_EventEntryStruct ProgramManager_ApplState_Idle[4] =
+Fsm_EventEntryStruct ProgramManagerState_Idle[4] =
 {
-  FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_Idle_Entry                                            ),
-  FSM_TRIGGER_EXIT          (                                       ProgramManager_Appl_Idle_Exit                                             ),
-  FSM_TRIGGER_TRANSITION_ACTION (PROGRAMMANAGER_APPL_EVENT_NEXT,    ProgramManager_Appl_Idle_Next,              PROGRAMMANAGER_APPL_STATE_AUTO),
-  FSM_TRIGGER_TRANSITION_ACTION (PROGRAMMANAGER_APPL_EVENT_NEXT_2,  ProgramManager_Appl_Idle_Next_2,            PROGRAMMANAGER_APPL_STATE_MANUAL)
+  FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                            ),
+  FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                             ),
+  FSM_TRIGGER_TRANSITION_ACTION ( PROGRAMMANAGER_EVENT_NEXT,          ProgramManager_Idle_Next,              PROGRAMMANAGER_STATE_AUTO),
+  FSM_TRIGGER_TRANSITION_ACTION ( PROGRAMMANAGER_EVENT_NEXT_2,   ProgramManager_Idle_Next_2,            PROGRAMMANAGER_STATE_MANUAL)
 };
 
 
@@ -47,8 +47,8 @@ Fsm_EventEntryStruct ProgramManager_ApplState_Idle[4] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-static void ProgramManager_Appl_Idle_SubMainFunction(void);
-static void ProgramManager_Appl_Idle_SubTickHandler(void);
+static void ProgramManager_Idle_SubMainFunction(void);
+static void ProgramManager_Idle_SubTickHandler(void);
 
 
 
@@ -56,15 +56,15 @@ static void ProgramManager_Appl_Idle_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static Fsm_GuardType ProgramManager_Appl_Idle_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  ProgramManager_SubMainFunction = ProgramManager_Appl_Idle_SubMainFunction;
-  ProgramManager_SubTickHandler = ProgramManager_Appl_Idle_SubTickHandler;
+  ProgramManager_SubMainFunction = ProgramManager_Idle_SubMainFunction;
+  ProgramManager_SubTickHandler = ProgramManager_Idle_SubTickHandler;
 
   return FSM_GUARD_TRUE;
 }
 
-static Fsm_GuardType ProgramManager_Appl_Idle_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_SubMainFunction = NULL;
   ProgramManager_SubTickHandler = NULL;
@@ -72,22 +72,22 @@ static Fsm_GuardType ProgramManager_Appl_Idle_Exit(Fsm_ContextStructPtr const pF
   return FSM_GUARD_TRUE;
 }
 
-static Fsm_GuardType ProgramManager_Appl_Idle_Next(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType ProgramManager_Idle_Next(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   return FSM_GUARD_TRUE;
 }
 
-static Fsm_GuardType ProgramManager_Appl_Idle_Next_2(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType ProgramManager_Idle_Next_2(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   return FSM_GUARD_TRUE;
 }
 
-static void ProgramManager_Appl_Idle_SubMainFunction(void)
+static void ProgramManager_Idle_SubMainFunction(void)
 {
 
 }
 
-static void ProgramManager_Appl_Idle_SubTickHandler(void)
+static void ProgramManager_Idle_SubTickHandler(void)
 {
 
 }

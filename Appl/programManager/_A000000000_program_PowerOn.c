@@ -26,23 +26,14 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-/** State data hierachy structure */
-typedef struct
+/** Program manager event handlers */
+static Fsm_GuardType ProgramManager_PowerOn_Entry                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+
+/** Program manager state machine */
+Fsm_EventEntryStruct ProgramManager_PowerOn_StateMachine[2] =
 {
-  uint32_t              stateId;
-  bool                  isMemReady;
-} ProgramManager_Appl_PowerOn_DataHierachy;
-
-
-
-/** Application event handlers */
-static Fsm_GuardType ProgramManager_Appl_PowerOn_Entry            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-
-/** Application state machine */
-Fsm_EventEntryStruct ProgramManager_ApplState_PowerOn[2] =
-{
-  FSM_TRIGGER_ENTRY         (                                       ProgramManager_Appl_PowerOn_Entry                                         ),
-  FSM_TRIGGER_TRANSITION    (PROGRAMMANAGER_APPL_EVENT_NEXT,                                                    PROGRAMMANAGER_APPL_STATE_INIT)
+  FSM_TRIGGER_ENTRY         (                                         ProgramManager_PowerOn_Entry                                                    ),
+  FSM_TRIGGER_TRANSITION    ( PROGRAMMANAGER_EVENT_NEXT,                                                      PROGRAMMANAGER_STATE_INIT               )
 };
 
 
@@ -58,16 +49,16 @@ Fsm_EventEntryStruct ProgramManager_ApplState_PowerOn[2] =
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
-static Fsm_GuardType ProgramManager_Appl_PowerOn_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType ProgramManager_PowerOn_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   uint32_t magicNum;
-  ProgramManager_Appl_PowerOn_DataHierachy* dataHierachy;
+  ProgramManager_Common_MemInit_DataHierachyStruct* dataHierachy;
 
   /* Get program magic number in external memory */
   magicNum = extMemIf.readWord(PROGRAMMANAGER_MAGIC_NUMBER_BASE_ADDR);
 
-  dataHierachy = (ProgramManager_Appl_PowerOn_DataHierachy*)ProgramManager_malloc(sizeof(ProgramManager_Appl_PowerOn_DataHierachy));
-  dataHierachy->stateId = PROGRAMMANAGER_APPL_STATE_POWER_ON;
+  dataHierachy = (ProgramManager_Common_MemInit_DataHierachyStruct*)ProgramManager_malloc(sizeof(ProgramManager_Common_MemInit_DataHierachyStruct));
+  dataHierachy->stateId = PROGRAMMANAGER_STATE_POWER_ON;
 
   /* If magic number matched with default value, it means program database is ready */
   if (PROGRAMMANAGER_CONF_INIT_MAGIC_NUMBER == magicNum)

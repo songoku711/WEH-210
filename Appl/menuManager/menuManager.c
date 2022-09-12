@@ -332,6 +332,14 @@ void MenuManager_MainFunction(void)
 
 
 /*=============================================================================================*/
+MenuManager_StateType MenuManager_GetCurrentState(void)
+{
+  return (MenuManager_StateType)(MenuManager_FsmContext.state);
+}
+
+
+
+/*=============================================================================================*/
 void MenuManager_InternalDataPush(uint8_t length)
 {
   if (MenuManager_InternalData.internalDataCurIdx <= MENUMANAGER_SUBMENU_TREE_DEPTH)

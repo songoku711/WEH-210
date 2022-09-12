@@ -109,6 +109,7 @@ typedef enum _ProgramManager_WashModeType
   PROGRAMMANAGER_WASH_MODE_STANDARD,                                        /* Wash run time and stop time is standard type */
   PROGRAMMANAGER_WASH_MODE_DELICATE,                                        /* Wash run time and stop time is delicate type */
   PROGRAMMANAGER_WASH_MODE_HEAVY,                                           /* Wash run time and stop time is heavy type */
+  PROGRAMMANAGER_WASH_MODE_CUSTOM,                                          /* Wash run time and stop time is custom type */
   PROGRAMMANAGER_WASH_MODE_NUM                                              /* Number of wash time modes */
 } ProgramManager_WashModeType;
 
@@ -118,8 +119,17 @@ typedef enum _ProgramManager_LevelModeType
   PROGRAMMANAGER_LEVEL_MODE_LOW,                                            /* Water level is default low type */
   PROGRAMMANAGER_LEVEL_MODE_MID,                                            /* Water level is default middle type */
   PROGRAMMANAGER_LEVEL_MODE_HIGH,                                           /* Water level is default high type */
+  PROGRAMMANAGER_LEVEL_MODE_CUSTOM,                                         /* Water level is default custom type */
   PROGRAMMANAGER_LEVEL_MODE_NUM                                             /* Number of water level modes */
 } ProgramManager_LevelModeType;
+
+/* Program water temp mode type */
+typedef enum _ProgramManager_TempModeType
+{
+  PROGRAMMANAGER_TEMP_MODE_DEFAULT,                                         /* Water temp is default type */
+  PROGRAMMANAGER_TEMP_MODE_CUSTOM,                                          /* Water temp is custom type */
+  PROGRAMMANAGER_TEMP_MODE_NUM                                              /* Number of water temp modes */
+} ProgramManager_TempModeType;
 
 
 
@@ -314,14 +324,15 @@ typedef struct _ProgramManager_NormStepConfigStruct
   uint8_t                                     timeoutSecond;                /* Timeout second */
   /* Common parameters */
   bool                                        isActive;                     /* This step is active during AUTO mode */
-  bool                                        useColdWater;                 /* This step uses cold water */
-  bool                                        useHotWater;                  /* This step uses hot water */
-  bool                                        useSoap1;                     /* This step uses soap 1 */
-  bool                                        useSoap2;                     /* This step uses soap 2 */
-  bool                                        useSoap3;                     /* This step uses soap 3 */
-  ProgramManager_WashModeType                 washTimeMode;                 /* Wash time mode */
+  uint8_t                                     waterMode;                    /* Water mode: bit 0 - uses cold water, bit 1 - uses hot water */
+  uint8_t                                     soapMode;                     /* Soap mode: bit 0 - uses soap 1, bit 1 - uses soap 2, bit 2 - uses soap 3 */
+  ProgramManager_WashModeType                 washMode;                     /* Wash time mode */
+  ProgramManager_TempModeType                 tempMode;                     /* Water temp mode */
   ProgramManager_LevelModeType                levelMode;                    /* Water level mode */
   uint8_t                                     washNum;                      /* Number of wash time */
+  uint16_t                                    washRunTime;                  /* Wash run time */
+  uint16_t                                    washStopTime;                 /* Wash stop time */
+  ProgramManager_MotorSpeedType               washSpeed;                    /* Wash speed */
   uint8_t                                     tempThreshold;                /* Water temperature threshold */
   uint16_t                                    levelThreshold;               /* Water level threshold */
   uint16_t                                    balanceTime;                  /* Balance time at extract */

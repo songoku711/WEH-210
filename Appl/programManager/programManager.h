@@ -37,29 +37,64 @@ extern "C" {
 *                                     DEFINES AND MACROS
 ===============================================================================================*/
 
-#define ProgramManager_malloc(size)                     pvPortMalloc(size)
-#define ProgramManager_free(ptr)                        vPortFree(ptr)
+#define PROGRAMMANAGER_SUBMENU_TREE_DEPTH                             (10U)
+
+#define PROGRAMMANAGER_SUBMAINFUNCTION_NUM_MAX                        (10U)
+
+#define ProgramManager_malloc(size)                                   pvPortMalloc(size)
+#define ProgramManager_free(ptr)                                      vPortFree(ptr)
+
+#define ProgramManager_GetInternalDataPtr(index)                      *(ProgramManager_InternalData.internalDataArr[ProgramManager_InternalData.internalDataCurIdx].ptr + index)
 
 
 
 /** Program manager application states */
 typedef enum
 {
-  PROGRAMMANAGER_APPL_STATE_POWER_ON,
-  PROGRAMMANAGER_APPL_STATE_INIT,
-  PROGRAMMANAGER_APPL_STATE_IDLE,
-  PROGRAMMANAGER_APPL_STATE_AUTO,
-  PROGRAMMANAGER_APPL_STATE_MANUAL,
-  PROGRAMMANAGER_APPL_STATE_FAIL
-} ProgramManager_ApplState;
+  PROGRAMMANAGER_STATE_FAIL,
+  PROGRAMMANAGER_STATE_POWER_ON,
+  PROGRAMMANAGER_STATE_INIT,
+  PROGRAMMANAGER_STATE_IDLE,
+  PROGRAMMANAGER_STATE_AUTO,
+  PROGRAMMANAGER_STATE_MANUAL
+} ProgramManager_StateType;
 
 /** Program manager application events */
 typedef enum
 {
-  PROGRAMMANAGER_APPL_EVENT_PREV = FSM_DEFAULTEVENT_NUM,
-  PROGRAMMANAGER_APPL_EVENT_NEXT,
-  PROGRAMMANAGER_APPL_EVENT_NEXT_2
-} ProgramManager_ApplEvent;
+  PROGRAMMANAGER_EVENT_PREV = FSM_DEFAULTEVENT_NUM,
+  PROGRAMMANAGER_EVENT_NEXT,
+  PROGRAMMANAGER_EVENT_SUBMENU_1,
+  PROGRAMMANAGER_EVENT_SUBMENU_2,
+  PROGRAMMANAGER_EVENT_SUBMENU_3,
+  PROGRAMMANAGER_EVENT_SUBMENU_4,
+  PROGRAMMANAGER_EVENT_SUBMENU_5,
+  PROGRAMMANAGER_EVENT_SUBMENU_6,
+  PROGRAMMANAGER_EVENT_SUBMENU_7,
+} ProgramManager_EventType;
+
+
+
+/** Program manager sub-main function array */
+typedef struct
+{
+  uint8_t                     subMainFunctionNum;
+  void                        (*subMainFunction[PROGRAMMANAGER_SUBMAINFUNCTION_NUM_MAX])(void);
+} ProgramManager_SubMainFunctionStruct;
+
+/** Program manager internal data structure */
+typedef struct
+{
+  uint8_t length;
+  uint32_t *ptr;
+} ProgramManager_InternalDataElementStruct;
+
+/** Program manager internal data stack structure */
+typedef struct
+{
+  uint8_t internalDataCurIdx;
+  ProgramManager_InternalDataElementStruct internalDataArr[PROGRAMMANAGER_SUBMENU_TREE_DEPTH];
+} ProgramManager_InternalDataStruct;
 
 
 
@@ -73,10 +108,13 @@ extern ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqConfig;
 
 
 
+/** Program internal data structure */
+extern ProgramManager_InternalDataStruct ProgramManager_InternalData;
+
 /** Context Structure of the Finite State Machine (FSM) */
 extern Fsm_ContextStruct ProgramManager_FsmContext;
 
-extern void (*ProgramManager_SubMainFunction)(void);
+extern ProgramManager_SubMainFunctionStruct ProgramManager_gSubMainFunctionConfig;
 extern void (*ProgramManager_SubTickHandler)(void);
 
 
@@ -88,6 +126,13 @@ extern void (*ProgramManager_SubTickHandler)(void);
 void ProgramManager_Init(void);
 void ProgramManager_MainFunction(void);
 
+void ProgramManager_SubMainFunctionPush(void (*subMainFunction)(void));
+void ProgramManager_SubMainFunctionPop(void);
+
+ProgramManager_StateType ProgramManager_GetCurrentState(void);
+
+void ProgramManager_InternalDataPush(uint8_t length);
+void ProgramManager_InternalDataPop(void);
 
 
 #ifdef  __cplusplus

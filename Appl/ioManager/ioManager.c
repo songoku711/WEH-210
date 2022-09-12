@@ -96,6 +96,10 @@ static IoManager_ButtonConfStruct IoManager_buttonCfg[IOMANAGER_BUTTON_NUM] =
   { BUT_HEAT_GPIO_Port,      BUT_HEAT_Pin,      (uint32_t)IOMANAGER_BUTTON_STATE_HOTWTR,    (uint32_t)(IOMANAGER_BUTTON_PRESS_SHORT) }
 };
 
+static IoManager_StateType IoManager_gState = IOMANAGER_STATE_INIT;
+
+
+
 extern osThreadId_t ioExtIrqCbkTaskHandle;
 
 extern osMessageQueueId_t ioButtonStateQueueHandle;
@@ -131,13 +135,27 @@ void IoManager_Init(void)
   IoManager_curNumButtonPressed = (uint8_t)0U;
   
   HAL_TIM_RegisterCallback(IOMANAGER_TIMER_INSTANCE, HAL_TIM_PERIOD_ELAPSED_CB_ID, IoManager_TimerElapsedCbk);
+
+  IoManager_gState = IOMANAGER_STATE_READY;
 }
 
+
+
+/*=============================================================================================*/
+IoManager_StateType IoManager_GetCurrentState(void)
+{
+  return IoManager_gState;
+}
+
+
+
+/*=============================================================================================*/
 void IoManager_MainFunction(void)
 {
 
 }
 
+/*=============================================================================================*/
 void IoManager_ExtIrptMainFunction(void)
 {
   uint32_t recvFlag;
@@ -283,6 +301,9 @@ void IoManager_ExtIrptMainFunction(void)
   }
 }
 
+
+
+/*=============================================================================================*/
 void IoManager_ExtIrptCallback(uint32_t arg)
 {
   osThreadFlagsSet(ioExtIrqCbkTaskHandle, arg);

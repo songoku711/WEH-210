@@ -61,6 +61,8 @@ extern void (*MenuManager_SubTickHandler)(void);
 void MenuManager_Init(void);
 void MenuManager_MainFunction(void);
 
+MenuManager_StateType MenuManager_GetCurrentState(void);
+
 void MenuManager_InternalDataPush(uint8_t length);
 void MenuManager_InternalDataPop(void);
 
