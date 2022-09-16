@@ -90,22 +90,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_TimeSoap3_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_TimeSoap3_Entry                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_Exit                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_Submenu1                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_StartBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_StopBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_UpBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_DownBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_AddBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TimeSoap3_SubBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_Exit                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_AddBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TimeSoap3_SubBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_TimeSoap3_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_TimeSoap3_Entry                                                     ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_TimeSoap3_Exit                                                      ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_TimeSoap3_Submenu1,         MENUMANAGER_STATE_SOAP_SETUP            ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_SOAP_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_TimeSoap3_StartBut                                                  ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_TimeSoap3_StopBut,          MENUMANAGER_STATE_SOAP_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_TimeSoap3_UpBut                                                     ),
@@ -192,8 +191,7 @@ static void MenuManager_TimeSoap3_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_TimeSoap3_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_TimeSoap3_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_TimeSoap3_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -223,11 +221,21 @@ static Fsm_GuardType MenuManager_TimeSoap3_Entry(Fsm_ContextStructPtr const pFsm
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_TimeSoap3_LcdShowMainTitle();
     MenuManager_TimeSoap3_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_TimeSoap3_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_TimeSoap3_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -238,10 +246,10 @@ static Fsm_GuardType MenuManager_TimeSoap3_Entry(Fsm_ContextStructPtr const pFsm
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_TimeSoap3_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_TIME_SOAP_3;
@@ -250,14 +258,6 @@ static Fsm_GuardType MenuManager_TimeSoap3_Exit(Fsm_ContextStructPtr const pFsmC
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_TimeSoap3_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -428,7 +428,7 @@ static void MenuManager_TimeSoap3_SubTickHandler(void)
     {
       MenuManager_TimeSoap3_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

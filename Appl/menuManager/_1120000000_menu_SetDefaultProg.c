@@ -71,18 +71,17 @@ static MenuManager_ButEventMapConfStruct MenuManager_SetDefaultProg_ButEventMapC
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_SetDefaultProg_Entry                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultProg_Exit                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultProg_Submenu1                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultProg_StartBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultProg_StopBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_Entry                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_Exit                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_StartBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultProg_StopBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_SetDefaultProg_StateMachine[5] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_SetDefaultProg_Entry                                               ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_SetDefaultProg_Exit                                                ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_SetDefaultProg_Submenu1,    MENUMANAGER_STATE_SET_TO_DEFAULT       ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_SET_TO_DEFAULT       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_SetDefaultProg_StartBut                                            ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_SetDefaultProg_StopBut,     MENUMANAGER_STATE_SET_TO_DEFAULT       )
 };
@@ -147,8 +146,7 @@ static void MenuManager_SetDefaultProg_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_SetDefaultProg_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_SetDefaultProg_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_SetDefaultProg_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -166,11 +164,21 @@ static Fsm_GuardType MenuManager_SetDefaultProg_Entry(Fsm_ContextStructPtr const
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_SetDefaultProg_LcdShowMainTitle();
     MenuManager_SetDefaultProg_LcdShowNotify();
+
+    MenuManager_SubMainFunction = MenuManager_SetDefaultProg_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_SetDefaultProg_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -193,14 +201,6 @@ static Fsm_GuardType MenuManager_SetDefaultProg_Exit(Fsm_ContextStructPtr const 
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_SetDefaultProg_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-
   
   return FSM_GUARD_TRUE;
 }
@@ -277,7 +277,7 @@ static void MenuManager_SetDefaultProg_SubTickHandler(void)
     {
       MenuManager_SetDefaultProg_Counter = (uint32_t)0U;
 
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

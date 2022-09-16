@@ -84,20 +84,19 @@ static MenuManager_ButEventMapConfStruct MenuManager_StdWashSpeed_ButEventMapCon
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_StdWashSpeed_Entry                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_Exit                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_Submenu1                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_StartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_StopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_UpBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashSpeed_DownBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_Entry                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_Exit                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_StartBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_StopBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_UpBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashSpeed_DownBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_StdWashSpeed_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StdWashSpeed_Entry                                                  ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StdWashSpeed_Exit                                                   ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_StdWashSpeed_Submenu1,      MENUMANAGER_STATE_WASH_SETUP            ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_WASH_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StdWashSpeed_StartBut                                               ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StdWashSpeed_StopBut,       MENUMANAGER_STATE_WASH_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StdWashSpeed_UpBut                                                  ),
@@ -182,8 +181,7 @@ static void MenuManager_StdWashSpeed_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StdWashSpeed_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_StdWashSpeed_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_StdWashSpeed_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -205,11 +203,21 @@ static Fsm_GuardType MenuManager_StdWashSpeed_Entry(Fsm_ContextStructPtr const p
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_StdWashSpeed_LcdShowMainTitle();
     MenuManager_StdWashSpeed_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_StdWashSpeed_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_StdWashSpeed_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -220,10 +228,10 @@ static Fsm_GuardType MenuManager_StdWashSpeed_Entry(Fsm_ContextStructPtr const p
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StdWashSpeed_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_STD_WASH_SPEED;
@@ -232,14 +240,6 @@ static Fsm_GuardType MenuManager_StdWashSpeed_Exit(Fsm_ContextStructPtr const pF
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_StdWashSpeed_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -348,7 +348,7 @@ static void MenuManager_StdWashSpeed_SubTickHandler(void)
     {
       MenuManager_StdWashSpeed_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

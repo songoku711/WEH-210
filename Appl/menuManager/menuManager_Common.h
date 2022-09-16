@@ -60,6 +60,9 @@ extern const uint8_t MenuManager_Common_NormalCloseStr[];
 extern const uint8_t MenuManager_Common_ActiveLowStr[];
 extern const uint8_t MenuManager_Common_ActiveHighStr[];
 
+extern const uint8_t MenuManager_Common_OnStr[];
+extern const uint8_t MenuManager_Common_OffStr[];
+
 extern const uint8_t MenuManager_Common_CelsiusDegStr[];
 extern const uint8_t MenuManager_Common_FahrenheitDegStr[];
 
@@ -83,8 +86,6 @@ void MenuManager_Common_ButEventMapHandler(MenuManager_ButEventMapConfStruct *bu
 
 void MenuManager_Common_DecToBcdConv(uint32_t *inDec, uint32_t *outBcd, uint8_t unitNum);
 void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t unitNum);
-
-Fsm_GuardType MenuManager_Common_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 uint32_t MenuManager_Common_LcdGetCurPosFirstTime(uint32_t listIndex, uint32_t listItemNumber);
 uint32_t MenuManager_Common_LcdGetStartListIndex(uint32_t listIndex, uint32_t cursorPos);

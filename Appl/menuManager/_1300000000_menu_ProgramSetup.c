@@ -121,7 +121,7 @@ static void MenuManager_ProgramSetup_LcdShowList(void)
   
   for (; currentCursorPos < (listLength + (uint32_t)MENUMANAGER_COMMON_LCD_CURSOR_MIN); currentCursorPos++, currentListIndex++)
   {
-    sprintf(tempStr, MenuManager_Common_ProgramStr, currentListIndex + 1U);
+    sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramStr, currentListIndex + 1U);
 
     MenuManager_Common_LcdShowListElementName
     (
@@ -144,8 +144,7 @@ static void MenuManager_ProgramSetup_LcdShowList(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_ProgramSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_ProgramSetup_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_ProgramSetup_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -169,11 +168,21 @@ static Fsm_GuardType MenuManager_ProgramSetup_Entry(Fsm_ContextStructPtr const p
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_ProgramSetup_LcdShowMainTitle();
     MenuManager_ProgramSetup_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_ProgramSetup_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_ProgramSetup_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -185,6 +194,9 @@ static Fsm_GuardType MenuManager_ProgramSetup_Entry(Fsm_ContextStructPtr const p
 static Fsm_GuardType MenuManager_ProgramSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_Common_ProgramSetupStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (MenuManager_Common_ProgramSetupStruct *)MenuManager_malloc(sizeof(MenuManager_Common_ProgramSetupStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_PROGRAM_SETUP;
@@ -200,10 +212,10 @@ static Fsm_GuardType MenuManager_ProgramSetup_StartBut(Fsm_ContextStructPtr cons
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_ProgramSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_PROGRAM_SETUP;

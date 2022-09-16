@@ -86,11 +86,11 @@ static MenuManager_ButEventMapConfStruct MenuManager_HeatTempSetup_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_HeatTempSetup_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_HeatTempSetup_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_HeatTempSetup_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_HeatTempSetup_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_HeatTempSetup_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_Entry                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_StartBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_StopBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_UpBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_HeatTempSetup_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[11] =
@@ -171,8 +171,7 @@ static void MenuManager_HeatTempSetup_LcdShowList(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_HeatTempSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_HeatTempSetup_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_HeatTempSetup_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -201,11 +200,21 @@ static Fsm_GuardType MenuManager_HeatTempSetup_Entry(Fsm_ContextStructPtr const 
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_HeatTempSetup_LcdShowMainTitle();
     MenuManager_HeatTempSetup_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_HeatTempSetup_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_HeatTempSetup_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -217,6 +226,9 @@ static Fsm_GuardType MenuManager_HeatTempSetup_Entry(Fsm_ContextStructPtr const 
 static Fsm_GuardType MenuManager_HeatTempSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   Fsm_DataHierachyStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_HEAT_TEMP_SETUP;
@@ -232,10 +244,10 @@ static Fsm_GuardType MenuManager_HeatTempSetup_StartBut(Fsm_ContextStructPtr con
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_HeatTempSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_HEAT_TEMP_SETUP;

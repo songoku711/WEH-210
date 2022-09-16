@@ -103,7 +103,7 @@ static void MenuManager_ProgramStepSetup_LcdShowMainTitle(void)
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
 
-  sprintf(tempStr, MenuManager_Common_ProgramStr, MenuManager_ProgramStepSetup_SeqIdx + 1U);
+  sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramStr, MenuManager_ProgramStepSetup_SeqIdx + 1U);
 
   MenuManager_Common_LcdShowMainTitle(tempStr);
   MenuManager_Common_LcdUpdateElementMenuStatic();
@@ -127,7 +127,7 @@ static void MenuManager_ProgramStepSetup_LcdShowList(void)
   
   for (; currentCursorPos < (listLength + (uint32_t)MENUMANAGER_COMMON_LCD_CURSOR_MIN); currentCursorPos++, currentListIndex++)
   {
-    sprintf(tempStr, MenuManager_Common_StepStr, currentListIndex + 1U);
+    sprintf((char *)tempStr, (const char *)MenuManager_Common_StepStr, currentListIndex + 1U);
 
     MenuManager_Common_LcdShowListElementName
     (
@@ -137,7 +137,7 @@ static void MenuManager_ProgramStepSetup_LcdShowList(void)
       currentCursorPos
     );
 
-    ProgramManager_NormStepConfig_IsActive_GetData(MenuManager_ProgramStepSetup_SeqIdx, MenuManager_ProgramStepSetup_ListIndex, &tempIsActive);
+    ProgramManager_NormStepConfig_IsActive_GetData((uint8_t)MenuManager_ProgramStepSetup_SeqIdx, (uint8_t)currentListIndex, &tempIsActive);
 
     if (tempIsActive != false)
     {
@@ -159,9 +159,7 @@ static void MenuManager_ProgramStepSetup_LcdShowList(void)
 static Fsm_GuardType MenuManager_ProgramStepSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_Common_ProgramSetupStruct* enterDataHierachy;
-
-  MenuManager_SubMainFunction = MenuManager_ProgramStepSetup_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_ProgramStepSetup_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -188,11 +186,21 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_Entry(Fsm_ContextStructPtr con
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_ProgramStepSetup_LcdShowMainTitle();
     MenuManager_ProgramStepSetup_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_ProgramStepSetup_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_ProgramStepSetup_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -204,6 +212,9 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_Entry(Fsm_ContextStructPtr con
 static Fsm_GuardType MenuManager_ProgramStepSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_Common_ProgramSetupStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (MenuManager_Common_ProgramSetupStruct *)MenuManager_malloc(sizeof(MenuManager_Common_ProgramSetupStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_PROGRAM_STEP_SETUP;
@@ -220,10 +231,10 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_StartBut(Fsm_ContextStructPtr 
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_ProgramStepSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_PROGRAM_STEP_SETUP;

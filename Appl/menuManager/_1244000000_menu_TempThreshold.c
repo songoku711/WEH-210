@@ -90,22 +90,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_TempThreshold_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_TempThreshold_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_Exit                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_Submenu1                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_AddBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_TempThreshold_SubBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_Entry                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_Exit                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_StartBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_StopBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_UpBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_AddBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_TempThreshold_SubBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_TempThreshold_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_TempThreshold_Entry                                                 ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_TempThreshold_Exit                                                  ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_TempThreshold_Submenu1,     MENUMANAGER_STATE_HEAT_TEMP_SETUP       ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_HEAT_TEMP_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_TempThreshold_StartBut                                              ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_TempThreshold_StopBut,      MENUMANAGER_STATE_HEAT_TEMP_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_TempThreshold_UpBut                                                 ),
@@ -206,8 +205,7 @@ static void MenuManager_TempThreshold_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_TempThreshold_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_TempThreshold_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_TempThreshold_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -238,11 +236,21 @@ static Fsm_GuardType MenuManager_TempThreshold_Entry(Fsm_ContextStructPtr const 
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_TempThreshold_LcdShowMainTitle();
     MenuManager_TempThreshold_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_TempThreshold_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_TempThreshold_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -253,10 +261,10 @@ static Fsm_GuardType MenuManager_TempThreshold_Entry(Fsm_ContextStructPtr const 
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_TempThreshold_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MAX_WATER_TEMP;
@@ -265,14 +273,6 @@ static Fsm_GuardType MenuManager_TempThreshold_Exit(Fsm_ContextStructPtr const p
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_TempThreshold_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -443,7 +443,7 @@ static void MenuManager_TempThreshold_SubTickHandler(void)
     {
       MenuManager_TempThreshold_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

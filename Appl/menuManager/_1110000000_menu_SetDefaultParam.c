@@ -71,18 +71,17 @@ static MenuManager_ButEventMapConfStruct MenuManager_SetDefaultParam_ButEventMap
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_SetDefaultParam_Entry                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultParam_Exit                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultParam_Submenu1                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultParam_StartBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetDefaultParam_StopBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultParam_Entry                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultParam_Exit                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultParam_StartBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetDefaultParam_StopBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_SetDefaultParam_StateMachine[5] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_SetDefaultParam_Entry                                               ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_SetDefaultParam_Exit                                                ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_SetDefaultParam_Submenu1,   MENUMANAGER_STATE_SET_TO_DEFAULT        ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_SET_TO_DEFAULT        ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_SetDefaultParam_StartBut                                            ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_SetDefaultParam_StopBut,    MENUMANAGER_STATE_SET_TO_DEFAULT        )
 };
@@ -147,8 +146,7 @@ static void MenuManager_SetDefaultParam_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_SetDefaultParam_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_SetDefaultParam_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_SetDefaultParam_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -166,11 +164,21 @@ static Fsm_GuardType MenuManager_SetDefaultParam_Entry(Fsm_ContextStructPtr cons
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_SetDefaultParam_LcdShowMainTitle();
     MenuManager_SetDefaultParam_LcdShowNotify();
+
+    MenuManager_SubMainFunction = MenuManager_SetDefaultParam_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_SetDefaultParam_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -181,10 +189,10 @@ static Fsm_GuardType MenuManager_SetDefaultParam_Entry(Fsm_ContextStructPtr cons
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_SetDefaultParam_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_DEFAULT_PARAM;
@@ -194,14 +202,6 @@ static Fsm_GuardType MenuManager_SetDefaultParam_Exit(Fsm_ContextStructPtr const
   /* Free internal data */
   MenuManager_InternalDataPop();
 
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_SetDefaultParam_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-
-  
   return FSM_GUARD_TRUE;
 }
 
@@ -275,7 +275,7 @@ static void MenuManager_SetDefaultParam_SubTickHandler(void)
     {
       MenuManager_SetDefaultParam_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

@@ -75,8 +75,8 @@ static const uint8_t MenuManager_StopFillWhenSoap_MainTitleStr[] =    "STOP FILL
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_StopFillWhenSoap_ChildMenu[2] =
 {
-  { &MenuManager_Common_DisableStr,                                   MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_Common_EnableStr,                                    MENUMANAGER_EVENT_SUBMENU_1             }
+  { &MenuManager_Common_DisableStr,                                   MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_EnableStr,                                    MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */
@@ -107,20 +107,19 @@ static MenuManager_ButEventMapConfStruct MenuManager_StopFillWhenSoap_ButEventMa
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_StopFillWhenSoap_Entry                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_Exit                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_Submenu1                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_StartBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_StopBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_UpBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StopFillWhenSoap_DownBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_Entry               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_Exit                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_StartBut            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_StopBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_UpBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StopFillWhenSoap_DownBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_StopFillWhenSoap_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StopFillWhenSoap_Entry                                              ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StopFillWhenSoap_Exit                                               ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_StopFillWhenSoap_Submenu1,  MENUMANAGER_STATE_SOAP_SETUP            ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_SOAP_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StopFillWhenSoap_StartBut                                           ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StopFillWhenSoap_StopBut,   MENUMANAGER_STATE_SOAP_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StopFillWhenSoap_UpBut                                              ),
@@ -209,8 +208,7 @@ static void MenuManager_StopFillWhenSoap_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StopFillWhenSoap_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_StopFillWhenSoap_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_StopFillWhenSoap_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -240,11 +238,21 @@ static Fsm_GuardType MenuManager_StopFillWhenSoap_Entry(Fsm_ContextStructPtr con
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_StopFillWhenSoap_LcdShowMainTitle();
     MenuManager_StopFillWhenSoap_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_StopFillWhenSoap_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_StopFillWhenSoap_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -255,10 +263,10 @@ static Fsm_GuardType MenuManager_StopFillWhenSoap_Entry(Fsm_ContextStructPtr con
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StopFillWhenSoap_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_STOP_FILL_WHEN_SOAP;
@@ -267,14 +275,6 @@ static Fsm_GuardType MenuManager_StopFillWhenSoap_Exit(Fsm_ContextStructPtr cons
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_StopFillWhenSoap_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -383,7 +383,8 @@ static void MenuManager_StopFillWhenSoap_SubTickHandler(void)
     {
       MenuManager_StopFillWhenSoap_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent( &MenuManager_FsmContext, \
+                        (Fsm_EventType)((*(MenuManager_StopFillWhenSoap_ChildMenuConf.childMenuCfg))[MenuManager_StopFillWhenSoap_ListIndex].childMenuEvent));
     }
   }
 }

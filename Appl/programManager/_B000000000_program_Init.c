@@ -115,11 +115,6 @@ static Fsm_GuardType ProgramManager_Init_Entry(Fsm_ContextStructPtr const pFsmCo
     ProgramManager_Init_InitState = PROGRAMMANAGER_INIT_INITSTATE_READ_PROG;
   }
 
-  /* Read program parameters and current sequence */
-  ProgramManager_ParamConfigSetup_GetData(&ProgramManager_gParamConfig);
-  ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
-  ProgramManager_ManualSeqConfig_GetData(&ProgramManager_gManualSeqConfig);
-
   /* Release previous state data hierachy */
   ProgramManager_free(enterDataHierachy);
 
@@ -131,6 +126,13 @@ static Fsm_GuardType ProgramManager_Init_Exit(Fsm_ContextStructPtr const pFsmCon
 {
   ProgramManager_SubMainFunctionPop();
   ProgramManager_SubTickHandler = NULL;
+
+  Fsm_DataHierachyStruct* dataHierachy;
+
+  dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+  dataHierachy->dataId = PROGRAMMANAGER_STATE_INIT;
+
+  pFsmContext->dataHierachy = dataHierachy;
 
   /* Free internal data */
   ProgramManager_InternalDataPop();
@@ -193,13 +195,6 @@ static void ProgramManager_Init_SubTickHandler(void)
 {
 
 }
-
-
-
-/*===============================================================================================
-*                                       GLOBAL FUNCTIONS
-===============================================================================================*/
-
 
 
 

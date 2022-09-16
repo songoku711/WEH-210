@@ -74,8 +74,8 @@ static const uint8_t MenuManager_EmergencyStop_MainTitleStr[] =       "EMERGENCY
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_EmergencyStop_ChildMenu[2] =
 {
-  { &MenuManager_Common_ActiveLowStr,                                 MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_Common_ActiveHighStr,                                MENUMANAGER_EVENT_SUBMENU_1             }
+  { &MenuManager_Common_ActiveLowStr,                                 MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_ActiveHighStr,                                MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */
@@ -106,20 +106,19 @@ static MenuManager_ButEventMapConfStruct MenuManager_EmergencyStop_ButEventMapCo
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_EmergencyStop_Entry                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_Exit                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_Submenu1                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_StartBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_StopBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_UpBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_EmergencyStop_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_Entry                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_Exit                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_StartBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_StopBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_UpBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_EmergencyStop_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_EmergencyStop_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_EmergencyStop_Entry                                                 ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_EmergencyStop_Exit                                                  ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_EmergencyStop_Submenu1,     MENUMANAGER_STATE_INPUT_STATUS_SETUP    ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_INPUT_STATUS_SETUP    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_EmergencyStop_StartBut                                              ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_EmergencyStop_StopBut,      MENUMANAGER_STATE_INPUT_STATUS_SETUP    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_EmergencyStop_UpBut                                                 ),
@@ -208,8 +207,7 @@ static void MenuManager_EmergencyStop_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_EmergencyStop_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_EmergencyStop_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_EmergencyStop_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -239,11 +237,21 @@ static Fsm_GuardType MenuManager_EmergencyStop_Entry(Fsm_ContextStructPtr const 
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_EmergencyStop_LcdShowMainTitle();
     MenuManager_EmergencyStop_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_EmergencyStop_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_EmergencyStop_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -254,10 +262,10 @@ static Fsm_GuardType MenuManager_EmergencyStop_Entry(Fsm_ContextStructPtr const 
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_EmergencyStop_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_EMERGENCY_STOP;
@@ -266,14 +274,6 @@ static Fsm_GuardType MenuManager_EmergencyStop_Exit(Fsm_ContextStructPtr const p
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_EmergencyStop_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -382,7 +382,8 @@ static void MenuManager_EmergencyStop_SubTickHandler(void)
     {
       MenuManager_EmergencyStop_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent( &MenuManager_FsmContext, \
+                        (Fsm_EventType)((*(MenuManager_EmergencyStop_ChildMenuConf.childMenuCfg))[MenuManager_EmergencyStop_ListIndex].childMenuEvent));
     }
   }
 }

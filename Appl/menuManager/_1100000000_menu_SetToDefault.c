@@ -78,11 +78,11 @@ static MenuManager_ButEventMapConfStruct MenuManager_SetToDefault_ButEventMapCon
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_SetToDefault_Entry                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetToDefault_StartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetToDefault_StopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetToDefault_UpBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_SetToDefault_DownBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_Entry                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_StartBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_StopBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_UpBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_SetToDefault_DownBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_SetToDefault_StateMachine[7] =
@@ -159,8 +159,7 @@ static void MenuManager_SetToDefault_LcdShowList(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_SetToDefault_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_SetToDefault_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_SetToDefault_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -185,11 +184,21 @@ static Fsm_GuardType MenuManager_SetToDefault_Entry(Fsm_ContextStructPtr const p
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_SetToDefault_LcdShowMainTitle();
     MenuManager_SetToDefault_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_SetToDefault_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_SetToDefault_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -201,6 +210,9 @@ static Fsm_GuardType MenuManager_SetToDefault_Entry(Fsm_ContextStructPtr const p
 static Fsm_GuardType MenuManager_SetToDefault_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   Fsm_DataHierachyStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;
@@ -216,10 +228,10 @@ static Fsm_GuardType MenuManager_SetToDefault_StartBut(Fsm_ContextStructPtr cons
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_SetToDefault_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_SET_TO_DEFAULT;

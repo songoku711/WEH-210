@@ -193,6 +193,20 @@ extern Fsm_EventEntryStruct MenuManager_UnlockDoorTemp_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_UnlockDoorLevel_StateMachine[9];
 /** State programSetup (82) */
 extern Fsm_EventEntryStruct MenuManager_ProgramSetup_StateMachine[6];
+/** State programStepSetup (83) */
+extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[6];
+/** State programMainSetup (84) */
+extern Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[17];
+/** State stepIsActive (85) */
+extern Fsm_EventEntryStruct MenuManager_StepIsActive_StateMachine[7];
+/** State stepWaterMode (86) */
+extern Fsm_EventEntryStruct MenuManager_StepWaterMode_StateMachine[7];
+/** State stepSoapMode (87) */
+extern Fsm_EventEntryStruct MenuManager_StepSoapMode_StateMachine[9];
+/** State stepWashMode (88) */
+extern Fsm_EventEntryStruct MenuManager_StepWashMode_StateMachine[8];
+/** State stepWashModeCustom (89) */
+extern Fsm_EventEntryStruct MenuManager_StepWashModeCustom_StateMachine[8];
 
 
 
@@ -203,7 +217,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[83] =
+Fsm_StateDefStruct MenuManager_StateMachine[90] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -287,7 +301,14 @@ Fsm_StateDefStruct MenuManager_StateMachine[83] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorLockValveStatus_StateMachine)                },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UnlockDoorTemp_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UnlockDoorLevel_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramSetup_StateMachine)                       }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramSetup_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramStepSetup_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramMainSetup_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepIsActive_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWaterMode_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepSoapMode_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashMode_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashModeCustom_StateMachine)                 }
 };
 
 void (*MenuManager_SubMainFunction)(void);

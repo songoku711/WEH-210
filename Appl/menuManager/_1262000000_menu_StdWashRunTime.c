@@ -90,22 +90,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_StdWashRunTime_ButEventMapC
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_StdWashRunTime_Entry                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_Exit                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_Submenu1                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_StartBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_StopBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_UpBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_DownBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_AddBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_StdWashRunTime_SubBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_Entry                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_Exit                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_StartBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_StopBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_UpBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_DownBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_AddBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_StdWashRunTime_SubBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_StdWashRunTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StdWashRunTime_Entry                                                ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StdWashRunTime_Exit                                                 ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_StdWashRunTime_Submenu1,    MENUMANAGER_STATE_WASH_SETUP            ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_WASH_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StdWashRunTime_StartBut                                             ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StdWashRunTime_StopBut,     MENUMANAGER_STATE_WASH_SETUP            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StdWashRunTime_UpBut                                                ),
@@ -192,8 +191,7 @@ static void MenuManager_StdWashRunTime_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StdWashRunTime_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_StdWashRunTime_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_StdWashRunTime_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -223,11 +221,21 @@ static Fsm_GuardType MenuManager_StdWashRunTime_Entry(Fsm_ContextStructPtr const
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_StdWashRunTime_LcdShowMainTitle();
     MenuManager_StdWashRunTime_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_StdWashRunTime_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_StdWashRunTime_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -238,10 +246,10 @@ static Fsm_GuardType MenuManager_StdWashRunTime_Entry(Fsm_ContextStructPtr const
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_StdWashRunTime_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_STD_WASH_RUN_TIME;
@@ -250,14 +258,6 @@ static Fsm_GuardType MenuManager_StdWashRunTime_Exit(Fsm_ContextStructPtr const 
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_StdWashRunTime_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -428,7 +428,7 @@ static void MenuManager_StdWashRunTime_SubTickHandler(void)
     {
       MenuManager_StdWashRunTime_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

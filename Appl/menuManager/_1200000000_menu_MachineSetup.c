@@ -177,8 +177,7 @@ static void MenuManager_MachineSetup_LcdShowList(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_MachineSetup_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_MachineSetup_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_MachineSetup_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -209,11 +208,21 @@ static Fsm_GuardType MenuManager_MachineSetup_Entry(Fsm_ContextStructPtr const p
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_MachineSetup_LcdShowMainTitle();
     MenuManager_MachineSetup_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_MachineSetup_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_MachineSetup_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -225,6 +234,9 @@ static Fsm_GuardType MenuManager_MachineSetup_Entry(Fsm_ContextStructPtr const p
 static Fsm_GuardType MenuManager_MachineSetup_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   Fsm_DataHierachyStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MACHINE_SETUP;
@@ -240,10 +252,10 @@ static Fsm_GuardType MenuManager_MachineSetup_StartBut(Fsm_ContextStructPtr cons
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_MachineSetup_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MACHINE_SETUP;

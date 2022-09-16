@@ -90,22 +90,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_MidExtractDelayTime_ButEven
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_MidExtractDelayTime_Entry                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_Exit                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_Submenu1             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_StartBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_StopBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_UpBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_DownBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_AddBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_MidExtractDelayTime_SubBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_Entry            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_Exit             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_StartBut         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_StopBut          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_UpBut            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_DownBut          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_AddBut           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_MidExtractDelayTime_SubBut           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_MidExtractDelayTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_MidExtractDelayTime_Entry                                           ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_MidExtractDelayTime_Exit                                            ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_MidExtractDelayTime_Submenu1, MENUMANAGER_STATE_EXTRACT_SETUP       ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                       MENUMANAGER_STATE_EXTRACT_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_MidExtractDelayTime_StartBut                                        ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_MidExtractDelayTime_StopBut,  MENUMANAGER_STATE_EXTRACT_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_MidExtractDelayTime_UpBut                                           ),
@@ -192,8 +191,7 @@ static void MenuManager_MidExtractDelayTime_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_MidExtractDelayTime_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_MidExtractDelayTime_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_MidExtractDelayTime_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -223,11 +221,21 @@ static Fsm_GuardType MenuManager_MidExtractDelayTime_Entry(Fsm_ContextStructPtr 
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_MidExtractDelayTime_LcdShowMainTitle();
     MenuManager_MidExtractDelayTime_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_MidExtractDelayTime_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_MidExtractDelayTime_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -238,10 +246,10 @@ static Fsm_GuardType MenuManager_MidExtractDelayTime_Entry(Fsm_ContextStructPtr 
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_MidExtractDelayTime_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_MID_EXTRACT_DELAY_TIME;
@@ -250,14 +258,6 @@ static Fsm_GuardType MenuManager_MidExtractDelayTime_Exit(Fsm_ContextStructPtr c
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_MidExtractDelayTime_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -428,7 +428,7 @@ static void MenuManager_MidExtractDelayTime_SubTickHandler(void)
     {
       MenuManager_MidExtractDelayTime_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

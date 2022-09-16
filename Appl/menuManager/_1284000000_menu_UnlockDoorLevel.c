@@ -87,22 +87,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_UnlockDoorLevel_ButEventMap
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_UnlockDoorLevel_Entry                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_Exit                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_Submenu1                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_StartBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_StopBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_UpBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_DownBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_AddBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_UnlockDoorLevel_SubBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_Entry                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_Exit                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_StartBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_StopBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_UpBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_DownBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_AddBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_UnlockDoorLevel_SubBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_UnlockDoorLevel_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_UnlockDoorLevel_Entry                                               ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_UnlockDoorLevel_Exit                                                ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_UnlockDoorLevel_Submenu1,   MENUMANAGER_STATE_DOOR_LOCK_SETUP       ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_DOOR_LOCK_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_UnlockDoorLevel_StartBut                                            ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_UnlockDoorLevel_StopBut,    MENUMANAGER_STATE_DOOR_LOCK_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_UnlockDoorLevel_UpBut                                               ),
@@ -183,8 +182,7 @@ static void MenuManager_UnlockDoorLevel_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_UnlockDoorLevel_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_UnlockDoorLevel_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_UnlockDoorLevel_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -215,11 +213,21 @@ static Fsm_GuardType MenuManager_UnlockDoorLevel_Entry(Fsm_ContextStructPtr cons
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_UnlockDoorLevel_LcdShowMainTitle();
     MenuManager_UnlockDoorLevel_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_UnlockDoorLevel_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_UnlockDoorLevel_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -230,10 +238,10 @@ static Fsm_GuardType MenuManager_UnlockDoorLevel_Entry(Fsm_ContextStructPtr cons
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_UnlockDoorLevel_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_UNLOCK_DOOR_LEVEL;
@@ -242,14 +250,6 @@ static Fsm_GuardType MenuManager_UnlockDoorLevel_Exit(Fsm_ContextStructPtr const
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_UnlockDoorLevel_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -420,7 +420,7 @@ static void MenuManager_UnlockDoorLevel_SubTickHandler(void)
     {
       MenuManager_UnlockDoorLevel_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

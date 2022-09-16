@@ -1887,7 +1887,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->waterMode             = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]);
   data->soapMode              = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]);
   data->washMode              = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]);
-  data->tempMode              = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]);
+  data->tempMode              = (ProgramManager_TempModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]);
   data->levelMode             = (ProgramManager_LevelModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]);
 
   data->washNum               = recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET];
@@ -2036,7 +2036,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_GetData(uint8_t seqIdx
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET;
 
-  *data = (bool)(extMemIf.readByte(addr));
+  *data = extMemIf.readByte(addr);
   
   return HAL_OK;
 }
@@ -2050,7 +2050,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_WaterMode_SetData(uint8_t seqIdx
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET;
 
-  extMemIf.writeByte(addr, (uint8_t) *data);
+  extMemIf.writeByte(addr, *data);
   
   return HAL_OK;
 }
@@ -2064,7 +2064,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_GetData(uint8_t seqIdx,
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET;
 
-  *data = (bool)(extMemIf.readByte(addr));
+  *data = extMemIf.readByte(addr);
   
   return HAL_OK;
 }
@@ -2078,7 +2078,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_SetData(uint8_t seqIdx,
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET;
 
-  extMemIf.writeByte(addr, (uint8_t) *data);
+  extMemIf.writeByte(addr, *data);
   
   return HAL_OK;
 }
@@ -2097,7 +2097,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx,
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data)
 {
   uint16_t addr;
 
@@ -2125,7 +2125,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx,
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data)
 {
   uint16_t addr;
 

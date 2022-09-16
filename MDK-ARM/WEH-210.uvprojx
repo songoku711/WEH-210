@@ -814,6 +814,31 @@
               <FilePath>..\Appl\menuManager\_1311000000_menu_ProgramMainSetup.c</FilePath>
             </File>
             <File>
+              <FileName>_1311100000_menu_StepIsActive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311100000_menu_StepIsActive.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311200000_menu_StepWaterMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311200000_menu_StepWaterMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311300000_menu_StepSoapMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311300000_menu_StepSoapMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311400000_menu_StepWashMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311400000_menu_StepWashMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311410000_menu_StepWashModeCustom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311410000_menu_StepWashModeCustom.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>
@@ -844,14 +869,14 @@
               <FilePath>..\Appl\programManager\_0000000000_program_Idle.c</FilePath>
             </File>
             <File>
-              <FileName>_1000000000_program_Auto.c</FileName>
+              <FileName>_1000000000_program_AutoInit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_1000000000_program_Auto.c</FilePath>
+              <FilePath>..\Appl\programManager\_1000000000_program_AutoInit.c</FilePath>
             </File>
             <File>
-              <FileName>_2000000000_program_Manual.c</FileName>
+              <FileName>_2000000000_program_ManualInit.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_2000000000_program_Manual.c</FilePath>
+              <FilePath>..\Appl\programManager\_2000000000_program_ManualInit.c</FilePath>
             </File>
             <File>
               <FileName>programManager_Mem.c</FileName>

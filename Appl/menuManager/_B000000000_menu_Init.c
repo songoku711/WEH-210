@@ -27,8 +27,6 @@ extern "C" {
 ===============================================================================================*/
 
 /** Menu manager internal data definitions */
-#define MENUMANAGER_INIT_COUNTDOWN_MAX                                (uint32_t)100U
-
 #define MENUMANAGER_INIT_INTERNALDATALENGTH                           (uint8_t)2U
 
 #define MENUMANAGER_INIT_COUNTDOWN_IDX                                0U
@@ -36,6 +34,8 @@ extern "C" {
 
 #define MenuManager_Init_Countdown                                    MenuManager_GetInternalDataPtr(MENUMANAGER_INIT_COUNTDOWN_IDX)
 #define MenuManager_Init_InitState                                    MenuManager_GetInternalDataPtr(MENUMANAGER_INIT_INITSTATE_IDX)
+
+#define MENUMANAGER_INIT_COUNTDOWN_MAX                                (uint32_t)100U
 
 #define MENUMANAGER_INIT_INITSTATE_READY                              (uint32_t)0U
 #define MENUMANAGER_INIT_INITSTATE_WAIT_IO                            (uint32_t)1U
@@ -86,15 +86,15 @@ static Fsm_GuardType MenuManager_Init_Entry(Fsm_ContextStructPtr const pFsmConte
   MenuManager_Init_Countdown = (uint32_t)0U;
   MenuManager_Init_InitState = MENUMANAGER_INIT_INITSTATE_READY;
 
-  /* Store pointer function */
-  MenuManager_SubMainFunction = MenuManager_Init_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_Init_SubTickHandler;
-  
   LCD_SetFont(LCD_FONT_SMALL);
   LCD_SetCursorPos(4, 4, LCD_CURSOR_BY_FONT);
   LCD_PutString((uint8_t *)MenuManager_Init_InitializeStr);
   
   MenuManager_Common_LcdUpdateAll();
+  
+  /* Store pointer function */
+  MenuManager_SubMainFunction = MenuManager_Init_SubMainFunction;
+  MenuManager_SubTickHandler = MenuManager_Init_SubTickHandler;
   
 	return FSM_GUARD_TRUE;
 }

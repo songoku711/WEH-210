@@ -77,13 +77,6 @@ static Fsm_GuardType ProgramManager_PowerOn_Entry(Fsm_ContextStructPtr const pFs
 
 
 
-/*===============================================================================================
-*                                       GLOBAL FUNCTIONS
-===============================================================================================*/
-
-
-
-
 #ifdef  __cplusplus
 }
 #endif

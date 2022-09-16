@@ -26,19 +26,17 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-/** Application event handlers */
+/** Program manager event handlers */
 static Fsm_GuardType ProgramManager_Idle_Entry                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType ProgramManager_Idle_Exit                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType ProgramManager_Idle_Next                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType ProgramManager_Idle_Next_2                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
-/** Application state machine */
-Fsm_EventEntryStruct ProgramManagerState_Idle[4] =
+/** Program manager state machine */
+Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4] =
 {
-  FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                            ),
-  FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                             ),
-  FSM_TRIGGER_TRANSITION_ACTION ( PROGRAMMANAGER_EVENT_NEXT,          ProgramManager_Idle_Next,              PROGRAMMANAGER_STATE_AUTO),
-  FSM_TRIGGER_TRANSITION_ACTION ( PROGRAMMANAGER_EVENT_NEXT_2,   ProgramManager_Idle_Next_2,            PROGRAMMANAGER_STATE_MANUAL)
+  FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                                       ),
+  FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                                        ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_1,                                               PROGRAMMANAGER_STATE_AUTO_INIT          ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_2,                                               PROGRAMMANAGER_STATE_MANUAL_INIT        )
 };
 
 
@@ -58,46 +56,58 @@ static void ProgramManager_Idle_SubTickHandler(void);
 
 static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  ProgramManager_SubMainFunction = ProgramManager_Idle_SubMainFunction;
-  ProgramManager_SubTickHandler = ProgramManager_Idle_SubTickHandler;
+  /* Check if previous state data hierachy is not empty */
+  if (pFsmContext->dataHierachy != NULL)
+  {
+    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_INIT) || \
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_MANUAL_INIT))
+    {
+      /* Release previous state data hierachy */
+      ProgramManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
+    }
+    else if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_INIT)
+    {
+      /* Release previous state data hierachy */
+      ProgramManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
+    }
+    else
+    {
+      return FSM_GUARD_FALSE;
+    }
 
-  return FSM_GUARD_TRUE;
+    ProgramManager_SubMainFunctionPush(ProgramManager_Idle_SubMainFunction);
+    ProgramManager_SubTickHandler = ProgramManager_Idle_SubTickHandler;
+
+    return FSM_GUARD_TRUE;
+  }
+
+  return FSM_GUARD_FALSE;
 }
 
+/*=============================================================================================*/
 static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  ProgramManager_SubMainFunction = NULL;
+  ProgramManager_SubMainFunctionPop();
   ProgramManager_SubTickHandler = NULL;
 
   return FSM_GUARD_TRUE;
 }
 
-static Fsm_GuardType ProgramManager_Idle_Next(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  return FSM_GUARD_TRUE;
-}
 
-static Fsm_GuardType ProgramManager_Idle_Next_2(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  return FSM_GUARD_TRUE;
-}
 
+/*=============================================================================================*/
 static void ProgramManager_Idle_SubMainFunction(void)
 {
 
 }
 
+/*=============================================================================================*/
 static void ProgramManager_Idle_SubTickHandler(void)
 {
 
 }
-
-
-
-/*===============================================================================================
-*                                       GLOBAL FUNCTIONS
-===============================================================================================*/
-
 
 
 

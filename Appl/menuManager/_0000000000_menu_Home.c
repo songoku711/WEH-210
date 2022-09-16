@@ -53,20 +53,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_Home_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_Home_Entry                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_StartBut                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_StopBut                             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_LongStartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_LongStopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_UpBut                               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_DownBut                             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_UpDownBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_Entry                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_Exit                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_StartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_StopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_LongStartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_LongStopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_UpBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_DownBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_UpDownBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_Home_StateMachine[10] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_Home_Entry                                                          ),
-  FSM_TRIGGER_EXIT            (                                       MenuManager_Common_Exit                                                         ),
+  FSM_TRIGGER_EXIT            (                                       MenuManager_Home_Exit                                                           ),
   FSM_TRIGGER_TRANSITION      ( MENUMANAGER_EVENT_SUBMENU_1,                                                  MENUMANAGER_STATE_MAIN_SETTING          ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_START_BUT,          MenuManager_Home_StartBut                                                       ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_STOP_BUT,           MenuManager_Home_StopBut                                                        ),
@@ -94,14 +95,33 @@ static void MenuManager_Home_SubTickHandler(void);
 
 static Fsm_GuardType MenuManager_Home_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_Home_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_Home_SubTickHandler;
-
   MenuManager_Common_LcdClearAll();
 
   MenuManager_Common_LcdShowMainTitle(MenuManager_Home_MainTitleStr);
   
   MenuManager_Common_LcdUpdateAll();
+
+  MenuManager_SubMainFunction = MenuManager_Home_SubMainFunction;
+  MenuManager_SubTickHandler = MenuManager_Home_SubTickHandler;
+  
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  Fsm_DataHierachyStruct* dataHierachy;
+
+  MenuManager_SubMainFunction = NULL;
+  MenuManager_SubTickHandler = NULL;
+
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
+  dataHierachy->dataId = MENUMANAGER_STATE_HOME;
+
+  pFsmContext->dataHierachy = dataHierachy;
+
+  /* Free internal data */
+  MenuManager_InternalDataPop();
   
   return FSM_GUARD_TRUE;
 }

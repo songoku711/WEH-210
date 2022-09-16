@@ -87,22 +87,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_LowLevel_ButEventMapConf =
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_LowLevel_Entry                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_Exit                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_Submenu1                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_StartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_StopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_UpBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_DownBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_AddBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_LowLevel_SubBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_Entry                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_Exit                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_StartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_StopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_UpBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_DownBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_AddBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_LowLevel_SubBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_LowLevel_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_LowLevel_Entry                                                      ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_LowLevel_Exit                                                       ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_LowLevel_Submenu1,          MENUMANAGER_STATE_FILL_LEVEL_SETUP      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_FILL_LEVEL_SETUP      ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_LowLevel_StartBut                                                   ),
   FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_LowLevel_StopBut,           MENUMANAGER_STATE_FILL_LEVEL_SETUP      ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_LowLevel_UpBut                                                      ),
@@ -183,8 +182,7 @@ static void MenuManager_LowLevel_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_LowLevel_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_LowLevel_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_LowLevel_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -215,11 +213,21 @@ static Fsm_GuardType MenuManager_LowLevel_Entry(Fsm_ContextStructPtr const pFsmC
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_LowLevel_LcdShowMainTitle();
     MenuManager_LowLevel_LcdShowAdjust();
+
+    MenuManager_SubMainFunction = MenuManager_LowLevel_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_LowLevel_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -230,10 +238,10 @@ static Fsm_GuardType MenuManager_LowLevel_Entry(Fsm_ContextStructPtr const pFsmC
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_LowLevel_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_LOW_LEVEL;
@@ -242,14 +250,6 @@ static Fsm_GuardType MenuManager_LowLevel_Exit(Fsm_ContextStructPtr const pFsmCo
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_LowLevel_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -420,7 +420,7 @@ static void MenuManager_LowLevel_SubTickHandler(void)
     {
       MenuManager_LowLevel_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_PREV);
     }
   }
 }

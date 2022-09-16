@@ -46,6 +46,9 @@ const uint8_t MenuManager_Common_NormalCloseStr[] =                   "NORMAL CL
 const uint8_t MenuManager_Common_ActiveLowStr[] =                     "ACTIVE LOW";
 const uint8_t MenuManager_Common_ActiveHighStr[] =                    "ACTIVE HIGH";
 
+const uint8_t MenuManager_Common_OnStr[] =                            "ON ";
+const uint8_t MenuManager_Common_OffStr[] =                           "OFF";
+
 const uint8_t MenuManager_Common_CelsiusDegStr[] =                    "*C";
 const uint8_t MenuManager_Common_FahrenheitDegStr[] =                 "*F";
 
@@ -147,17 +150,6 @@ void MenuManager_Common_BcdToDecConv(uint32_t *outDec, uint32_t *inBcd, uint8_t 
   }
 
   *outDec = decVal;
-}
-
-
-
-/*=============================================================================================*/
-Fsm_GuardType MenuManager_Common_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  MenuManager_SubMainFunction = NULL;
-  MenuManager_SubTickHandler = NULL;
-  
-  return FSM_GUARD_TRUE;
 }
 
 

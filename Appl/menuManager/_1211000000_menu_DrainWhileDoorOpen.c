@@ -75,8 +75,8 @@ static const uint8_t MenuManager_DrainWhileDoorOpen_MainTitleStr[] =  "DRAIN D.O
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_DrainWhileDoorOpen_ChildMenu[2] =
 {
-  { &MenuManager_Common_DisableStr,                                   MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_Common_EnableStr,                                    MENUMANAGER_EVENT_SUBMENU_1             }
+  { &MenuManager_Common_DisableStr,                                   MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_EnableStr,                                    MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */
@@ -107,22 +107,21 @@ static MenuManager_ButEventMapConfStruct MenuManager_DrainWhileDoorOpen_ButEvent
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Entry                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Exit                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Submenu1              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_StartBut              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_StopBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_UpBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_DownBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Entry             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Exit              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_StartBut          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_StopBut           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_UpBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainWhileDoorOpen_DownBut           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_DrainWhileDoorOpen_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_DrainWhileDoorOpen_Entry                                            ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_DrainWhileDoorOpen_Exit                                             ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_SUBMENU_1,        MenuManager_DrainWhileDoorOpen_Submenu1, MENUMANAGER_STATE_MACHINE_FUNC_SETUP   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_MACHINE_FUNC_SETUP    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_DrainWhileDoorOpen_StartBut                                         ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_DrainWhileDoorOpen_StopBut,  MENUMANAGER_STATE_MACHINE_FUNC_SETUP   ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_DrainWhileDoorOpen_StopBut, MENUMANAGER_STATE_MACHINE_FUNC_SETUP    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_DrainWhileDoorOpen_UpBut                                            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_DrainWhileDoorOpen_DownBut                                          )
 };
@@ -209,8 +208,7 @@ static void MenuManager_DrainWhileDoorOpen_LcdShowDone(void)
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  MenuManager_SubMainFunction = MenuManager_DrainWhileDoorOpen_SubMainFunction;
-  MenuManager_SubTickHandler = MenuManager_DrainWhileDoorOpen_SubTickHandler;
+  HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -240,11 +238,21 @@ static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Entry(Fsm_ContextStructPtr c
     }
     else
     {
-      return FSM_GUARD_FALSE;
+      retVal = HAL_ERROR;
     }
+  }
+  else
+  {
+    retVal = HAL_ERROR;
+  }
 
+  if (retVal == HAL_OK)
+  {
     MenuManager_DrainWhileDoorOpen_LcdShowMainTitle();
     MenuManager_DrainWhileDoorOpen_LcdShowList();
+
+    MenuManager_SubMainFunction = MenuManager_DrainWhileDoorOpen_SubMainFunction;
+    MenuManager_SubTickHandler = MenuManager_DrainWhileDoorOpen_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }
@@ -255,10 +263,10 @@ static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Entry(Fsm_ContextStructPtr c
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_DRAIN_WHILE_DOOR_OPEN;
@@ -267,14 +275,6 @@ static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Exit(Fsm_ContextStructPtr co
 
   /* Free internal data */
   MenuManager_InternalDataPop();
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_DrainWhileDoorOpen_Submenu1(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
   
   return FSM_GUARD_TRUE;
 }
@@ -383,7 +383,8 @@ static void MenuManager_DrainWhileDoorOpen_SubTickHandler(void)
     {
       MenuManager_DrainWhileDoorOpen_Counter = (uint32_t)0U;
       
-      Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
+      Fsm_TriggerEvent( &MenuManager_FsmContext, \
+                        (Fsm_EventType)((*(MenuManager_DrainWhileDoorOpen_ChildMenuConf.childMenuCfg))[MenuManager_DrainWhileDoorOpen_ListIndex].childMenuEvent));
     }
   }
 }
