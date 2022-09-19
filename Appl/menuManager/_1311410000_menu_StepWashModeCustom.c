@@ -27,7 +27,7 @@ extern "C" {
 ===============================================================================================*/
 
 /** Menu manager internal data definitions */
-#define MENUMANAGER_STEPWASHMODECUSTOM_INTERNALDATALENGTH             (uint8_t)5U
+#define MENUMANAGER_STEPWASHMODECUSTOM_INTERNALDATALENGTH             (uint8_t)4U
 
 #define MENUMANAGER_STEPWASHMODECUSTOM_LISTINDEX_IDX                  0U
 #define MENUMANAGER_STEPWASHMODECUSTOM_CURPOS_IDX                     1U
