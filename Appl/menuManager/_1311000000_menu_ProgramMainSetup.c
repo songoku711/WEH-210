@@ -56,14 +56,10 @@ static const uint8_t MenuManager_StepWashMode_ChildTitleStr[] =                 
 static const uint8_t MenuManager_StepWashNum_ChildTitleStr[] =                            "WASH SPIN NUMBER";
 static const uint8_t MenuManager_StepTempMode_ChildTitleStr[] =                           "TEMP MODE";
 static const uint8_t MenuManager_StepLevelMode_ChildTitleStr[] =                          "LEVEL MODE";
-static const uint8_t MenuManager_StepBalanceTime_ChildTitleStr[] =                        "BALANCE TIME";
-static const uint8_t MenuManager_StepMidExtractTime_ChildTitleStr[] =                     "MID EXT TIME";
-static const uint8_t MenuManager_StepHighExtractTime1_ChildTitleStr[] =                   "HIGH EXT TIME 1";
-static const uint8_t MenuManager_StepHighExtractTime2_ChildTitleStr[] =                   "HIGH EXT TIME 2";
-static const uint8_t MenuManager_StepHighExtractTime3_ChildTitleStr[] =                   "HIGH EXT TIME 3";
+static const uint8_t MenuManager_StepExtractParam_ChildTitleStr[] =                       "EXTRACT PARAMS";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_ProgramMainSetup_ChildMenu[12] =
+static MenuManager_ChildMenuStruct MenuManager_ProgramMainSetup_ChildMenu[8] =
 {
   { &MenuManager_StepIsActive_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_StepWaterMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_2             },
@@ -72,17 +68,13 @@ static MenuManager_ChildMenuStruct MenuManager_ProgramMainSetup_ChildMenu[12] =
   { &MenuManager_StepWashNum_ChildTitleStr,                           MENUMANAGER_EVENT_SUBMENU_5             },
   { &MenuManager_StepTempMode_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_6             },
   { &MenuManager_StepLevelMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_7             },
-  { &MenuManager_StepBalanceTime_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_8             },
-  { &MenuManager_StepMidExtractTime_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_9             },
-  { &MenuManager_StepHighExtractTime1_ChildTitleStr,                  MENUMANAGER_EVENT_SUBMENU_10            },
-  { &MenuManager_StepHighExtractTime2_ChildTitleStr,                  MENUMANAGER_EVENT_SUBMENU_11            },
-  { &MenuManager_StepHighExtractTime3_ChildTitleStr,                  MENUMANAGER_EVENT_SUBMENU_12            }
+  { &MenuManager_StepExtractParam_ChildTitleStr,                      MENUMANAGER_EVENT_SUBMENU_8             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_ProgramMainSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)12U,
+  .childMenuNum               = (uint8_t)8U,
   .childMenuCfg               = &MenuManager_ProgramMainSetup_ChildMenu
 };
 
@@ -114,7 +106,7 @@ static Fsm_GuardType MenuManager_ProgramMainSetup_UpBut               (Fsm_Conte
 static Fsm_GuardType MenuManager_ProgramMainSetup_DownBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[17] =
+Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[13] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_ProgramMainSetup_Entry                                                  ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STEP_IS_ACTIVE            ),
@@ -124,11 +116,7 @@ Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[17] =
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_STEP_WASH_NUM             ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_STEP_TEMP_MODE            ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_STEP_LEVEL_MODE           ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_STEP_BALANCE_TIME         ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_9,                                                MENUMANAGER_STATE_STEP_MID_EXTRACT_TIME     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_10,                                               MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_1  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_11,                                               MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_2  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_12,                                               MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_3  ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_STEP_EXTRACT_PARAM        ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_ProgramMainSetup_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_ProgramMainSetup_DownBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_ProgramMainSetup_StartBut                                               ),
@@ -248,12 +236,10 @@ static Fsm_GuardType MenuManager_ProgramMainSetup_Entry(Fsm_ContextStructPtr con
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_MODE_CUSTOM)    || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_NUM)            || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_TEMP_MODE)           || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_TEMP_MODE_CUSTOM)    || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_LEVEL_MODE)          || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_BALANCE_TIME)        || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_MID_EXTRACT_TIME)    || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_1) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_2) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_HIGH_EXTRACT_TIME_3))
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_LEVEL_MODE_CUSTOM)   || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_EXTRACT_PARAM))
     {
       ProgramManager_NormStepConfig_IsActive_GetData((uint8_t)MenuManager_ProgramMainSetup_SeqIdx, (uint8_t)MenuManager_ProgramMainSetup_StepIdx, &tempIsActive);
     

@@ -196,7 +196,7 @@ extern Fsm_EventEntryStruct MenuManager_ProgramSetup_StateMachine[6];
 /** State programStepSetup (83) */
 extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[6];
 /** State programMainSetup (84) */
-extern Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[17];
+extern Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[13];
 /** State stepIsActive (85) */
 extern Fsm_EventEntryStruct MenuManager_StepIsActive_StateMachine[7];
 /** State stepWaterMode (86) */

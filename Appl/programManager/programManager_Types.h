@@ -342,6 +342,9 @@ typedef struct _ProgramManager_NormStepConfigStruct
   uint16_t                                    highExtractTime3;             /* Time of high extract 3 */
 } ProgramManager_NormStepConfigStruct;
 
+#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHNUM_MIN                     (0U)
+#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHNUM_MAX                     (100U)
+
 /* Program manager unload step structure */
 typedef struct _ProgramManager_UnloadStepConfigStruct
 {
