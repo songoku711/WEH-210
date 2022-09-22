@@ -523,7 +523,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_GetData(ProgramManager_AutoSeqCon
 HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqConfigStruct *data);
 
 HAL_StatusTypeDef ProgramManager_SequenceIndex_GetData(uint8_t *data);
-HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t *data);
+HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t data);
 
 HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit);

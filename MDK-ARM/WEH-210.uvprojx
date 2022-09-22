@@ -839,6 +839,76 @@
               <FilePath>..\Appl\menuManager\_1311410000_menu_StepWashModeCustom.c</FilePath>
             </File>
             <File>
+              <FileName>_1311411000_menu_StepWashRunTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311411000_menu_StepWashRunTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311412000_menu_StepWashStopTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311412000_menu_StepWashStopTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311413000_menu_StepWashSpeed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311413000_menu_StepWashSpeed.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311500000_menu_StepWashNum.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311500000_menu_StepWashNum.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311600000_menu_StepTempMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311600000_menu_StepTempMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311610000_menu_StepTempModeCustom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311610000_menu_StepTempModeCustom.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311700000_menu_StepLevelMode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311700000_menu_StepLevelMode.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311710000_menu_StepLevelModeCustom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311710000_menu_StepLevelModeCustom.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311800000_menu_StepExtractParam.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311800000_menu_StepExtractParam.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311810000_menu_StepBalanceTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311810000_menu_StepBalanceTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311820000_menu_StepMidExtractTime.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311820000_menu_StepMidExtractTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311830000_menu_StepHighExtractTime1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311830000_menu_StepHighExtractTime1.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311840000_menu_StepHighExtractTime2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311840000_menu_StepHighExtractTime2.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1311850000_menu_StepHighExtractTime3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1311850000_menu_StepHighExtractTime3.c</FilePath>
+            </File>
+            <File>
               <FileName>menuManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\menuManager_Common.c</FilePath>

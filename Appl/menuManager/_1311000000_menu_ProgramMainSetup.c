@@ -49,14 +49,14 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_StepIsActive_ChildTitleStr[] =                           "ACTIVE STATE";
-static const uint8_t MenuManager_StepWaterMode_ChildTitleStr[] =                          "WATER MODE";
-static const uint8_t MenuManager_StepSoapMode_ChildTitleStr[] =                           "SUPPLY MODE";
-static const uint8_t MenuManager_StepWashMode_ChildTitleStr[] =                           "WASH MODE";
-static const uint8_t MenuManager_StepWashNum_ChildTitleStr[] =                            "WASH SPIN NUMBER";
-static const uint8_t MenuManager_StepTempMode_ChildTitleStr[] =                           "TEMP MODE";
-static const uint8_t MenuManager_StepLevelMode_ChildTitleStr[] =                          "LEVEL MODE";
-static const uint8_t MenuManager_StepExtractParam_ChildTitleStr[] =                       "EXTRACT PARAMS";
+static const uint8_t MenuManager_StepIsActive_ChildTitleStr[] =       "ACTIVE STATE";
+static const uint8_t MenuManager_StepWaterMode_ChildTitleStr[] =      "WATER MODE";
+static const uint8_t MenuManager_StepSoapMode_ChildTitleStr[] =       "SUPPLY MODE";
+static const uint8_t MenuManager_StepWashMode_ChildTitleStr[] =       "WASH MODE";
+static const uint8_t MenuManager_StepWashNum_ChildTitleStr[] =        "WASH SPIN NUMBER";
+static const uint8_t MenuManager_StepTempMode_ChildTitleStr[] =       "TEMP MODE";
+static const uint8_t MenuManager_StepLevelMode_ChildTitleStr[] =      "LEVEL MODE";
+static const uint8_t MenuManager_StepExtractParam_ChildTitleStr[] =   "EXTRACT PARAMS";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_ProgramMainSetup_ChildMenu[8] =

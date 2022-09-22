@@ -1822,7 +1822,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqCon
   {
     for (stepIndex = (uint8_t)0U; stepIndex < PROGRAMMANAGER_STEP_NUM_MAX; stepIndex++)
     {
-      ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[stepIndex], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
+      ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[0], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
     }
 
     ProgramManager_UnloadStepConfig_SetData(sequenceIndex, &(data->unloadStep));
@@ -1838,9 +1838,9 @@ HAL_StatusTypeDef ProgramManager_SequenceIndex_GetData(uint8_t *data)
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t *data)
+HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t data)
 {
-  extMemIf.writeByte(PROGRAMMANAGER_SEQUENCE_CURRENTINDEX_BASE_ADDR, *data);
+  extMemIf.writeByte(PROGRAMMANAGER_SEQUENCE_CURRENTINDEX_BASE_ADDR, data);
   
   return HAL_OK;
 }

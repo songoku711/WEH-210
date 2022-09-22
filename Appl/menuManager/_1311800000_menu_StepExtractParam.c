@@ -104,7 +104,7 @@ Fsm_EventEntryStruct MenuManager_StepExtractParam_StateMachine[10] =
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepExtractParam_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepExtractParam_DownBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepExtractParam_StartBut                                               ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepExtractParam_StopBut,   MENUMANAGER_STATE_PROGRAM_STEP_SETUP        )
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepExtractParam_StopBut,   MENUMANAGER_STATE_PROGRAM_MAIN_SETUP        )
 };
 
 
