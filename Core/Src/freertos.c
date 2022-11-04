@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "mb.h"
+#include "eMB.h"
 #include "lcd.h"
 
 #include "menuManager.h"
@@ -64,10 +64,13 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
-USHORT  usModbusUserData[8];
-USHORT  usLastModbusUserData[8];
-UCHAR   usModbusUserCoil[8];
-uint8_t modbusCmdTaskCount = 0;
+uint16_t usModbusUserData[8];
+uint16_t usLastModbusUserData[8];
+uint8_t  usModbusUserCoil[8];
+uint8_t  modbusCmdTaskCount = 0;
+
+extern const eMB_ConfigStruct eMB_WehConfig;
+
 /* USER CODE END Variables */
 /* Definitions for menuTask */
 osThreadId_t menuTaskHandle;
@@ -258,28 +261,27 @@ void MX_FREERTOS_Init(void) {
 void startMenuTask(void *argument)
 {
   /* USER CODE BEGIN startMenuTask */
-  uint32_t recvEvent;
-  
+
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_IO_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_IO_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_PROG_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_PROG_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_LCD_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_LCD_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
   MenuManager_Init();
   
@@ -305,23 +307,24 @@ void startMenuTask(void *argument)
 void startModbusPollTask(void *argument)
 {
   /* USER CODE BEGIN startModbusPollTask */
-  uint32_t recvEvent;
-  
-  /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
-  
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MB_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
 
+  /* Wait for system initialization done */
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
+  
+  eMB_Init(&eMB_WehConfig);
+  eMB_Enable();
+
+  osEventFlagsSet(systemInitEventHandle, SYSTEM_INIT_EVENT_MB_READY);
+  
   /* Main task loop */
   while (1)
   {
-    eMBMasterPoll();
+    eMB_MainFunction();
+    
+    osDelay(5);
   }
   /* USER CODE END startModbusPollTask */
 }
@@ -339,21 +342,21 @@ void startModbusCmdTask(void *argument)
   uint32_t recvEvent;
   
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
     
-  eMBMasterInit(MB_RTU, 2, 38400, MB_PAR_NONE);
-  eMBMasterEnable();
-
-  osEventFlagsSet(systemInitEventHandle, SYSTEM_INIT_EVENT_MB_READY);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MB_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
 
   /* Wait for menu initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MENU_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MENU_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
   /* Main task loop */ 
   while (1)
@@ -367,22 +370,22 @@ void startModbusCmdTask(void *argument)
     {
       case MODBUS_EVENT_READ_COILS:
       {
-//        (void)eMBMasterReqReadCoils(1, 1, 3, 100);
+        (void)eMB_Master_RequestReadCoils(1, 1, 3);
         break;
       }
       case MODBUS_EVENT_READ_DIS_INPUTS:
       {
-//        (void)eMBMasterReqReadDiscreteInputs(1, 1, 3, 100);
+        (void)eMB_Master_RequestReadDiscreteInputs(1, 1, 3);
         break;
       }
       case MODBUS_EVENT_READ_INPUTS:
       {
-//        (void)eMBMasterReqReadInputRegister(1, 1, 5, 100);
+        (void)eMB_Master_RequestReadInputRegister(1, 1, 5);
         break;
       }
       case MODBUS_EVENT_READ_HOLDINGS:
       {
-//        (void)eMBMasterReqReadHoldingRegister(1, 1, 5, 100);
+        (void)eMB_Master_RequestReadHoldingRegister(1, 1, 5);
         break;
       }
       default:
@@ -402,13 +405,12 @@ void startModbusCmdTask(void *argument)
 void startLcdTask(void *argument)
 {
   /* USER CODE BEGIN startLcdTask */
-  uint32_t recvEvent;
   
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
     
   osEventFlagsSet(systemInitEventHandle, SYSTEM_INIT_EVENT_LCD_READY);
   
@@ -481,13 +483,12 @@ void startSystemInitTask(void *argument)
 void startIoTask(void *argument)
 {
   /* USER CODE BEGIN startIoTask */
-  uint32_t recvEvent;
   
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
     
   IoManager_Init();
 
@@ -513,14 +514,13 @@ void startIoTask(void *argument)
 void startProgramTask(void *argument)
 {
   /* USER CODE BEGIN startProgramTask */
-  uint32_t recvEvent;
   
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
-    
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
+  
   ProgramManager_Init();
 
   osEventFlagsSet(systemInitEventHandle, SYSTEM_INIT_EVENT_PROG_READY);
@@ -545,18 +545,17 @@ void startProgramTask(void *argument)
 void startIoExtIrqCbkTask(void *argument)
 {
   /* USER CODE BEGIN startIoExtIrqCbkTask */
-  uint32_t recvEvent;
   
   /* Wait for system initialization done */
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_MCAL_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MCAL_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
-  recvEvent = osEventFlagsWait( systemInitEventHandle, \
-                                SYSTEM_INIT_EVENT_IO_READY, \
-                                osFlagsWaitAny | osFlagsNoClear, \
-                                osWaitForever);
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_IO_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
   
   /* Main task loop */
   while (1)
