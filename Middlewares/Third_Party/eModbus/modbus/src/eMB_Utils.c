@@ -32,11 +32,11 @@ extern "C" {
 #define M_DISCRETE_INPUT_START                    0
 #define M_DISCRETE_INPUT_NDISCRETES               16
 #define M_COIL_START                              0
-#define M_COIL_NCOILS                             64
+#define M_COIL_NCOILS                             16
 #define M_REG_INPUT_START                         0
-#define M_REG_INPUT_NREGS                         100
+#define M_REG_INPUT_NREGS                         10
 #define M_REG_HOLDING_START                       0
-#define M_REG_HOLDING_NREGS                       100
+#define M_REG_HOLDING_NREGS                       10
 
 /* master mode: holding register's all address */
 #define M_HD_RESERVE                              0
@@ -451,6 +451,92 @@ eMB_ErrorCodeType eMB_Util_FuncInputRegisterCallback
   }
 
   return errStatus;
+}
+
+
+
+eMB_ErrorCodeType eMB_Util_GetCoil(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
+{
+  uint8_t ByteAddr = 0;
+  uint8_t BitAddr = 0;
+  uint8_t Result = 0;
+    
+  /* ---------- Check Address Correction -------------*/
+#if (M_COIL_START - 1) > 0
+  if (bitOffset < M_COIL_START)
+    return eMB_ENOREG;
+#endif
+  if (bitOffset > (M_COIL_START + M_COIL_NCOILS - 1))
+    return eMB_ENOREG;
+  
+  uint16_t DeltaBitOffset = bitOffset - M_COIL_START;
+    
+  ByteAddr = DeltaBitOffset / 8;
+  BitAddr  = DeltaBitOffset % 8;
+    
+  Result = ucMCoilBuf[slaveAddr - 1][ByteAddr] >> BitAddr;
+  Result &= (uint8_t)0x01;
+    
+  *GetValue = Result;
+    
+  return eMB_ENOERR;
+}
+
+eMB_ErrorCodeType eMB_Util_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
+{
+  uint8_t ByteAddr = 0;
+  uint8_t BitAddr = 0;
+  uint8_t Result = 0;
+    
+  /* ---------- Check Address Correction -------------*/
+#if (M_DISCRETE_INPUT_START - 1) > 0
+  if (bitOffset < M_DISCRETE_INPUT_START)
+    return eMB_ENOREG;
+#endif
+  if (bitOffset > (M_DISCRETE_INPUT_START + M_DISCRETE_INPUT_NDISCRETES -1))
+    return eMB_ENOREG;
+  
+  uint16_t DeltaBitOffset = bitOffset - M_DISCRETE_INPUT_START;
+    
+  ByteAddr = DeltaBitOffset / 8;
+  BitAddr  = DeltaBitOffset % 8;
+  
+  Result = ucMDiscInBuf[slaveAddr - 1][ByteAddr] >> BitAddr;
+  Result &= (uint8_t)1;
+    
+  *GetValue = Result;
+    
+  return eMB_ENOERR;
+}
+
+eMB_ErrorCodeType eMB_Util_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
+{
+  /* ---------Check Address Correction ------------ */
+  if (Address < (M_REG_INPUT_START - 1))
+    return eMB_ENOREG; 
+
+  if (Address > (M_REG_INPUT_START + M_REG_INPUT_NREGS - 1))
+    return eMB_ENOREG;
+
+  /* --------Assign Data ------------*/
+  *Value = usMRegInBuf[slaveAddr - 1][Address - M_REG_INPUT_START];
+
+  return eMB_ENOERR;
+}
+
+eMB_ErrorCodeType eMB_Util_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
+{
+  /* ------ Check Address correction --------*/
+  if (Address < (M_REG_HOLDING_START - 1))
+    return eMB_ENOREG;
+
+  if (Address > (M_REG_HOLDING_START + M_REG_HOLDING_NREGS - 1))
+    return eMB_ENOREG;
+
+  /* -------- Assign Data -------------*/
+  *Value = usMRegHoldBuf[slaveAddr - 1][Address - M_REG_HOLDING_START];
+
+  return eMB_ENOERR;
 }
 
 

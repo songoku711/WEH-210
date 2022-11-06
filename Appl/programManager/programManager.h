@@ -29,6 +29,7 @@ extern "C" {
 
 #include "ProgramManager_Types.h"
 #include "ProgramManager_Mem.h"
+#include "ProgramManager_Control.h"
 #include "ProgramManager_Common.h"
 
 

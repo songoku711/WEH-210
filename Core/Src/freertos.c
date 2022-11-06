@@ -79,19 +79,12 @@ const osThreadAttr_t menuTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for modbusPollTask */
-osThreadId_t modbusPollTaskHandle;
-const osThreadAttr_t modbusPollTask_attributes = {
-  .name = "modbusPollTask",
+/* Definitions for eMBTask */
+osThreadId_t eMBTaskHandle;
+const osThreadAttr_t eMBTask_attributes = {
+  .name = "eMBTask",
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal1,
-};
-/* Definitions for modbusCmdTask */
-osThreadId_t modbusCmdTaskHandle;
-const osThreadAttr_t modbusCmdTask_attributes = {
-  .name = "modbusCmdTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for lcdTask */
 osThreadId_t lcdTaskHandle;
@@ -133,20 +126,10 @@ osMessageQueueId_t ioButtonStateQueueHandle;
 const osMessageQueueAttr_t ioButtonStateQueue_attributes = {
   .name = "ioButtonStateQueue"
 };
-/* Definitions for modbusTimer */
-osTimerId_t modbusTimerHandle;
-const osTimerAttr_t modbusTimer_attributes = {
-  .name = "modbusTimer"
-};
 /* Definitions for mainFunctionTimer */
 osTimerId_t mainFunctionTimerHandle;
 const osTimerAttr_t mainFunctionTimer_attributes = {
   .name = "mainFunctionTimer"
-};
-/* Definitions for modbusEvent */
-osEventFlagsId_t modbusEventHandle;
-const osEventFlagsAttr_t modbusEvent_attributes = {
-  .name = "modbusEvent"
 };
 /* Definitions for systemInitEvent */
 osEventFlagsId_t systemInitEventHandle;
@@ -160,14 +143,12 @@ const osEventFlagsAttr_t systemInitEvent_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void startMenuTask(void *argument);
-void startModbusPollTask(void *argument);
-void startModbusCmdTask(void *argument);
+void starteMBTask(void *argument);
 void startLcdTask(void *argument);
 void startSystemInitTask(void *argument);
 void startIoTask(void *argument);
 void startProgramTask(void *argument);
 void startIoExtIrqCbkTask(void *argument);
-void modbusTimerHandler(void *argument);
 void mainFunctionTimerHandler(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -191,9 +172,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
-  /* creation of modbusTimer */
-  modbusTimerHandle = osTimerNew(modbusTimerHandler, osTimerPeriodic, NULL, &modbusTimer_attributes);
-
   /* creation of mainFunctionTimer */
   mainFunctionTimerHandle = osTimerNew(mainFunctionTimerHandler, osTimerPeriodic, NULL, &mainFunctionTimer_attributes);
 
@@ -213,11 +191,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of menuTask */
   menuTaskHandle = osThreadNew(startMenuTask, NULL, &menuTask_attributes);
 
-  /* creation of modbusPollTask */
-  modbusPollTaskHandle = osThreadNew(startModbusPollTask, NULL, &modbusPollTask_attributes);
-
-  /* creation of modbusCmdTask */
-  modbusCmdTaskHandle = osThreadNew(startModbusCmdTask, NULL, &modbusCmdTask_attributes);
+  /* creation of eMBTask */
+  eMBTaskHandle = osThreadNew(starteMBTask, NULL, &eMBTask_attributes);
 
   /* creation of lcdTask */
   lcdTaskHandle = osThreadNew(startLcdTask, NULL, &lcdTask_attributes);
@@ -239,9 +214,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_THREADS */
 
   /* Create the event(s) */
-  /* creation of modbusEvent */
-  modbusEventHandle = osEventFlagsNew(&modbusEvent_attributes);
-
   /* creation of systemInitEvent */
   systemInitEventHandle = osEventFlagsNew(&systemInitEvent_attributes);
 
@@ -297,16 +269,16 @@ void startMenuTask(void *argument)
   /* USER CODE END startMenuTask */
 }
 
-/* USER CODE BEGIN Header_startModbusPollTask */
+/* USER CODE BEGIN Header_starteMBTask */
 /**
-* @brief Function implementing the modbusPollTask thread.
+* @brief Function implementing the eMBTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_startModbusPollTask */
-void startModbusPollTask(void *argument)
+/* USER CODE END Header_starteMBTask */
+void starteMBTask(void *argument)
 {
-  /* USER CODE BEGIN startModbusPollTask */
+  /* USER CODE BEGIN starteMBTask */
 
   /* Wait for system initialization done */
   (void)osEventFlagsWait( systemInitEventHandle, \
@@ -326,73 +298,7 @@ void startModbusPollTask(void *argument)
     
     osDelay(5);
   }
-  /* USER CODE END startModbusPollTask */
-}
-
-/* USER CODE BEGIN Header_startModbusCmdTask */
-/**
-* @brief Function implementing the modbusCmdTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_startModbusCmdTask */
-void startModbusCmdTask(void *argument)
-{
-  /* USER CODE BEGIN startModbusCmdTask */
-  uint32_t recvEvent;
-  
-  /* Wait for system initialization done */
-  (void)osEventFlagsWait( systemInitEventHandle, \
-                          SYSTEM_INIT_EVENT_MCAL_READY, \
-                          osFlagsWaitAny | osFlagsNoClear, \
-                          osWaitForever);
-    
-  (void)osEventFlagsWait( systemInitEventHandle, \
-                          SYSTEM_INIT_EVENT_MB_READY, \
-                          osFlagsWaitAny | osFlagsNoClear, \
-                          osWaitForever);
-
-  /* Wait for menu initialization done */
-  (void)osEventFlagsWait( systemInitEventHandle, \
-                          SYSTEM_INIT_EVENT_MENU_READY, \
-                          osFlagsWaitAny | osFlagsNoClear, \
-                          osWaitForever);
-  
-  /* Main task loop */ 
-  while (1)
-  {
-    recvEvent = osEventFlagsWait( modbusEventHandle, \
-                                  MODBUS_EVENT_READ_COILS | MODBUS_EVENT_READ_DIS_INPUTS | MODBUS_EVENT_READ_INPUTS | MODBUS_EVENT_READ_HOLDINGS, \
-                                  osFlagsWaitAny, \
-                                  osWaitForever);
-    
-    switch (recvEvent)
-    {
-      case MODBUS_EVENT_READ_COILS:
-      {
-        (void)eMB_Master_RequestReadCoils(1, 1, 3);
-        break;
-      }
-      case MODBUS_EVENT_READ_DIS_INPUTS:
-      {
-        (void)eMB_Master_RequestReadDiscreteInputs(1, 1, 3);
-        break;
-      }
-      case MODBUS_EVENT_READ_INPUTS:
-      {
-        (void)eMB_Master_RequestReadInputRegister(1, 1, 5);
-        break;
-      }
-      case MODBUS_EVENT_READ_HOLDINGS:
-      {
-        (void)eMB_Master_RequestReadHoldingRegister(1, 1, 5);
-        break;
-      }
-      default:
-        break;
-    }
-  }
-  /* USER CODE END startModbusCmdTask */
+  /* USER CODE END starteMBTask */
 }
 
 /* USER CODE BEGIN Header_startLcdTask */
@@ -457,9 +363,6 @@ void startSystemInitTask(void *argument)
   
   LCD_SetContrast(50);
   
-  /* Start modbus timer - 100ms period */
-  osTimerStart(modbusTimerHandle, (uint32_t)100U);
-  
   /* Start main function timer - 20ms period */
   osTimerStart(mainFunctionTimerHandle, (uint32_t)20U);
   
@@ -522,6 +425,11 @@ void startProgramTask(void *argument)
                           osWaitForever);
   
   ProgramManager_Init();
+  
+  (void)osEventFlagsWait( systemInitEventHandle, \
+                          SYSTEM_INIT_EVENT_MB_READY, \
+                          osFlagsWaitAny | osFlagsNoClear, \
+                          osWaitForever);
 
   osEventFlagsSet(systemInitEventHandle, SYSTEM_INIT_EVENT_PROG_READY);
   
@@ -563,40 +471,6 @@ void startIoExtIrqCbkTask(void *argument)
     IoManager_ExtIrptMainFunction();
   }
   /* USER CODE END startIoExtIrqCbkTask */
-}
-
-/* modbusTimerHandler function */
-void modbusTimerHandler(void *argument)
-{
-  /* USER CODE BEGIN modbusTimerHandler */
-  modbusCmdTaskCount++;
-  
-  if (modbusCmdTaskCount == (uint8_t)2U)
-  {
-    osEventFlagsSet(modbusEventHandle, MODBUS_EVENT_READ_COILS);
-  }
-  else if (modbusCmdTaskCount == (uint8_t)4U)
-  {
-    osEventFlagsSet(modbusEventHandle, MODBUS_EVENT_READ_DIS_INPUTS);
-  }
-  else if (modbusCmdTaskCount == (uint8_t)6U)
-  {
-    osEventFlagsSet(modbusEventHandle, MODBUS_EVENT_READ_INPUTS);
-  }
-  else if (modbusCmdTaskCount == (uint8_t)8U)
-  {
-    osEventFlagsSet(modbusEventHandle, MODBUS_EVENT_READ_HOLDINGS);
-    modbusCmdTaskCount = (uint8_t)0U;
-  }
-  else if (modbusCmdTaskCount > (uint8_t)8U)
-  {
-    modbusCmdTaskCount = (uint8_t)0U;
-  }
-  else
-  {
-    /* shit */
-  }
-  /* USER CODE END modbusTimerHandler */
 }
 
 /* mainFunctionTimerHandler function */

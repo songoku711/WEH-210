@@ -92,6 +92,8 @@ void ProgramManager_Init(void)
   ProgramManager_SubTickHandler = NULL;
 
   ProgramManager_InternalData.internalDataCurIdx = (uint8_t)0U;
+
+  ProgramManager_Control_Init();
   
   /* Start State Machine */
 	ProgramManager_FsmContext.stateDefinitions = ProgramManager_ApplFsmStates;
@@ -106,6 +108,7 @@ void ProgramManager_Init(void)
 }
 
 /*=============================================================================================*/
+/* Task periodic time is 5ms */
 void ProgramManager_MainFunction(void)
 {
   uint8_t subMainFunctionIdx;

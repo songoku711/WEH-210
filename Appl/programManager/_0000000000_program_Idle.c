@@ -71,6 +71,8 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
+
+      ProgramManager_SubMainFunctionPush(ProgramManager_Control_TxRxSignalSubMainFunction);
     }
     else
     {

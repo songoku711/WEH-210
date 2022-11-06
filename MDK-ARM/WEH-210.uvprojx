@@ -956,6 +956,11 @@
               <FilePath>..\Appl\programManager\programManager_Mem.c</FilePath>
             </File>
             <File>
+              <FileName>programManager_Control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\programManager_Control.c</FilePath>
+            </File>
+            <File>
               <FileName>programManager_Common.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\programManager_Common.c</FilePath>

@@ -253,6 +253,24 @@ eMB_ErrorCodeType eMB_Master_RequestReadInputRegister
 #endif
 #endif
 
+#if (defined eMB_MASTER_RTU_ENABLED) || (defined eMB_MASTER_ASCII_ENABLED)
+#ifdef eMB_FUNC_READ_COILS_ENABLED
+eMB_ErrorCodeType eMB_Master_GetCoil(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue);
+#endif
+
+#ifdef eMB_FUNC_READ_DISCRETE_INPUTS_ENABLED
+eMB_ErrorCodeType eMB_Master_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue);
+#endif
+
+#ifdef eMB_FUNC_READ_INPUT_ENABLED
+eMB_ErrorCodeType eMB_Util_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
+#endif
+
+#ifdef eMB_FUNC_WRITE_HOLDING_ENABLED
+eMB_ErrorCodeType eMB_Util_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
+#endif
+#endif
+
 
 
 #ifdef __cplusplus
