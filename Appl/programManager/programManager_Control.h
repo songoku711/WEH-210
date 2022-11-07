@@ -33,14 +33,33 @@ extern "C" {
 
 #define PROGRAMMANAGER_CONTROL_SLAVE_ADDR                             (uint8_t)1U
 
-#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_ADDR                      (uint16_t)1U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_ADDR                      (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NUM                       (uint16_t)4U
 
-#define PROGRAMMANAGER_CONTROL_TEMP_PRES_ADDR                         (uint16_t)1U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_INVERTER_ERR_OFFSET       0U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_IMBALANCE_ERR_OFFSET      1U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_DOOROPEN_ERR_OFFSET       2U
+
+#define PROGRAMMANAGER_CONTROL_TEMP_PRES_ADDR                         (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_TEMP_PRES_NUM                          (uint16_t)2U
 
-#define PROGRAMMANAGER_CONTROL_RELAY_ADDR                             (uint16_t)1U
+#define PROGRAMMANAGER_CONTROL_TEMP_PRES_TEMPERATURE_OFFSET           0U
+#define PROGRAMMANAGER_CONTROL_TEMP_PRES_PRESSURE_OFFSET              1U
+
+#define PROGRAMMANAGER_CONTROL_RELAY_ADDR                             (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_RELAY_NUM                              (uint16_t)1U
+
+
+
+/*===============================================================================================
+*                                       GLOBAL VARIABLES
+===============================================================================================*/
+
+extern uint8_t ProgramManager_gSensorInverterErr;
+extern uint8_t ProgramManager_gSensorImbalanceErr;
+extern uint8_t ProgramManager_gSensorDoorOpenErr;
+extern uint8_t ProgramManager_gCurrentTemperature;
+extern uint8_t ProgramManager_gCurrentPressure;
 
 
 
@@ -51,6 +70,7 @@ extern "C" {
 void ProgramManager_Control_Init(void);
 
 void ProgramManager_Control_TxRxSignalSubMainFunction(void);
+void ProgramManager_Control_AnalyzeDataSubMainFunction(void);
 
 
 

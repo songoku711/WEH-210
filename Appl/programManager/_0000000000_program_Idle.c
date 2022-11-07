@@ -73,6 +73,7 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
       pFsmContext->dataHierachy = NULL;
 
       ProgramManager_SubMainFunctionPush(ProgramManager_Control_TxRxSignalSubMainFunction);
+      ProgramManager_SubMainFunctionPush(ProgramManager_Control_AnalyzeDataSubMainFunction);
     }
     else
     {

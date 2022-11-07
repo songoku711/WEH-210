@@ -263,11 +263,11 @@ eMB_ErrorCodeType eMB_Master_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOf
 #endif
 
 #ifdef eMB_FUNC_READ_INPUT_ENABLED
-eMB_ErrorCodeType eMB_Util_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
+eMB_ErrorCodeType eMB_Master_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
 #endif
 
 #ifdef eMB_FUNC_WRITE_HOLDING_ENABLED
-eMB_ErrorCodeType eMB_Util_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
+eMB_ErrorCodeType eMB_Master_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value);
 #endif
 #endif
 
