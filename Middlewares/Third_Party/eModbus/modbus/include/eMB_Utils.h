@@ -30,10 +30,6 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define eMB_Master_GetCoil(slaveAddr, bitOffset, GetValue)            eMB_Util_GetCoil(slaveAddr, bitOffset, GetValue)
-#define eMB_Master_GetDiscretesInput(slaveAddr, bitOffset, GetValue)  eMB_Util_GetDiscretesInput(slaveAddr, bitOffset, GetValue)
-#define eMB_Master_GetInputRegister(slaveAddr, Address, Value)        eMB_Util_GetInputRegister(slaveAddr, Address, Value)
-#define eMB_Master_GetHoldingRegister(slaveAddr, Address, Value)      eMB_Util_GetHoldingRegister(slaveAddr, Address, Value)
 
 
 

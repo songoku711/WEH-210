@@ -190,10 +190,6 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
   }
 };
 
-ProgramManager_ParamConfigSetupStruct ProgramManager_gParamConfig;
-ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqConfig;
-ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqConfig;
-
 
 
 /*===============================================================================================
@@ -1878,7 +1874,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
     data->drainMode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
   }
 
-  data->timeoutCountMode      = false;
+  data->timeoutCountMode      = (uint8_t)0U;
   data->timeoutMinute         = (uint8_t)0U;
   data->timeoutSecond         = (uint8_t)0U;
 

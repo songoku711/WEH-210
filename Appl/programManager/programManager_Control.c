@@ -37,8 +37,8 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_ANALYZEDATA_DELAYSTART_MAX             (uint8_t)100U
 #define PROGRAMMANAGER_CONTROL_ANALYZEDATA_COUNT_MAX                  (uint8_t)100U
 
-#define PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA                  (float)0.05f
-#define PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA                  (float)0.05f
+#define PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA                  (float)0.09f
+#define PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA                  (float)0.08f
 
 
 

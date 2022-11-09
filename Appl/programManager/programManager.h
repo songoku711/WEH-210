@@ -99,6 +99,10 @@ typedef struct
 
 
 
+/*===============================================================================================
+*                                         VARIABLES
+===============================================================================================*/
+
 extern const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig;
 extern const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig;
 extern const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig;

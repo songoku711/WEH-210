@@ -232,8 +232,15 @@ static Fsm_GuardType MenuManager_MainSetting_StartBut(Fsm_ContextStructPtr const
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_MainSetting_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
+
+  dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
+  dataHierachy->dataId = MENUMANAGER_STATE_MAIN_SETTING;
+
+  pFsmContext->dataHierachy = dataHierachy;
 
   /* Free internal data */
   MenuManager_InternalDataPop();

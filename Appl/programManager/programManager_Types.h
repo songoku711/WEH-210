@@ -319,7 +319,7 @@ typedef struct _ProgramManager_NormStepConfigStruct
   ProgramManager_CommonModeType               soap2Mode;                    /* Soap 2 control mode */
   ProgramManager_CommonModeType               soap3Mode;                    /* Soap 3 control mode */
   ProgramManager_CommonModeType               drainMode;                    /* Drain control mode */
-  bool                                        timeoutCountMode;             /* Timeout count mode, 0 - no timeout, 1 - timeout decreases */
+  uint8_t                                     timeoutCountMode;             /* Timeout count mode, 0 - no timeout, 1 - timeout inc, 2 - timeout dec */
   uint8_t                                     timeoutMinute;                /* Timeout minute */
   uint8_t                                     timeoutSecond;                /* Timeout second */
   /* Common parameters */

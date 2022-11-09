@@ -455,7 +455,7 @@ eMB_ErrorCodeType eMB_Util_FuncInputRegisterCallback
 
 
 
-eMB_ErrorCodeType eMB_Util_GetCoil(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
+eMB_ErrorCodeType eMB_Master_GetCoil(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
 {
   uint8_t ByteAddr = 0;
   uint8_t BitAddr = 0;
@@ -482,7 +482,7 @@ eMB_ErrorCodeType eMB_Util_GetCoil(uint8_t slaveAddr, uint16_t bitOffset, uint8_
   return eMB_ENOERR;
 }
 
-eMB_ErrorCodeType eMB_Util_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
+eMB_ErrorCodeType eMB_Master_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOffset, uint8_t* GetValue)
 {
   uint8_t ByteAddr = 0;
   uint8_t BitAddr = 0;
@@ -509,7 +509,7 @@ eMB_ErrorCodeType eMB_Util_GetDiscretesInput(uint8_t slaveAddr, uint16_t bitOffs
   return eMB_ENOERR;
 }
 
-eMB_ErrorCodeType eMB_Util_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
+eMB_ErrorCodeType eMB_Master_GetInputRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
 {
   /* ---------Check Address Correction ------------ */
   if (Address < (M_REG_INPUT_START - 1))
@@ -524,7 +524,7 @@ eMB_ErrorCodeType eMB_Util_GetInputRegister(uint8_t slaveAddr, uint16_t Address,
   return eMB_ENOERR;
 }
 
-eMB_ErrorCodeType eMB_Util_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
+eMB_ErrorCodeType eMB_Master_GetHoldingRegister(uint8_t slaveAddr, uint16_t Address, uint16_t* Value)
 {
   /* ------ Check Address correction --------*/
   if (Address < (M_REG_HOLDING_START - 1))

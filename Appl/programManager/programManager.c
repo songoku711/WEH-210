@@ -40,6 +40,10 @@ extern "C" {
 *                                       GLOBAL VARIABLES
 ===============================================================================================*/
 
+ProgramManager_ParamConfigSetupStruct ProgramManager_gParamConfig;
+ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqConfig;
+ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqConfig;
+
 /** Program internal data structure */
 ProgramManager_InternalDataStruct ProgramManager_InternalData;
 
