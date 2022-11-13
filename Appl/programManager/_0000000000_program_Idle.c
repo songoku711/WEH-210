@@ -35,7 +35,7 @@ Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                                       ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                                        ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_1,                                               PROGRAMMANAGER_STATE_AUTO_INIT          ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_1,                                               PROGRAMMANAGER_STATE_AUTO_PRE_RUN       ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_2,                                               PROGRAMMANAGER_STATE_MANUAL_INIT        )
 };
 
@@ -59,7 +59,7 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_INIT) || \
+    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN) || \
         (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_MANUAL_INIT))
     {
       /* Release previous state data hierachy */
@@ -103,7 +103,25 @@ static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmCon
 /*=============================================================================================*/
 static void ProgramManager_Idle_SubMainFunction(void)
 {
+  uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
 
+  ProgramManager_Control_RetrieveCommand(&command);
+
+  switch (command)
+  {
+    case PROGRAMMANAGER_CONTROL_COMMAND_START:
+    {
+      if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == false) && \
+          (ProgramManager_gSensorDoorOpenErr != (uint8_t)0U))
+      {
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_EVENT_SUBMENU_1);
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 /*=============================================================================================*/

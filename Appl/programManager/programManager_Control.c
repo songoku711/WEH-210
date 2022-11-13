@@ -60,6 +60,9 @@ uint8_t ProgramManager_gSensorDoorOpenErr;
 uint8_t ProgramManager_gCurrentTemperature;
 uint8_t ProgramManager_gCurrentPressure;
 
+uint8_t ProgramManager_gIsPaused;
+uint8_t ProgramManager_gIsError;
+
 uint16_t ProgramManager_gCurrentOutput;
 
 
@@ -101,10 +104,14 @@ void ProgramManager_ControlInternal_AnalyzeSensorInput(void)
     PROGRAMMANAGER_CONTROL_INPUT_SENSOR_DOOROPEN_ERR_OFFSET,
     &ProgramManager_gSensorDoorOpenErr
   );
+
+  ProgramManager_gIsError = ProgramManager_gSensorInverterErr | ProgramManager_gSensorImbalanceErr | ProgramManager_gSensorDoorOpenErr;
 }
 
+/*=============================================================================================*/
 void ProgramManager_ControlInternal_AnalyzeTemperature(void)
 {
+  static uint8_t tempDelayCount = (uint8_t)2U;
   uint16_t tempTemperature;
   uint8_t  finalTemperature;
 
@@ -116,12 +123,25 @@ void ProgramManager_ControlInternal_AnalyzeTemperature(void)
     &tempTemperature
   );
 
-  /* Simple first-order IIR filter to smooth output */
-  ProgramManager_gRealTemperature = ((float)1.0f - PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA) * ProgramManager_gRealTemperature + \
-                                    PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA * tempTemperature;
+  if (tempDelayCount == (uint8_t)0U)
+  {
+    /* Simple first-order IIR filter to smooth output */
+    ProgramManager_gRealTemperature = ((float)1.0f - PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA) * ProgramManager_gRealTemperature + \
+                                      PROGRAMMANAGER_CONTROL_IIR_FILTER_TEMP_ALPHA * tempTemperature;
 
-  /* Downcast value */
-  finalTemperature = (uint8_t)ProgramManager_gRealTemperature;
+    /* Downcast value */
+    finalTemperature = (uint8_t)ProgramManager_gRealTemperature;
+  }
+  else
+  {
+    /* First time after initialization get instant value */
+    ProgramManager_gRealTemperature = (float)tempTemperature;
+
+    /* Downcast value */
+    finalTemperature = (uint8_t)tempTemperature;
+
+    tempDelayCount--;
+  }
 
   if (ProgramManager_gParamConfig.machineFuncCfg.tempUnit == PROGRAMMANAGER_TEMP_UNIT_FAHRENHEIT)
   {
@@ -133,8 +153,10 @@ void ProgramManager_ControlInternal_AnalyzeTemperature(void)
   }
 }
 
+/*=============================================================================================*/
 void ProgramManager_ControlInternal_AnalyzePressure(void)
 {
+  static uint8_t presDelayCount = (uint8_t)2U;
   uint16_t tempPressure;
 
   /* Get pressure value from slave */
@@ -145,14 +167,25 @@ void ProgramManager_ControlInternal_AnalyzePressure(void)
     &tempPressure
   );
 
-  /* Simple first-order IIR filter to smooth output */
-  ProgramManager_gRealPressure = ((float)1.0f - PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA) * ProgramManager_gRealPressure + \
-                                    PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA * tempPressure;
+  if (presDelayCount == (uint8_t)0U)
+  {
+    /* Simple first-order IIR filter to smooth output */
+    ProgramManager_gRealPressure = ((float)1.0f - PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA) * ProgramManager_gRealPressure + \
+                                      PROGRAMMANAGER_CONTROL_IIR_FILTER_PRES_ALPHA * tempPressure;
+  }
+  else
+  {
+    /* First time after initialization get instant value */
+    ProgramManager_gRealPressure = (float)tempPressure;
+
+    presDelayCount--;
+  }
 
   /* Downcast value */
-  ProgramManager_gCurrentPressure = (uint16_t)ProgramManager_gRealPressure;
+  ProgramManager_gCurrentPressure = (uint8_t)ProgramManager_gRealPressure;
 }
 
+/*=============================================================================================*/
 void ProgramManager_ControlInternal_VerifiedOutput(void)
 {
   uint16_t tempOutput;
@@ -183,8 +216,39 @@ void ProgramManager_Control_Init(void)
 
   ProgramManager_Control_AnalyzeDataDelayStart = PROGRAMMANAGER_CONTROL_ANALYZEDATA_DELAYSTART_MAX;
   ProgramManager_Control_AnalyzeDataCount = (uint8_t)0U;
+
+  ProgramManager_gRealTemperature = (float)0.0f;
+  ProgramManager_gRealPressure = (float)0.0f;
+
+  ProgramManager_gSensorInverterErr = (uint8_t)0U;
+  ProgramManager_gSensorImbalanceErr = (uint8_t)0U;
+  ProgramManager_gSensorDoorOpenErr = (uint8_t)0U;
+  ProgramManager_gCurrentTemperature = (uint8_t)0U;
+  ProgramManager_gCurrentPressure = (uint8_t)0U;
+
+  ProgramManager_gIsPaused = (uint8_t)0U;
+  ProgramManager_gIsError = (uint8_t)0U;
+
+  ProgramManager_gCurrentOutput = (uint16_t)0U;
 }
 
+
+
+/*=============================================================================================*/
+void ProgramManager_Control_SetCommand(uint8_t command)
+{
+
+}
+
+/*=============================================================================================*/
+void ProgramManager_Control_RetrieveCommand(uint8_t *command)
+{
+
+}
+
+
+
+/*=============================================================================================*/
 /* Task periodic time is 5ms */
 void ProgramManager_Control_TxRxSignalSubMainFunction(void)
 {
@@ -226,6 +290,7 @@ void ProgramManager_Control_TxRxSignalSubMainFunction(void)
   }
 }
 
+/*=============================================================================================*/
 /* Task periodic time is 5ms */
 void ProgramManager_Control_AnalyzeDataSubMainFunction(void)
 {

@@ -330,17 +330,28 @@ static Fsm_GuardType MenuManager_Home_Exit(Fsm_ContextStructPtr const pFsmContex
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    (ProgramManager_gAutoSeqConfig.sequenceIndex)--;
+    if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
+    {
+      (ProgramManager_gAutoSeqConfig.sequenceIndex)--;
 
-    ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
+      ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
 
-    ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
+      ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
+    }
+
+    /* Reset counter */
+    MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-
-  /* Reset counter */
-  MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME);
+  }
+  else
+  {
+    /* Should never executed here */
+  }
   
   return FSM_GUARD_TRUE;
 }
@@ -348,17 +359,28 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_gAutoSeqConfig.sequenceIndex < ((uint8_t)(PROGRAMMANAGER_SEQUENCE_NUM_MAX) - (uint8_t)1U))
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    (ProgramManager_gAutoSeqConfig.sequenceIndex)++;
+    if (ProgramManager_gAutoSeqConfig.sequenceIndex < ((uint8_t)(PROGRAMMANAGER_SEQUENCE_NUM_MAX) - (uint8_t)1U))
+    {
+      (ProgramManager_gAutoSeqConfig.sequenceIndex)++;
 
-    ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
+      ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
 
-    ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
+      ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
+    }
+
+    /* Reset counter */
+    MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-
-  /* Reset counter */
-  MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_STOP);
+  }
+  else
+  {
+    /* Should never executed here */
+  }
   
   return FSM_GUARD_TRUE;
 }
@@ -366,7 +388,10 @@ static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmCon
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_LongStartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
+  }
   
   return FSM_GUARD_TRUE;
 }
@@ -382,13 +407,24 @@ static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFs
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_gAutoSeqConfig.currentStep < ((uint8_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint8_t)1U))
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    (ProgramManager_gAutoSeqConfig.currentStep)++;
-  }
+    if (ProgramManager_gAutoSeqConfig.currentStep < ((uint8_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint8_t)1U))
+    {
+      (ProgramManager_gAutoSeqConfig.currentStep)++;
+    }
 
-  /* Reset counter */
-  MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+    /* Reset counter */
+    MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+  }
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP);
+  }
+  else
+  {
+    /* Should never executed here */
+  }
   
   return FSM_GUARD_TRUE;
 }
@@ -396,14 +432,25 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_gAutoSeqConfig.currentStep > (uint8_t)0U)
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    (ProgramManager_gAutoSeqConfig.currentStep)--;
+    if (ProgramManager_gAutoSeqConfig.currentStep > (uint8_t)0U)
+    {
+      (ProgramManager_gAutoSeqConfig.currentStep)--;
+    }
+
+    /* Reset counter */
+    MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+  }
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PREV_STEP);
+  }
+  else
+  {
+    /* Should never executed here */
   }
 
-  /* Reset counter */
-  MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
-  
   return FSM_GUARD_TRUE;
 }
 

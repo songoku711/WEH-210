@@ -49,6 +49,13 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_RELAY_ADDR                             (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_RELAY_NUM                              (uint16_t)1U
 
+#define PROGRAMMANAGER_CONTROL_COMMAND_NONE                           (uint8_t)255U
+#define PROGRAMMANAGER_CONTROL_COMMAND_START                          (uint8_t)1U
+#define PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME                   (uint8_t)2U
+#define PROGRAMMANAGER_CONTROL_COMMAND_STOP                           (uint8_t)3U
+#define PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP                      (uint8_t)4U
+#define PROGRAMMANAGER_CONTROL_COMMAND_PREV_STEP                      (uint8_t)5U
+
 
 
 /*===============================================================================================
@@ -61,6 +68,9 @@ extern uint8_t ProgramManager_gSensorDoorOpenErr;
 extern uint8_t ProgramManager_gCurrentTemperature;
 extern uint8_t ProgramManager_gCurrentPressure;
 
+extern uint8_t ProgramManager_gIsPaused;
+extern uint8_t ProgramManager_gIsError;
+
 
 
 /*===============================================================================================
@@ -68,6 +78,9 @@ extern uint8_t ProgramManager_gCurrentPressure;
 ===============================================================================================*/
 
 void ProgramManager_Control_Init(void);
+
+void ProgramManager_Control_SetCommand(uint8_t command);
+void ProgramManager_Control_RetrieveCommand(uint8_t *command);
 
 void ProgramManager_Control_TxRxSignalSubMainFunction(void);
 void ProgramManager_Control_AnalyzeDataSubMainFunction(void);
