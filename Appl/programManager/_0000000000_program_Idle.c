@@ -26,17 +26,18 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
+#define PROGRAMMANAGER_IDLE_EVENT_PRE_RUN                             PROGRAMMANAGER_EVENT_SUBMENU_1
+
 /** Program manager event handlers */
 static Fsm_GuardType ProgramManager_Idle_Entry                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType ProgramManager_Idle_Exit                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Program manager state machine */
-Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4] =
+Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                                       ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                                        ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_1,                                               PROGRAMMANAGER_STATE_AUTO_PRE_RUN       ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_EVENT_SUBMENU_2,                                               PROGRAMMANAGER_STATE_MANUAL_INIT        )
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_IDLE_EVENT_PRE_RUN,                                            PROGRAMMANAGER_STATE_AUTO_PRE_RUN       )
 };
 
 
@@ -59,8 +60,7 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN) || \
-        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_MANUAL_INIT))
+    if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_POST_RUN)
     {
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);
@@ -74,6 +74,7 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
 
       ProgramManager_SubMainFunctionPush(ProgramManager_Control_TxRxSignalSubMainFunction);
       ProgramManager_SubMainFunctionPush(ProgramManager_Control_AnalyzeDataSubMainFunction);
+      ProgramManager_SubMainFunctionPush(ProgramManager_Control_UpdateThresholdSubMainFunction);
     }
     else
     {
@@ -92,8 +93,16 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
 /*=============================================================================================*/
 static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  ProgramManager_Control_PreRunStruct* dataHierachy;
+
   ProgramManager_SubMainFunctionPop();
   ProgramManager_SubTickHandler = NULL;
+
+  dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+  dataHierachy->dataId = PROGRAMMANAGER_STATE_IDLE;
+  dataHierachy->executeStep = ProgramManager_gAutoSeqConfig.currentStep;
+
+  pFsmContext->dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
   return FSM_GUARD_TRUE;
 }
@@ -111,10 +120,10 @@ static void ProgramManager_Idle_SubMainFunction(void)
   {
     case PROGRAMMANAGER_CONTROL_COMMAND_START:
     {
-      if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == false) && \
-          (ProgramManager_gSensorDoorOpenErr != (uint8_t)0U))
+      if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true) && \
+          (ProgramManager_gSensorDoorOpenErr == (uint8_t)0U))
       {
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_EVENT_SUBMENU_1);
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_PRE_RUN);
       }
 
       break;

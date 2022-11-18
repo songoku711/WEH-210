@@ -293,14 +293,14 @@ extern "C" {
 
 /* Base address of program AUTO sequence configuration */
 #define PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR                         (uint16_t)0x100
-#define PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE                        (uint16_t)0x140
+#define PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE                        (uint16_t)0xC0
 
 /* Base address of program MANUAL sequence configuration */
-#define PROGRAMMANAGER_MANUALSEQUENCE_BASE_ADDR                       (uint16_t)0xD80
+#define PROGRAMMANAGER_MANUALSEQUENCE_BASE_ADDR                       (uint16_t)0x780
 
 /* Offset address of normal step configuration in program sequence configuration */
 #define PROGRAMMANAGER_NORMSTEP_OFFSET                                (uint16_t)0x0
-#define PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE                            (uint16_t)0x20
+#define PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE                            (uint16_t)0x10
 
 /* Offset address of normal step elements in program sequence configuration */
 #define PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET                       (uint16_t)0x00
@@ -315,18 +315,16 @@ extern "C" {
 #define PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET                      (uint16_t)0x0B
 #define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0C
 #define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x0E
-#define PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET                    (uint16_t)0x10
-#define PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET                 (uint16_t)0x12
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET               (uint16_t)0x14
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET               (uint16_t)0x16
-#define PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET               (uint16_t)0x18
 
-/* Offset address of unload step configuration in program sequence configuration */
-#define PROGRAMMANAGER_UNLOADSTEP_OFFSET                              (uint16_t)0x13E
-#define PROGRAMMANAGER_UNLOADSTEP_BLOCK_SIZE                          (uint16_t)0x2
+/* Offset address of extract step configuration in program sequence configuration */
+#define PROGRAMMANAGER_EXTRACTSTEP_OFFSET                             (uint16_t)0xA0
 
-/* Offset address of unload step elements in program sequence configuration */
-#define PROGRAMMANAGER_UNLOADSTEP_REVERSETIME_OFFSET                  (uint16_t)0x0
+/* Offset address of extract step elements in program sequence configuration */
+#define PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET                 (uint16_t)0x00
+#define PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET              (uint16_t)0x02
+#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET            (uint16_t)0x04
+#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET            (uint16_t)0x06
+#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET            (uint16_t)0x08
 
 
 
@@ -552,21 +550,20 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_GetData(uint8_t se
 HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_GetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_SetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data);
 
-
-HAL_StatusTypeDef ProgramManager_UnloadStepConfig_GetData(uint8_t seqIdx, ProgramManager_UnloadStepConfigStruct *data);
-HAL_StatusTypeDef ProgramManager_UnloadStepConfig_SetData(uint8_t seqIdx, ProgramManager_UnloadStepConfigStruct *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint16_t *data);
 
 
 

@@ -192,6 +192,7 @@ static void MenuManager_Home_LcdShowNotifyState(void)
 /*=============================================================================================*/
 static void MenuManager_Home_LcdShowCountDown(void)
 {
+#if 0
   uint8_t tempStr[20];
 
   LCD_SetCursorPos(MENUMANAGER_HOME_COUNTDOWN_XPOS, MENUMANAGER_HOME_COUNTDOWN_YPOS, LCD_CURSOR_BY_FONT);
@@ -209,6 +210,7 @@ static void MenuManager_Home_LcdShowCountDown(void)
   {
     LCD_PutString((uint8_t *)MenuManager_Home_CountdownDisableStr);
   }
+#endif
 }
 
 /*=============================================================================================*/
@@ -218,11 +220,11 @@ static void MenuManager_Home_LcdShowTemperature(void)
 
   LCD_SetCursorPos(MENUMANAGER_HOME_TEMPERATURE_XPOS, MENUMANAGER_HOME_TEMPERATURE_YPOS, LCD_CURSOR_BY_FONT);
 
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_gCurrentTempThreshold != PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE)
   {
     sprintf((char *)tempStr, (const char *)MenuManager_Home_TemperatureEnableStr, \
                              ProgramManager_gCurrentTemperature, \
-                             (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].tempThreshold);
+                             ProgramManager_gCurrentTempThreshold);
   }
   else
   {
@@ -251,11 +253,11 @@ static void MenuManager_Home_LcdShowPressure(void)
 
   LCD_SetCursorPos(MENUMANAGER_HOME_PRESSURE_XPOS, MENUMANAGER_HOME_PRESSURE_YPOS, LCD_CURSOR_BY_FONT);
 
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_gCurrentPresThreshold != PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE)
   {
     sprintf((char *)tempStr, (const char *)MenuManager_Home_PressureEnableStr, \
                              ProgramManager_gCurrentPressure, \
-                             (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].levelThreshold);
+                             ProgramManager_gCurrentPresThreshold);
   }
   else
   {

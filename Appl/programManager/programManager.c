@@ -61,20 +61,17 @@ extern Fsm_EventEntryStruct ProgramManager_PowerOn_StateMachine[2];
 /** State init (1) */
 extern Fsm_EventEntryStruct ProgramManager_Init_StateMachine[3];
 /** State idle (2) */
-extern Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4];
+extern Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3];
 /** State auto (3) */
-extern Fsm_EventEntryStruct ProgramManager_AutoInit_StateMachine[2];
-/** State manual (4) */
-extern Fsm_EventEntryStruct ProgramManager_ManualInit_StateMachine[2];
+extern Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[2];
 
 /** List of all states */
-Fsm_StateDefStruct ProgramManager_ApplFsmStates[5] =
+Fsm_StateDefStruct ProgramManager_ApplFsmStates[4] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_PowerOn_StateMachine)                         },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_Init_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_Idle_StateMachine)                            },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoInit_StateMachine)                        },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_ManualInit_StateMachine)                      }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoPreRun_StateMachine)                      }
 };
 
 

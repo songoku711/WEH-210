@@ -153,16 +153,15 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
     .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
-    .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
+    .levelThreshold             = (uint16_t)50U                             /* Water level threshold */
+  },
+  .extractStep =
+  {
     .balanceTime                = (uint16_t)10U,                            /* Balance time at extract */
     .midExtractTime             = (uint16_t)20U,                            /* Time of middle extract */
     .highExtractTime1           = (uint16_t)20U,                            /* Time of high extract 1 */
     .highExtractTime2           = (uint16_t)40U,                            /* Time of high extract 2 */
     .highExtractTime3           = (uint16_t)40U                             /* Time of high extract 3 */
-  },
-  .unloadStep =
-  {
-    .reverseTime                = (uint16_t)10U                             /* Time of reverse spin */
   }
 };
 
@@ -181,12 +180,7 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
     .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
-    .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
-    .balanceTime                = (uint16_t)10U,                            /* Balance time at extract */
-    .midExtractTime             = (uint16_t)20U,                            /* Time of middle extract */
-    .highExtractTime1           = (uint16_t)20U,                            /* Time of high extract 1 */
-    .highExtractTime2           = (uint16_t)40U,                            /* Time of high extract 2 */
-    .highExtractTime3           = (uint16_t)40U                             /* Time of high extract 3 */
+    .levelThreshold             = (uint16_t)50U                             /* Water level threshold */
   }
 };
 
@@ -1802,7 +1796,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_GetData(ProgramManager_AutoSeqCon
     ProgramManager_NormStepConfig_GetData(data->sequenceIndex, stepIndex, &(data->normStep)[stepIndex], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
   }
 
-  ProgramManager_UnloadStepConfig_GetData(data->sequenceIndex, &(data->unloadStep));
+  ProgramManager_ExtractStepConfig_GetData(data->sequenceIndex, &(data->extractStep));
   
   return HAL_OK;
 }
@@ -1821,7 +1815,7 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqCon
       ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[0], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
     }
 
-    ProgramManager_UnloadStepConfig_SetData(sequenceIndex, &(data->unloadStep));
+    ProgramManager_ExtractStepConfig_SetData(sequenceIndex, &(data->extractStep));
   }
 
   return HAL_OK;
@@ -1844,13 +1838,13 @@ HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t data)
 HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx);
 
-  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
   /* Check if sequence index is from AUTO or MANUAL mode configuration */
   if (seqIdx < PROGRAMMANAGER_SEQUENCE_NUM_MAX)
@@ -1873,10 +1867,6 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
     data->soap3Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
     data->drainMode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
   }
-
-  data->timeoutCountMode      = (uint8_t)0U;
-  data->timeoutMinute         = (uint8_t)0U;
-  data->timeoutSecond         = (uint8_t)0U;
 
   data->isActive              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
 
@@ -1908,28 +1898,13 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->levelThreshold        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]) << 8U;
   data->levelThreshold       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]);
 
-  data->balanceTime           = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]) << 8U;
-  data->balanceTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]);
-
-  data->midExtractTime        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]) << 8U;
-  data->midExtractTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]);
-
-  data->highExtractTime1      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
-  data->highExtractTime1     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]);
-
-  data->highExtractTime2      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
-  data->highExtractTime2     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]);
-
-  data->highExtractTime3      = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
-  data->highExtractTime3     |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]);
-
   return HAL_OK;
 }
 
 HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
 
   recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]                    = (uint8_t)(data->isActive    );
 
@@ -1971,26 +1946,11 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
   recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]              = (uint8_t)(data->levelThreshold >> 8U);
   recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]          = (uint8_t)(data->levelThreshold & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET]                 = (uint8_t)(data->balanceTime >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET + 1]             = (uint8_t)(data->balanceTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET]              = (uint8_t)(data->midExtractTime >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET + 1]          = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET]            = (uint8_t)(data->highExtractTime1 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET + 1]        = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET]            = (uint8_t)(data->highExtractTime2 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET + 1]        = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET]            = (uint8_t)(data->highExtractTime3 >> 8U);
-  recvArr[PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET + 1]        = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
-
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx);
 
-  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
   return HAL_OK;
 }
@@ -2352,170 +2312,204 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+
+
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_GetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data)
+{
+  uint16_t addr;
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET;
+  
+  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
+
+  data->balanceTime           = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET]) << 8U;
+  data->balanceTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET + 1]);
+
+  data->midExtractTime        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET]) << 8U;
+  data->midExtractTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET + 1]);
+
+  data->highExtractTime1      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
+  data->highExtractTime1     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET + 1]);
+
+  data->highExtractTime2      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
+  data->highExtractTime2     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET + 1]);
+
+  data->highExtractTime3      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
+  data->highExtractTime3     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET + 1]);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_SetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data)
+{
+  uint16_t addr;
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
+
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET]              = (uint8_t)(data->balanceTime >> 8U);
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET + 1]          = (uint8_t)(data->balanceTime & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET]           = (uint8_t)(data->midExtractTime >> 8U);
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET + 1]       = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET]         = (uint8_t)(data->highExtractTime1 >> 8U);
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET + 1]     = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET]         = (uint8_t)(data->highExtractTime2 >> 8U);
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET + 1]     = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET]         = (uint8_t)(data->highExtractTime3 >> 8U);
+  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET + 1]     = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET;
+
+  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
+  
+  return HAL_OK;
+}
+
+
+
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_BALANCETIME_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_MIDEXTRACTTIME_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME1_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME2_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_HIGHEXTRACTTIME3_OFFSET;
+         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
+         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
-  
-  return HAL_OK;
-}
-
-
-
-HAL_StatusTypeDef ProgramManager_UnloadStepConfig_GetData(uint8_t seqIdx, ProgramManager_UnloadStepConfigStruct *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_UNLOADSTEP_OFFSET;
-
-  data->reverseTime = extMemIf.readInteger(addr);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_UnloadStepConfig_SetData(uint8_t seqIdx, ProgramManager_UnloadStepConfigStruct *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_UNLOADSTEP_OFFSET;
-
-  extMemIf.writeInteger(addr, data->reverseTime);
   
   return HAL_OK;
 }

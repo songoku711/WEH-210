@@ -1,5 +1,5 @@
 /* 
- * File:   _1311850000_menu_StepHighExtractTime3.c
+ * File:   _1312500000_menu_StepHighExtractTime3.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -27,23 +27,21 @@ extern "C" {
 ===============================================================================================*/
 
 /** Menu manager internal data definitions */
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_INTERNALDATALENGTH           (uint8_t)11U
+#define MENUMANAGER_STEPHIGHEXTRACTTIME3_INTERNALDATALENGTH           (uint8_t)10U
 
 #define MENUMANAGER_STEPHIGHEXTRACTTIME3_INTERNALSTATE_IDX            0U
 #define MENUMANAGER_STEPHIGHEXTRACTTIME3_COUNTER_IDX                  1U
 #define MENUMANAGER_STEPHIGHEXTRACTTIME3_CURPOS_IDX                   2U
 #define MENUMANAGER_STEPHIGHEXTRACTTIME3_SEQIDX_IDX                   3U
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_STEPIDX_IDX                  4U
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MIN_IDX                5U
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MAX_IDX                6U
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_IDX                    7U
-#define MENUMANAGER_STEPHIGHEXTRACTTIME3_UNITVAL_IDX                  8U
+#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MIN_IDX                4U
+#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MAX_IDX                5U
+#define MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_IDX                    6U
+#define MENUMANAGER_STEPHIGHEXTRACTTIME3_UNITVAL_IDX                  7U
 
 #define MenuManager_StepHighExtractTime3_InternalState                MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_INTERNALSTATE_IDX)
 #define MenuManager_StepHighExtractTime3_Counter                      MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_COUNTER_IDX)
 #define MenuManager_StepHighExtractTime3_CurPos                       MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_CURPOS_IDX)
 #define MenuManager_StepHighExtractTime3_SeqIdx                       MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_SEQIDX_IDX)
-#define MenuManager_StepHighExtractTime3_StepIdx                      MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_STEPIDX_IDX)
 #define MenuManager_StepHighExtractTime3_ValueMin                     MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MIN_IDX)
 #define MenuManager_StepHighExtractTime3_ValueMax                     MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_MAX_IDX)
 #define MenuManager_StepHighExtractTime3_Value                        MenuManager_GetInternalDataPtr(MENUMANAGER_STEPHIGHEXTRACTTIME3_VALUE_IDX)
@@ -213,12 +211,10 @@ static Fsm_GuardType MenuManager_StepHighExtractTime3_Entry(Fsm_ContextStructPtr
       MenuManager_StepHighExtractTime3_CurPos = (uint32_t)0U;
 
       MenuManager_StepHighExtractTime3_SeqIdx = enterDataHierachy->seqIdx;
-      MenuManager_StepHighExtractTime3_StepIdx = enterDataHierachy->stepIdx;
 
-      ProgramManager_NormStepConfig_HighExtractTime3_GetData
+      ProgramManager_ExtractStepConfig_HighExtractTime3_GetData
       (
         (uint8_t)MenuManager_StepHighExtractTime3_SeqIdx,
-        (uint8_t)MenuManager_StepHighExtractTime3_StepIdx,
         &tempHighExtractTime3
       );
 
@@ -414,20 +410,18 @@ static void MenuManager_StepHighExtractTime3_SubMainFunction(void)
 
       tempHighExtractTime3 = (uint16_t)MenuManager_StepHighExtractTime3_Value;
 
-      ProgramManager_NormStepConfig_HighExtractTime3_SetData \
+      ProgramManager_ExtractStepConfig_HighExtractTime3_SetData \
       ( \
         (uint8_t)MenuManager_StepHighExtractTime3_SeqIdx, \
-        (uint8_t)MenuManager_StepHighExtractTime3_StepIdx, \
         &tempHighExtractTime3 \
       );
 
       if ((uint8_t)MenuManager_StepHighExtractTime3_SeqIdx == ProgramManager_gAutoSeqConfig.sequenceIndex)
       {
-        ProgramManager_NormStepConfig_HighExtractTime3_GetData \
+        ProgramManager_ExtractStepConfig_HighExtractTime3_GetData \
         ( \
           (uint8_t)MenuManager_StepHighExtractTime3_SeqIdx, \
-          (uint8_t)MenuManager_StepHighExtractTime3_StepIdx, \
-          &((ProgramManager_gAutoSeqConfig.normStep)[MenuManager_StepHighExtractTime3_StepIdx].highExtractTime3) \
+          &(ProgramManager_gAutoSeqConfig.extractStep.highExtractTime3) \
         );
       }
 

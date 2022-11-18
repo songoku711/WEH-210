@@ -108,9 +108,9 @@ Fsm_EventEntryStruct MenuManager_StepWashNum_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepWashNum_Entry                                                   ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StepWashNum_Exit                                                    ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepWashNum_StartBut                                                ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepWashNum_StopBut,        MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepWashNum_StopBut,        MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepWashNum_UpBut                                                   ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepWashNum_DownBut                                                 ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_ADD_BUT,          MenuManager_StepWashNum_AddBut                                                  ),
@@ -202,7 +202,7 @@ static Fsm_GuardType MenuManager_StepWashNum_Entry(Fsm_ContextStructPtr const pF
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_PROGRAM_MAIN_SETUP)
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_NORM_SETUP)
     {
       enterDataHierachy = (MenuManager_Common_ProgramSetupStruct *)(pFsmContext->dataHierachy);
 

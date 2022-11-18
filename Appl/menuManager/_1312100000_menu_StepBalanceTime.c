@@ -1,5 +1,5 @@
 /* 
- * File:   _1311810000_menu_StepBalanceTime.c
+ * File:   _1312100000_menu_StepBalanceTime.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -27,23 +27,21 @@ extern "C" {
 ===============================================================================================*/
 
 /** Menu manager internal data definitions */
-#define MENUMANAGER_STEPBALANCETIME_INTERNALDATALENGTH                (uint8_t)11U
+#define MENUMANAGER_STEPBALANCETIME_INTERNALDATALENGTH                (uint8_t)10U
 
 #define MENUMANAGER_STEPBALANCETIME_INTERNALSTATE_IDX                 0U
 #define MENUMANAGER_STEPBALANCETIME_COUNTER_IDX                       1U
 #define MENUMANAGER_STEPBALANCETIME_CURPOS_IDX                        2U
 #define MENUMANAGER_STEPBALANCETIME_SEQIDX_IDX                        3U
-#define MENUMANAGER_STEPBALANCETIME_STEPIDX_IDX                       4U
-#define MENUMANAGER_STEPBALANCETIME_VALUE_MIN_IDX                     5U
-#define MENUMANAGER_STEPBALANCETIME_VALUE_MAX_IDX                     6U
-#define MENUMANAGER_STEPBALANCETIME_VALUE_IDX                         7U
-#define MENUMANAGER_STEPBALANCETIME_UNITVAL_IDX                       8U
+#define MENUMANAGER_STEPBALANCETIME_VALUE_MIN_IDX                     4U
+#define MENUMANAGER_STEPBALANCETIME_VALUE_MAX_IDX                     5U
+#define MENUMANAGER_STEPBALANCETIME_VALUE_IDX                         6U
+#define MENUMANAGER_STEPBALANCETIME_UNITVAL_IDX                       7U
 
 #define MenuManager_StepBalanceTime_InternalState                     MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_INTERNALSTATE_IDX)
 #define MenuManager_StepBalanceTime_Counter                           MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_COUNTER_IDX)
 #define MenuManager_StepBalanceTime_CurPos                            MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_CURPOS_IDX)
 #define MenuManager_StepBalanceTime_SeqIdx                            MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_SEQIDX_IDX)
-#define MenuManager_StepBalanceTime_StepIdx                           MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_STEPIDX_IDX)
 #define MenuManager_StepBalanceTime_ValueMin                          MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_VALUE_MIN_IDX)
 #define MenuManager_StepBalanceTime_ValueMax                          MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_VALUE_MAX_IDX)
 #define MenuManager_StepBalanceTime_Value                             MenuManager_GetInternalDataPtr(MENUMANAGER_STEPBALANCETIME_VALUE_IDX)
@@ -213,12 +211,10 @@ static Fsm_GuardType MenuManager_StepBalanceTime_Entry(Fsm_ContextStructPtr cons
       MenuManager_StepBalanceTime_CurPos = (uint32_t)0U;
 
       MenuManager_StepBalanceTime_SeqIdx = enterDataHierachy->seqIdx;
-      MenuManager_StepBalanceTime_StepIdx = enterDataHierachy->stepIdx;
 
-      ProgramManager_NormStepConfig_BalanceTime_GetData
+      ProgramManager_ExtractStepConfig_BalanceTime_GetData
       (
         (uint8_t)MenuManager_StepBalanceTime_SeqIdx,
-        (uint8_t)MenuManager_StepBalanceTime_StepIdx,
         &tempBalanceTime
       );
 
@@ -414,20 +410,18 @@ static void MenuManager_StepBalanceTime_SubMainFunction(void)
 
       tempBalanceTime = (uint16_t)MenuManager_StepBalanceTime_Value;
 
-      ProgramManager_NormStepConfig_BalanceTime_SetData \
+      ProgramManager_ExtractStepConfig_BalanceTime_SetData \
       ( \
         (uint8_t)MenuManager_StepBalanceTime_SeqIdx, \
-        (uint8_t)MenuManager_StepBalanceTime_StepIdx, \
         &tempBalanceTime \
       );
 
       if ((uint8_t)MenuManager_StepBalanceTime_SeqIdx == ProgramManager_gAutoSeqConfig.sequenceIndex)
       {
-        ProgramManager_NormStepConfig_BalanceTime_GetData \
+        ProgramManager_ExtractStepConfig_BalanceTime_GetData \
         ( \
           (uint8_t)MenuManager_StepBalanceTime_SeqIdx, \
-          (uint8_t)MenuManager_StepBalanceTime_StepIdx, \
-          &((ProgramManager_gAutoSeqConfig.normStep)[MenuManager_StepBalanceTime_StepIdx].balanceTime) \
+          &(ProgramManager_gAutoSeqConfig.extractStep.balanceTime) \
         );
       }
 

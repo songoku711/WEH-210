@@ -1,5 +1,5 @@
 /* 
- * File:   _1311820000_menu_StepMidExtractTime.c
+ * File:   _1312200000_menu_StepMidExtractTime.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -27,23 +27,21 @@ extern "C" {
 ===============================================================================================*/
 
 /** Menu manager internal data definitions */
-#define MENUMANAGER_STEPMIDEXTRACTTIME_INTERNALDATALENGTH             (uint8_t)11U
+#define MENUMANAGER_STEPMIDEXTRACTTIME_INTERNALDATALENGTH             (uint8_t)10U
 
 #define MENUMANAGER_STEPMIDEXTRACTTIME_INTERNALSTATE_IDX              0U
 #define MENUMANAGER_STEPMIDEXTRACTTIME_COUNTER_IDX                    1U
 #define MENUMANAGER_STEPMIDEXTRACTTIME_CURPOS_IDX                     2U
 #define MENUMANAGER_STEPMIDEXTRACTTIME_SEQIDX_IDX                     3U
-#define MENUMANAGER_STEPMIDEXTRACTTIME_STEPIDX_IDX                    4U
-#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MIN_IDX                  5U
-#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MAX_IDX                  6U
-#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_IDX                      7U
-#define MENUMANAGER_STEPMIDEXTRACTTIME_UNITVAL_IDX                    8U
+#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MIN_IDX                  4U
+#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MAX_IDX                  5U
+#define MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_IDX                      6U
+#define MENUMANAGER_STEPMIDEXTRACTTIME_UNITVAL_IDX                    7U
 
 #define MenuManager_StepMidExtractTime_InternalState                  MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_INTERNALSTATE_IDX)
 #define MenuManager_StepMidExtractTime_Counter                        MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_COUNTER_IDX)
 #define MenuManager_StepMidExtractTime_CurPos                         MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_CURPOS_IDX)
 #define MenuManager_StepMidExtractTime_SeqIdx                         MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_SEQIDX_IDX)
-#define MenuManager_StepMidExtractTime_StepIdx                        MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_STEPIDX_IDX)
 #define MenuManager_StepMidExtractTime_ValueMin                       MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MIN_IDX)
 #define MenuManager_StepMidExtractTime_ValueMax                       MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_MAX_IDX)
 #define MenuManager_StepMidExtractTime_Value                          MenuManager_GetInternalDataPtr(MENUMANAGER_STEPMIDEXTRACTTIME_VALUE_IDX)
@@ -213,12 +211,10 @@ static Fsm_GuardType MenuManager_StepMidExtractTime_Entry(Fsm_ContextStructPtr c
       MenuManager_StepMidExtractTime_CurPos = (uint32_t)0U;
 
       MenuManager_StepMidExtractTime_SeqIdx = enterDataHierachy->seqIdx;
-      MenuManager_StepMidExtractTime_StepIdx = enterDataHierachy->stepIdx;
 
-      ProgramManager_NormStepConfig_MidExtractTime_GetData
+      ProgramManager_ExtractStepConfig_MidExtractTime_GetData
       (
         (uint8_t)MenuManager_StepMidExtractTime_SeqIdx,
-        (uint8_t)MenuManager_StepMidExtractTime_StepIdx,
         &tempMidExtractTime
       );
 
@@ -414,20 +410,18 @@ static void MenuManager_StepMidExtractTime_SubMainFunction(void)
 
       tempMidExtractTime = (uint16_t)MenuManager_StepMidExtractTime_Value;
 
-      ProgramManager_NormStepConfig_MidExtractTime_SetData \
+      ProgramManager_ExtractStepConfig_MidExtractTime_SetData \
       ( \
         (uint8_t)MenuManager_StepMidExtractTime_SeqIdx, \
-        (uint8_t)MenuManager_StepMidExtractTime_StepIdx, \
         &tempMidExtractTime \
       );
 
       if ((uint8_t)MenuManager_StepMidExtractTime_SeqIdx == ProgramManager_gAutoSeqConfig.sequenceIndex)
       {
-        ProgramManager_NormStepConfig_MidExtractTime_GetData \
+        ProgramManager_ExtractStepConfig_MidExtractTime_GetData \
         ( \
           (uint8_t)MenuManager_StepMidExtractTime_SeqIdx, \
-          (uint8_t)MenuManager_StepMidExtractTime_StepIdx, \
-          &((ProgramManager_gAutoSeqConfig.normStep)[MenuManager_StepMidExtractTime_StepIdx].midExtractTime) \
+          &(ProgramManager_gAutoSeqConfig.extractStep.midExtractTime) \
         );
       }
 

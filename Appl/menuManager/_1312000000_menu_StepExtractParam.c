@@ -1,5 +1,5 @@
 /* 
- * File:   _1311800000_menu_StepExtractParam.c
+ * File:   _1312000000_menu_StepExtractParam.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -32,12 +32,10 @@ extern "C" {
 #define MENUMANAGER_STEPEXTRACTPARAM_LISTINDEX_IDX                    0U
 #define MENUMANAGER_STEPEXTRACTPARAM_CURPOS_IDX                       1U
 #define MENUMANAGER_STEPEXTRACTPARAM_SEQIDX_IDX                       2U
-#define MENUMANAGER_STEPEXTRACTPARAM_STEPIDX_IDX                      3U
 
 #define MenuManager_StepExtractParam_ListIndex                        MenuManager_GetInternalDataPtr(MENUMANAGER_STEPEXTRACTPARAM_LISTINDEX_IDX)
 #define MenuManager_StepExtractParam_CurPos                           MenuManager_GetInternalDataPtr(MENUMANAGER_STEPEXTRACTPARAM_CURPOS_IDX)
 #define MenuManager_StepExtractParam_SeqIdx                           MenuManager_GetInternalDataPtr(MENUMANAGER_STEPEXTRACTPARAM_SEQIDX_IDX)
-#define MenuManager_StepExtractParam_StepIdx                          MenuManager_GetInternalDataPtr(MENUMANAGER_STEPEXTRACTPARAM_STEPIDX_IDX)
 
 
 
@@ -104,7 +102,7 @@ Fsm_EventEntryStruct MenuManager_StepExtractParam_StateMachine[10] =
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepExtractParam_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepExtractParam_DownBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepExtractParam_StartBut                                               ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepExtractParam_StopBut,   MENUMANAGER_STATE_PROGRAM_MAIN_SETUP        )
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepExtractParam_StopBut,   MENUMANAGER_STATE_STEP_NORM_SETUP           )
 };
 
 
@@ -132,7 +130,7 @@ static void MenuManager_StepExtractParam_LcdShowMainTitle(void)
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
 
-  sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramStepStr, MenuManager_StepExtractParam_SeqIdx + 1U, MenuManager_StepExtractParam_StepIdx + 1U);
+  sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramStepExtStr, MenuManager_StepExtractParam_SeqIdx + 1U);
 
   MenuManager_Common_LcdShowMainTitle(tempStr);
   MenuManager_Common_LcdUpdateElementMenuStatic();
@@ -191,7 +189,7 @@ static Fsm_GuardType MenuManager_StepExtractParam_Entry(Fsm_ContextStructPtr con
       MenuManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
     }
-    else if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_PROGRAM_MAIN_SETUP)
+    else if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_NORM_SETUP)
     {
       enterDataHierachy = (MenuManager_Common_ProgramSetupStruct *)(pFsmContext->dataHierachy);
 
@@ -200,7 +198,6 @@ static Fsm_GuardType MenuManager_StepExtractParam_Entry(Fsm_ContextStructPtr con
       MenuManager_StepExtractParam_ListIndex      = (uint32_t)0U;
       MenuManager_StepExtractParam_CurPos         = MENUMANAGER_COMMON_LCD_CURSOR_MIN;
       MenuManager_StepExtractParam_SeqIdx         = enterDataHierachy->seqIdx;
-      MenuManager_StepExtractParam_StepIdx        = enterDataHierachy->stepIdx;
 
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);
@@ -241,7 +238,6 @@ static Fsm_GuardType MenuManager_StepExtractParam_StartBut(Fsm_ContextStructPtr 
   dataHierachy = (MenuManager_Common_ProgramSetupStruct *)MenuManager_malloc(sizeof(MenuManager_Common_ProgramSetupStruct));
   dataHierachy->dataId = MENUMANAGER_STATE_STEP_EXTRACT_PARAM;
   dataHierachy->seqIdx = MenuManager_StepExtractParam_SeqIdx;
-  dataHierachy->stepIdx = MenuManager_StepExtractParam_StepIdx;
 
   pFsmContext->dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 

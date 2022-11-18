@@ -194,9 +194,9 @@ extern Fsm_EventEntryStruct MenuManager_UnlockDoorLevel_StateMachine[9];
 /** State programSetup (82) */
 extern Fsm_EventEntryStruct MenuManager_ProgramSetup_StateMachine[6];
 /** State programStepSetup (83) */
-extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[6];
+extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[7];
 /** State programMainSetup (84) */
-extern Fsm_EventEntryStruct MenuManager_ProgramMainSetup_StateMachine[13];
+extern Fsm_EventEntryStruct MenuManager_StepNormSetup_StateMachine[12];
 /** State stepIsActive (85) */
 extern Fsm_EventEntryStruct MenuManager_StepIsActive_StateMachine[7];
 /** State stepWaterMode (86) */
@@ -331,7 +331,7 @@ Fsm_StateDefStruct MenuManager_StateMachine[104] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UnlockDoorLevel_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramSetup_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramStepSetup_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramMainSetup_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepNormSetup_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepIsActive_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWaterMode_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepSoapMode_StateMachine)                       },

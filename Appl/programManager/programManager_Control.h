@@ -40,11 +40,20 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_IMBALANCE_ERR_OFFSET      1U
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_DOOROPEN_ERR_OFFSET       2U
 
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR                  (uint8_t)0U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_ERROR                     (uint8_t)1U
+
 #define PROGRAMMANAGER_CONTROL_TEMP_PRES_ADDR                         (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_TEMP_PRES_NUM                          (uint16_t)2U
 
 #define PROGRAMMANAGER_CONTROL_TEMP_PRES_TEMPERATURE_OFFSET           0U
 #define PROGRAMMANAGER_CONTROL_TEMP_PRES_PRESSURE_OFFSET              1U
+
+#define PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE                     (uint8_t)0xFFU
+#define PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE                     (uint16_t)0xFFFFU
+
+#define PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY                       (uint32_t)200U
+#define PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY                       (uint32_t)200U
 
 #define PROGRAMMANAGER_CONTROL_RELAY_ADDR                             (uint16_t)0U
 #define PROGRAMMANAGER_CONTROL_RELAY_NUM                              (uint16_t)1U
@@ -58,6 +67,21 @@ extern "C" {
 
 
 
+typedef struct 
+{
+  uint32_t dataId;
+  uint32_t command;
+} ProgramManager_Control_PostRunStruct;
+
+typedef struct 
+{
+  uint32_t dataId;
+  uint32_t executeStep;
+} ProgramManager_Control_PreRunStruct;
+
+
+
+
 /*===============================================================================================
 *                                       GLOBAL VARIABLES
 ===============================================================================================*/
@@ -65,11 +89,24 @@ extern "C" {
 extern uint8_t ProgramManager_gSensorInverterErr;
 extern uint8_t ProgramManager_gSensorImbalanceErr;
 extern uint8_t ProgramManager_gSensorDoorOpenErr;
+
 extern uint8_t ProgramManager_gCurrentTemperature;
-extern uint8_t ProgramManager_gCurrentPressure;
+extern uint16_t ProgramManager_gCurrentPressure;
+
+extern uint8_t ProgramManager_gCurrentTempThreshold;
+extern uint16_t ProgramManager_gCurrentPresThreshold;
+
+extern bool ProgramManager_gTempThresExceeded;
+extern bool ProgramManager_gPresThresExceeded;
+
+extern uint16_t ProgramManager_gCurrentWashRunTime;
+extern uint16_t ProgramManager_gCurrentWashStopTime;
+extern ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
 
 extern uint8_t ProgramManager_gIsPaused;
 extern uint8_t ProgramManager_gIsError;
+
+extern uint16_t ProgramManager_gCurrentOutput;
 
 
 
@@ -77,13 +114,21 @@ extern uint8_t ProgramManager_gIsError;
 *                                     FUNCTION PROTOTYPES
 ===============================================================================================*/
 
+#define ProgramManager_Control_NotPauseAndError()                     ((ProgramManager_gIsPaused == (uint8_t)0U) && (ProgramManager_gIsError == (uint8_t)0U))
+
 void ProgramManager_Control_Init(void);
 
 void ProgramManager_Control_SetCommand(uint8_t command);
 void ProgramManager_Control_RetrieveCommand(uint8_t *command);
 
+void ProgramManager_Control_TogglePauseResumeHandler(void);
+
+bool ProgramManager_Control_CheckNextStepAvailable(void);
+bool ProgramManager_Control_CheckPrevStepAvailable(void);
+
 void ProgramManager_Control_TxRxSignalSubMainFunction(void);
 void ProgramManager_Control_AnalyzeDataSubMainFunction(void);
+void ProgramManager_Control_UpdateThresholdSubMainFunction(void);
 
 
 

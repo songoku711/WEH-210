@@ -124,10 +124,10 @@ static Fsm_GuardType ProgramManager_Init_Entry(Fsm_ContextStructPtr const pFsmCo
 /*=============================================================================================*/
 static Fsm_GuardType ProgramManager_Init_Exit(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  Fsm_DataHierachyStruct* dataHierachy;
+
   ProgramManager_SubMainFunctionPop();
   ProgramManager_SubTickHandler = NULL;
-
-  Fsm_DataHierachyStruct* dataHierachy;
 
   dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
   dataHierachy->dataId = PROGRAMMANAGER_STATE_INIT;

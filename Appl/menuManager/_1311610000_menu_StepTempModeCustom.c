@@ -108,9 +108,9 @@ Fsm_EventEntryStruct MenuManager_StepTempModeCustom_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepTempModeCustom_Entry                                            ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StepTempModeCustom_Exit                                             ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepTempModeCustom_StartBut                                         ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepTempModeCustom_StopBut, MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepTempModeCustom_StopBut, MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepTempModeCustom_UpBut                                            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepTempModeCustom_DownBut                                          ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_ADD_BUT,          MenuManager_StepTempModeCustom_AddBut                                           ),

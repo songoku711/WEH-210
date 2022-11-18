@@ -74,7 +74,9 @@ extern const uint8_t MenuManager_Common_TimeStr[];
 
 extern const uint8_t MenuManager_Common_ProgramStr[];
 extern const uint8_t MenuManager_Common_StepStr[];
+extern const uint8_t MenuManager_Common_StepExtractStr[];
 extern const uint8_t MenuManager_Common_ProgramStepStr[];
+extern const uint8_t MenuManager_Common_ProgramStepExtStr[];
 
 
 

@@ -123,9 +123,9 @@ Fsm_EventEntryStruct MenuManager_StepIsActive_StateMachine[7] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepIsActive_Entry                                                  ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StepIsActive_Exit                                                   ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepIsActive_StartBut                                               ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepIsActive_StopBut,       MENUMANAGER_STATE_PROGRAM_MAIN_SETUP    ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepIsActive_StopBut,       MENUMANAGER_STATE_STEP_NORM_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepIsActive_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepIsActive_DownBut                                                )
 };
@@ -219,7 +219,7 @@ static Fsm_GuardType MenuManager_StepIsActive_Entry(Fsm_ContextStructPtr const p
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_PROGRAM_MAIN_SETUP)
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_NORM_SETUP)
     {
       enterDataHierachy = (MenuManager_Common_ProgramSetupStruct *)(pFsmContext->dataHierachy);
 
