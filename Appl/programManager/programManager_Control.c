@@ -426,17 +426,17 @@ void ProgramManager_Control_TogglePauseResumeHandler(void)
 {
   ProgramManager_gIsPaused ^= (uint8_t)0x01U;
 
-  /* Program is not paused */
-  if (ProgramManager_gIsPaused == (uint8_t)0U)
-  {
-    ProgramManager_gCurrentOutput = ProgramManager_PauseOutput;
-  }
-  /* Program is paused */
-  else
-  {
-    ProgramManager_PauseOutput = ProgramManager_gCurrentOutput;
-    ProgramManager_gCurrentOutput = (uint32_t)0U;
-  }
+  // /* Program is not paused */
+  // if (ProgramManager_gIsPaused == (uint8_t)0U)
+  // {
+  //   ProgramManager_gCurrentOutput = ProgramManager_PauseOutput;
+  // }
+  // /* Program is paused */
+  // else
+  // {
+  //   ProgramManager_PauseOutput = ProgramManager_gCurrentOutput;
+  //   ProgramManager_gCurrentOutput = (uint32_t)0U;
+  // }
 }
 
 

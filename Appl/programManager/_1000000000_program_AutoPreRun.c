@@ -41,9 +41,9 @@ extern "C" {
 #define ProgramManager_AutoPreRun_TempCounter                         ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_IDX)
 #define ProgramManager_AutoPreRun_PresCounter                         ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_IDX)
 
-#define PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX                   (uint32_t)400U
-#define PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX                     (uint32_t)200U
-#define PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX                     (uint32_t)200U
+#define PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX                   (uint32_t)100U    /* 100 x 20ms = 2s */
+#define PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX                     (uint32_t)200U    /* 200 x 5ms = 1s */
+#define PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX                     (uint32_t)200U    /* 200 x 5ms = 1s */
 
 #define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT                PROGRAMMANAGER_EVENT_SUBMENU_1
 #define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH                      PROGRAMMANAGER_EVENT_SUBMENU_2
@@ -77,6 +77,8 @@ static bool ProgramManager_AutoPreRun_InternalCommandHandler(void);
 
 static void ProgramManager_AutoPreRun_InternalCheckLevelCondition(void);
 static void ProgramManager_AutoPreRun_InternalCheckHeatCondition(void);
+
+static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void);
 
 static void ProgramManager_AutoPreRun_SubMainFunction(void);
 static void ProgramManager_AutoPreRun_SubTickHandler(void);
@@ -208,6 +210,37 @@ static void ProgramManager_AutoPreRun_InternalCheckHeatCondition(void)
 
 
 /*=============================================================================================*/
+static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
+{
+  if (ProgramManager_Control_NotPauseAndError())
+  {
+    if ((ProgramManager_AutoPreRun_TempCounter >= PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX) || \
+        (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX))
+    {
+      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH);
+
+      ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
+      ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
+      ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
+    }
+    else if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
+    {
+      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT);
+
+      ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
+      ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
+      ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
+    }
+    else
+    {
+      /* Just wait */
+    }
+  }
+}
+
+
+
+/*=============================================================================================*/
 static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_Control_PreRunStruct* enterDataHierachy;
@@ -293,30 +326,7 @@ static void ProgramManager_AutoPreRun_SubMainFunction(void)
     ProgramManager_AutoPreRun_InternalCheckLevelCondition();
     ProgramManager_AutoPreRun_InternalCheckHeatCondition();
     
-    if (ProgramManager_Control_NotPauseAndError())
-    {
-      if ((ProgramManager_AutoPreRun_TempCounter >= PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX) || \
-          (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX))
-      {
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH);
-
-        ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
-        ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
-        ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
-      }
-      else if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
-      {
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT);
-
-        ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
-        ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
-        ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
-      }
-      else
-      {
-        /* Just wait */
-      }
-    }
+    ProgramManager_AutoPreRun_InternalCheckStateTransit();
   }
 }
 

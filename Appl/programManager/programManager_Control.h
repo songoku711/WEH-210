@@ -67,11 +67,43 @@ extern "C" {
 
 
 
+#define PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK                      (uint16_t)0x0003U
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK                     (uint16_t)0x0004U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_OFFSET                   (2U)
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK                     (uint16_t)0x0008U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_OFFSET                   (3U)
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK                     (uint16_t)0x0010U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_OFFSET                   (4U)
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK                  (uint16_t)0x0020U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK                  (uint16_t)0x0040U
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK                (uint16_t)0x0380U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET              (7U)
+
+#define PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK                       (uint16_t)0x0400U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK                (uint16_t)0x0800U
+
+#define ProgramManager_Control_SetOutput(mask)                        { ProgramManager_gCurrentOutput |= mask; }
+#define ProgramManager_Control_ClearOutput(mask)                      { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); }
+#define ProgramManager_Control_ModifyOutput(mask, value)              { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); ProgramManager_gCurrentOutput |= value; }
+#define ProgramManager_Control_ClearAllOutput()                       { ProgramManager_gCurrentOutput = (uint16_t)0U; }
+
+
+
 typedef struct 
 {
   uint32_t dataId;
   uint32_t command;
 } ProgramManager_Control_PostRunStruct;
+
+typedef struct 
+{
+  uint32_t dataId;
+} ProgramManager_Control_RunWashStruct;
 
 typedef struct 
 {

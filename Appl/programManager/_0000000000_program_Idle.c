@@ -46,6 +46,8 @@ Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3] =
 *                                   LOCAL FUNCTION PROTOTYPES
 ===============================================================================================*/
 
+static bool ProgramManager_Idle_InternalCommandHandler(void);
+
 static void ProgramManager_Idle_SubMainFunction(void);
 static void ProgramManager_Idle_SubTickHandler(void);
 
@@ -55,6 +57,37 @@ static void ProgramManager_Idle_SubTickHandler(void);
 *                                       LOCAL FUNCTIONS
 ===============================================================================================*/
 
+static bool ProgramManager_Idle_InternalCommandHandler(void)
+{
+  uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
+  bool stateTransit = false;
+
+  ProgramManager_Control_RetrieveCommand(&command);
+
+  switch (command)
+  {
+    case PROGRAMMANAGER_CONTROL_COMMAND_START:
+    {
+      if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true) && \
+          (ProgramManager_gSensorDoorOpenErr == (uint8_t)0U))
+      {
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_PRE_RUN);
+
+        stateTransit = (bool)true;
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return stateTransit;
+}
+
+
+
+/*=============================================================================================*/
 static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   /* Check if previous state data hierachy is not empty */
@@ -112,25 +145,7 @@ static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmCon
 /*=============================================================================================*/
 static void ProgramManager_Idle_SubMainFunction(void)
 {
-  uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
-
-  ProgramManager_Control_RetrieveCommand(&command);
-
-  switch (command)
-  {
-    case PROGRAMMANAGER_CONTROL_COMMAND_START:
-    {
-      if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true) && \
-          (ProgramManager_gSensorDoorOpenErr == (uint8_t)0U))
-      {
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_PRE_RUN);
-      }
-
-      break;
-    }
-    default:
-      break;
-  }
+  (void)ProgramManager_Idle_InternalCommandHandler();
 }
 
 /*=============================================================================================*/
