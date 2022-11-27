@@ -406,14 +406,38 @@ static void ProgramManager_AutoRunWaterHeat_InternalControlOutput(void)
   }
 
   /* Control soap with timeout */
-  if (ProgramManager_AutoRunWaterHeat_Soap1Timeout > (uint32_t)0U)
+  if ((ProgramManager_AutoRunWaterHeat_Soap1Timeout > (uint32_t)0U) && \
+      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x01))
   {
-    
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
   }
   else
   {
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
   }
+
+  if ((ProgramManager_AutoRunWaterHeat_Soap2Timeout > (uint32_t)0U) && \
+      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x02))
+  {
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+  }
+
+  if ((ProgramManager_AutoRunWaterHeat_Soap3Timeout > (uint32_t)0U) && \
+      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x04))
+  {
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+  }
+
+  /* Control motor */
+  
 }
 
 
