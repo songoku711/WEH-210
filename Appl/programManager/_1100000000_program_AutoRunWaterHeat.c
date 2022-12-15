@@ -437,7 +437,31 @@ static void ProgramManager_AutoRunWaterHeat_InternalControlOutput(void)
   }
 
   /* Control motor */
-  
+  if (ProgramManager_AutoRunWaterHeat_MotorState == PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_FWD)
+  {
+    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
+  }
+  else if (ProgramManager_AutoRunWaterHeat_MotorState == PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_REV)
+  {
+    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
+  }
+
+  ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
+                                      ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
+
+  /* Control drain valve - always close */
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
+  {
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
+  }
 }
 
 
