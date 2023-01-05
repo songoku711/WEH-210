@@ -48,6 +48,8 @@ Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3] =
 
 static bool ProgramManager_Idle_InternalCommandHandler(void);
 
+static void ProgramManager_Idle_InternalControlOutput(void);
+
 static void ProgramManager_Idle_SubMainFunction(void);
 static void ProgramManager_Idle_SubTickHandler(void);
 
@@ -83,6 +85,24 @@ static bool ProgramManager_Idle_InternalCommandHandler(void)
   }
 
   return stateTransit;
+}
+
+
+
+/*=============================================================================================*/
+static void ProgramManager_Idle_InternalControlOutput(void)
+{
+  ProgramManager_Control_ClearAllOutput();
+
+  /* Control drain valve - always close */
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
+  {
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
+  }
 }
 
 
@@ -145,7 +165,14 @@ static Fsm_GuardType ProgramManager_Idle_Exit(Fsm_ContextStructPtr const pFsmCon
 /*=============================================================================================*/
 static void ProgramManager_Idle_SubMainFunction(void)
 {
-  (void)ProgramManager_Idle_InternalCommandHandler();
+  bool stateTransit;
+
+  stateTransit = ProgramManager_Idle_InternalCommandHandler();
+
+  if (stateTransit == false)
+  {
+    ProgramManager_Idle_InternalControlOutput();
+  }
 }
 
 /*=============================================================================================*/

@@ -87,6 +87,7 @@ extern "C" {
 
 #define PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK                       (uint16_t)0x0400U
 #define PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK                (uint16_t)0x0800U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_DOOR_MASK                       (uint16_t)0x1000U
 
 #define ProgramManager_Control_SetOutput(mask)                        { ProgramManager_gCurrentOutput |= mask; }
 #define ProgramManager_Control_ClearOutput(mask)                      { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); }

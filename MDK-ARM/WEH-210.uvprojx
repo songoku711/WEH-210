@@ -811,9 +811,9 @@
               <FilePath>..\Appl\menuManager\_1310000000_menu_ProgramStepSetup.c</FilePath>
             </File>
             <File>
-              <FileName>_1311000000_menu_ProgramMainSetup.c</FileName>
+              <FileName>_1311000000_menu_StepNormSetup.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311000000_menu_ProgramMainSetup.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311000000_menu_StepNormSetup.c</FilePath>
             </File>
             <File>
               <FileName>_1311100000_menu_StepIsActive.c</FileName>
@@ -881,34 +881,34 @@
               <FilePath>..\Appl\menuManager\_1311710000_menu_StepLevelModeCustom.c</FilePath>
             </File>
             <File>
-              <FileName>_1311800000_menu_StepExtractParam.c</FileName>
+              <FileName>_1312000000_menu_StepExtractParam.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311800000_menu_StepExtractParam.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312000000_menu_StepExtractParam.c</FilePath>
             </File>
             <File>
-              <FileName>_1311810000_menu_StepBalanceTime.c</FileName>
+              <FileName>_1312100000_menu_StepBalanceTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311810000_menu_StepBalanceTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312100000_menu_StepBalanceTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1311820000_menu_StepMidExtractTime.c</FileName>
+              <FileName>_1312200000_menu_StepMidExtractTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311820000_menu_StepMidExtractTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312200000_menu_StepMidExtractTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1311830000_menu_StepHighExtractTime1.c</FileName>
+              <FileName>_1312300000_menu_StepHighExtractTime1.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311830000_menu_StepHighExtractTime1.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312300000_menu_StepHighExtractTime1.c</FilePath>
             </File>
             <File>
-              <FileName>_1311840000_menu_StepHighExtractTime2.c</FileName>
+              <FileName>_1312400000_menu_StepHighExtractTime2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311840000_menu_StepHighExtractTime2.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312400000_menu_StepHighExtractTime2.c</FilePath>
             </File>
             <File>
-              <FileName>_1311850000_menu_StepHighExtractTime3.c</FileName>
+              <FileName>_1312500000_menu_StepHighExtractTime3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311850000_menu_StepHighExtractTime3.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1312500000_menu_StepHighExtractTime3.c</FilePath>
             </File>
             <File>
               <FileName>menuManager_Common.c</FileName>
@@ -939,16 +939,6 @@
               <FileName>_0000000000_program_Idle.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\_0000000000_program_Idle.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1000000000_program_AutoInit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_1000000000_program_AutoInit.c</FilePath>
-            </File>
-            <File>
-              <FileName>_2000000000_program_ManualInit.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_2000000000_program_ManualInit.c</FilePath>
             </File>
             <File>
               <FileName>programManager_Mem.c</FileName>

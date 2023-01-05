@@ -87,7 +87,7 @@ Fsm_EventEntryStruct ProgramManager_AutoRunWaterHeat_StateMachine[4] =
 static bool ProgramManager_AutoRunWaterHeat_InternalCommandHandler(void);
 
 static void ProgramManager_AutoRunWaterHeat_InternalCheckLevelCondition(void);
-static void ProgramManager_AutoRunWaterHeat_InternalCheckHeatCondition(void);
+static void ProgramManager_AutoRunWaterHeat_InternalCheckTempCondition(void);
 static void ProgramManager_AutoRunWaterHeat_InternalCheckMotorCondition(void);
 
 static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void);
@@ -177,65 +177,6 @@ static bool ProgramManager_AutoRunWaterHeat_InternalCommandHandler(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunWaterHeat_InternalCheckLevelCondition(void)
 {
-  if (ProgramManager_gTempThresExceeded == (bool)false)
-  {
-    /* Check temperature */
-    if (ProgramManager_gCurrentTemperature >= ProgramManager_gCurrentTempThreshold)
-    {
-      if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
-      {
-        ProgramManager_gTempThresExceeded = (bool)true;
-
-        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
-      }
-      else
-      {
-        ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
-      }
-    }
-    else
-    {
-      ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
-    }
-  }
-  else
-  {
-    /* Auto-reheat when low temperature feature enabled */
-    if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
-    {
-      /* Check temperature with delta offset */
-      if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
-      {
-        if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
-        {
-          ProgramManager_gTempThresExceeded = (bool)false;
-
-          ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
-        }
-        else
-        {
-          ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
-        }
-      }
-      else
-      {
-        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
-      }
-    }
-  }
-
-  if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
-  {
-    if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
-    }
-  }
-}
-
-/*=============================================================================================*/
-static void ProgramManager_AutoRunWaterHeat_InternalCheckHeatCondition(void)
-{
   if (ProgramManager_gPresThresExceeded == (bool)false)
   {
     /* Check pressure */
@@ -288,6 +229,65 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckHeatCondition(void)
     if (ProgramManager_AutoRunWaterHeat_PresTimeout != (uint32_t)0U)
     {
       ProgramManager_AutoRunWaterHeat_PresTimeout -= (uint32_t)1U;
+    }
+  }
+}
+
+/*=============================================================================================*/
+static void ProgramManager_AutoRunWaterHeat_InternalCheckTempCondition(void)
+{
+  if (ProgramManager_gTempThresExceeded == (bool)false)
+  {
+    /* Check temperature */
+    if (ProgramManager_gCurrentTemperature >= ProgramManager_gCurrentTempThreshold)
+    {
+      if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
+      {
+        ProgramManager_gTempThresExceeded = (bool)true;
+
+        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
+      }
+      else
+      {
+        ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
+      }
+    }
+    else
+    {
+      ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
+    }
+  }
+  else
+  {
+    /* Auto-reheat when low temperature feature enabled */
+    if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
+    {
+      /* Check temperature with delta offset */
+      if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
+      {
+        if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
+        {
+          ProgramManager_gTempThresExceeded = (bool)false;
+
+          ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
+        }
+        else
+        {
+          ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
+        }
+      }
+      else
+      {
+        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
+      }
+    }
+  }
+
+  if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+  {
+    if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
+    {
+      ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
     }
   }
 }

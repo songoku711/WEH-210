@@ -76,9 +76,10 @@ Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[6] =
 static bool ProgramManager_AutoPreRun_InternalCommandHandler(void);
 
 static void ProgramManager_AutoPreRun_InternalCheckLevelCondition(void);
-static void ProgramManager_AutoPreRun_InternalCheckHeatCondition(void);
+static void ProgramManager_AutoPreRun_InternalCheckTempCondition(void);
 
 static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void);
+static void ProgramManager_AutoPreRun_InternalControlOutput(void);
 
 static void ProgramManager_AutoPreRun_SubMainFunction(void);
 static void ProgramManager_AutoPreRun_SubTickHandler(void);
@@ -166,28 +167,6 @@ static bool ProgramManager_AutoPreRun_InternalCommandHandler(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoPreRun_InternalCheckLevelCondition(void)
 {
-  /* Check temperature */
-  if (ProgramManager_gCurrentTemperature >= ProgramManager_gCurrentTempThreshold)
-  {
-    if (ProgramManager_AutoPreRun_TempCounter == PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX)
-    {
-      ProgramManager_gTempThresExceeded = (bool)true;
-    }
-    else
-    {
-      ProgramManager_AutoPreRun_TempCounter += (uint32_t)1U;
-    }
-  }
-  else
-  {
-    ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
-    ProgramManager_gTempThresExceeded = (bool)false;
-  }
-}
-
-/*=============================================================================================*/
-static void ProgramManager_AutoPreRun_InternalCheckHeatCondition(void)
-{
   /* Check pressure */
   if (ProgramManager_gCurrentPressure >= ProgramManager_gCurrentPresThreshold)
   {
@@ -204,6 +183,28 @@ static void ProgramManager_AutoPreRun_InternalCheckHeatCondition(void)
   {
     ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
     ProgramManager_gPresThresExceeded = (bool)false;
+  }
+}
+
+/*=============================================================================================*/
+static void ProgramManager_AutoPreRun_InternalCheckTempCondition(void)
+{
+  /* Check temperature */
+  if (ProgramManager_gCurrentTemperature >= ProgramManager_gCurrentTempThreshold)
+  {
+    if (ProgramManager_AutoPreRun_TempCounter == PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX)
+    {
+      ProgramManager_gTempThresExceeded = (bool)true;
+    }
+    else
+    {
+      ProgramManager_AutoPreRun_TempCounter += (uint32_t)1U;
+    }
+  }
+  else
+  {
+    ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
+    ProgramManager_gTempThresExceeded = (bool)false;
   }
 }
 
@@ -235,6 +236,22 @@ static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
     {
       /* Just wait */
     }
+  }
+}
+
+/*=============================================================================================*/
+static void ProgramManager_AutoPreRun_InternalControlOutput(void)
+{
+  ProgramManager_Control_ClearAllOutput();
+
+  /* Control drain valve - always close */
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
+  {
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
+  }
+  else
+  {
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
   }
 }
 
@@ -324,9 +341,10 @@ static void ProgramManager_AutoPreRun_SubMainFunction(void)
   if (stateTransit == false)
   {
     ProgramManager_AutoPreRun_InternalCheckLevelCondition();
-    ProgramManager_AutoPreRun_InternalCheckHeatCondition();
+    ProgramManager_AutoPreRun_InternalCheckTempCondition();
     
     ProgramManager_AutoPreRun_InternalCheckStateTransit();
+    ProgramManager_AutoPreRun_InternalControlOutput();
   }
 }
 
