@@ -131,7 +131,7 @@ extern "C" {
 
 /*! \brief The total slaves in Modbus Master system. Default 16.
  * \note : The slave ID must be continuous from 1.*/
-#define eMB_MASTER_TOTAL_SLAVE_NUM                                    ( 16 )
+#define eMB_MASTER_TOTAL_SLAVE_NUM                                    ( 1 )
 #endif
 
 

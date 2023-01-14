@@ -30,7 +30,7 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define eMB_WEH_PORT_SERIAL_INSTANCE              huart4
+#define eMB_WEH_PORT_SERIAL_INSTANCE              huart1
 
 #define eMB_WEH_PORT_SERIAL_TX_MODE()             { RS485_CS_GPIO_Port->ODR |= (uint32_t)RS485_CS_Pin; }
 #define eMB_WEH_PORT_SERIAL_RX_MODE()             { RS485_CS_GPIO_Port->ODR &= (uint32_t)(~((uint32_t)RS485_CS_Pin)); }
