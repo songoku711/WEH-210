@@ -1,5 +1,5 @@
 /* 
- * File:   _1100000000_program_AutoRunWash.c
+ * File:   _1200000000_program_AutoRunWash.c
  * Author: Long
  * 
  * In RUN_WATER_HEAT state, 
@@ -28,28 +28,20 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH                 (uint8_t)11U
+#define PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH                 (uint8_t)7U
 
 #define PROGRAMMANAGER_AUTORUNWASH_ONESECONDELAPSED_IDX               0U
 #define PROGRAMMANAGER_AUTORUNWASH_TEMPCOUNTER_IDX                    1U
 #define PROGRAMMANAGER_AUTORUNWASH_PRESCOUNTER_IDX                    2U
-#define PROGRAMMANAGER_AUTORUNWASH_TEMPTIMEOUT_IDX                    3U
-#define PROGRAMMANAGER_AUTORUNWASH_PRESTIMEOUT_IDX                    4U
-#define PROGRAMMANAGER_AUTORUNWASH_SOAP1TIMEOUT_IDX                   5U
-#define PROGRAMMANAGER_AUTORUNWASH_SOAP2TIMEOUT_IDX                   6U
-#define PROGRAMMANAGER_AUTORUNWASH_SOAP3TIMEOUT_IDX                   7U
-#define PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_IDX                     8U
-#define PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTER_IDX                   9U
-#define PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTERMAX_IDX                10U
+#define PROGRAMMANAGER_AUTORUNWASH_WASHCOUNT_IDX                      3U
+#define PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_IDX                     4U
+#define PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTER_IDX                   5U
+#define PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTERMAX_IDX                6U
 
 #define ProgramManager_AutoRunWash_OneSecondElapsed                   ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_ONESECONDELAPSED_IDX)
 #define ProgramManager_AutoRunWash_TempCounter                        ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_TEMPCOUNTER_IDX)
 #define ProgramManager_AutoRunWash_PresCounter                        ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_PRESCOUNTER_IDX)
-#define ProgramManager_AutoRunWash_TempTimeout                        ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_TEMPTIMEOUT_IDX)
-#define ProgramManager_AutoRunWash_PresTimeout                        ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_PRESTIMEOUT_IDX)
-#define ProgramManager_AutoRunWash_Soap1Timeout                       ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_SOAP1TIMEOUT_IDX)
-#define ProgramManager_AutoRunWash_Soap2Timeout                       ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_SOAP2TIMEOUT_IDX)
-#define ProgramManager_AutoRunWash_Soap3Timeout                       ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_SOAP3TIMEOUT_IDX)
+#define ProgramManager_AutoRunWash_WashCount                          ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_WASHCOUNT_IDX)
 #define ProgramManager_AutoRunWash_MotorState                         ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_IDX)
 #define ProgramManager_AutoRunWash_MotorCounter                       ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTER_IDX)
 #define ProgramManager_AutoRunWash_MotorCounterMax                    ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWASH_MOTORCOUNTERMAX_IDX)
@@ -184,7 +176,10 @@ static void ProgramManager_AutoRunWash_InternalCheckLevelCondition(void)
     {
       if (ProgramManager_AutoRunWash_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
       {
-        ProgramManager_gPresThresExceeded = (bool)true;
+        if (ProgramManager_gParamConfig.fillLevelCfg.autoRefillWhenLow == (bool)true)
+        {
+          ProgramManager_gPresThresExceeded = (bool)true;
+        }
 
         ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
       }
@@ -235,7 +230,10 @@ static void ProgramManager_AutoRunWash_InternalCheckTempCondition(void)
     {
       if (ProgramManager_AutoRunWash_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
       {
-        ProgramManager_gTempThresExceeded = (bool)true;
+        if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
+        {
+          ProgramManager_gTempThresExceeded = (bool)true;
+        }
 
         ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
       }
@@ -279,7 +277,8 @@ static void ProgramManager_AutoRunWash_InternalCheckTempCondition(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunWash_InternalCheckMotorCondition(void)
 {
-  if (ProgramManager_AutoRunWash_MotorCounter >= ProgramManager_AutoRunWash_MotorCounterMax)
+  if ((ProgramManager_AutoRunWash_MotorCounter >= ProgramManager_AutoRunWash_MotorCounterMax) && \
+      (ProgramManager_AutoRunWash_WashCount < (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washNum))
   {
     ProgramManager_AutoRunWash_MotorCounter = (uint32_t)0U;
 
@@ -288,6 +287,7 @@ static void ProgramManager_AutoRunWash_InternalCheckMotorCondition(void)
     if (ProgramManager_AutoRunWash_MotorState >= PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_MAX)
     {
       /* One round completed */
+      ProgramManager_AutoRunWash_WashCount += (uint32_t)1U;
 
       ProgramManager_AutoRunWash_MotorState = PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD;
     }
@@ -319,18 +319,22 @@ static void ProgramManager_AutoRunWash_InternalCheckMotorCondition(void)
 static void ProgramManager_AutoRunWash_InternalCheckStateTransit(void)
 {
   bool conditionOk = (bool)true;
-  ProgramManager_Control_RunWashStruct *dataHierachy;
+  Fsm_DataHierachyStruct *dataHierachy;
 
   if (ProgramManager_Control_NotPauseAndError())
   {
     /* Number of wash times reached */
+    if (ProgramManager_AutoRunWash_WashCount < (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washNum)
+    {
+      conditionOk = (bool)false;
+    }
 
     if (conditionOk == (bool)true)
     {
-      dataHierachy = (ProgramManager_Control_RunWashStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_RunWashStruct));
+      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
       dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_RUN_WASH;
 
-      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+      ProgramManager_FsmContext.dataHierachy = dataHierachy;
 
       Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNWASH_EVENT_RUN_DRAIN);
     }
@@ -397,6 +401,7 @@ static void ProgramManager_AutoRunWash_InternalControlOutput(void)
 /*=============================================================================================*/
 static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  ProgramManager_Control_RunWashStruct* enterDataHierachy;
   HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
@@ -404,13 +409,43 @@ static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const
   {
     if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN)
     {
+      ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH);
+
+      ProgramManager_AutoRunWash_OneSecondElapsed = (uint32_t)0U;
+
+      ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
+      ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
+
+      ProgramManager_AutoRunWash_WashCount = (uint32_t)0U;
+
+      ProgramManager_AutoRunWash_MotorState = PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD;
+      ProgramManager_AutoRunWash_MotorCounter = (uint32_t)0U;
+      ProgramManager_AutoRunWash_MotorCounterMax = ProgramManager_gCurrentWashRunTime;
+
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
     }
     else if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT)
     {
+      enterDataHierachy = (ProgramManager_Control_RunWashStruct *)(pFsmContext->dataHierachy);
 
+      ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH);
+
+      ProgramManager_AutoRunWash_OneSecondElapsed = enterDataHierachy->oneSecondElapsed;
+
+      ProgramManager_AutoRunWash_TempCounter = enterDataHierachy->tempCounter;
+      ProgramManager_AutoRunWash_PresCounter = enterDataHierachy->presCounter;
+
+      ProgramManager_AutoRunWash_WashCount = (uint32_t)0U;
+
+      ProgramManager_AutoRunWash_MotorState = enterDataHierachy->motorState;
+      ProgramManager_AutoRunWash_MotorCounter = enterDataHierachy->motorCounter;
+      ProgramManager_AutoRunWash_MotorCounterMax = enterDataHierachy->motorCounterMax;
+
+      /* Release previous state data hierachy */
+      ProgramManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
     }
     else
     {
@@ -424,25 +459,6 @@ static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const
 
   if (retVal == HAL_OK)
   {
-    ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH);
-
-    ProgramManager_AutoRunWash_OneSecondElapsed = (uint32_t)0U;
-
-    ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
-    ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
-
-    /* Timeout in minutes * 60s * 1000 ticks / (5 ticks per period) */
-    ProgramManager_AutoRunWash_TempTimeout = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxTimeHeat) * (uint32_t)12000U;
-    ProgramManager_AutoRunWash_PresTimeout = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.maxTimeFill) * (uint32_t)12000U;
-
-    ProgramManager_AutoRunWash_Soap1Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap1);
-    ProgramManager_AutoRunWash_Soap2Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap2);
-    ProgramManager_AutoRunWash_Soap3Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap3);
-
-    ProgramManager_AutoRunWash_MotorState = PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD;
-    ProgramManager_AutoRunWash_MotorCounter = (uint32_t)0U;
-    ProgramManager_AutoRunWash_MotorCounterMax = ProgramManager_gCurrentWashRunTime;
-
     ProgramManager_SubMainFunctionPush(ProgramManager_AutoRunWash_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_AutoRunWash_SubTickHandler;
 
@@ -495,21 +511,6 @@ static void ProgramManager_AutoRunWash_SubTickHandler(void)
     ProgramManager_AutoRunWash_OneSecondElapsed = (uint32_t)0U;
 
     ProgramManager_AutoRunWash_MotorCounter += (uint32_t)1U;
-
-    if (ProgramManager_AutoRunWash_Soap1Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWash_Soap1Timeout -= (uint32_t)1U;
-    }
-
-    if (ProgramManager_AutoRunWash_Soap2Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWash_Soap2Timeout -= (uint32_t)1U;
-    }
-
-    if (ProgramManager_AutoRunWash_Soap3Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWash_Soap3Timeout -= (uint32_t)1U;
-    }
   }
 }
 

@@ -79,7 +79,7 @@ static const uint8_t MenuManager_Home_PressureDisableStr[] =          "%3d/---";
 
 
 /** Menu manager button event mapping array */
-static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[7] =
+static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[9] =
 {
   { IO_LONG_PRESS(IOMANAGER_BUTTON_STATE_START),                      MENUMANAGER_EVENT_LONG_START_BUT        },
   { IO_LONG_PRESS(IOMANAGER_BUTTON_STATE_STOP),                       MENUMANAGER_EVENT_LONG_STOP_BUT         },
@@ -87,6 +87,8 @@ static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[7] =
   { IOMANAGER_BUTTON_STATE_STOP,                                      MENUMANAGER_EVENT_STOP_BUT              },
   { IOMANAGER_BUTTON_STATE_UP,                                        MENUMANAGER_EVENT_UP_BUT                },
   { IOMANAGER_BUTTON_STATE_DOWN,                                      MENUMANAGER_EVENT_DOWN_BUT              },
+  { IOMANAGER_BUTTON_STATE_ADD,                                       MENUMANAGER_EVENT_ADD_BUT               },
+  { IOMANAGER_BUTTON_STATE_SUB,                                       MENUMANAGER_EVENT_SUB_BUT               },
   { IOMANAGER_BUTTON_STATE_UP | IOMANAGER_BUTTON_STATE_DOWN,          MENUMANAGER_EVENT_UP_DOWN_BUT           }
 };
 
@@ -108,10 +110,12 @@ static Fsm_GuardType MenuManager_Home_LongStartBut                    (Fsm_Conte
 static Fsm_GuardType MenuManager_Home_LongStopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_UpBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_DownBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_AddBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_SubBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_UpDownBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_Home_StateMachine[10] =
+Fsm_EventEntryStruct MenuManager_Home_StateMachine[12] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_Home_Entry                                                          ),
   FSM_TRIGGER_EXIT            (                                       MenuManager_Home_Exit                                                           ),
@@ -122,7 +126,9 @@ Fsm_EventEntryStruct MenuManager_Home_StateMachine[10] =
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_LONG_STOP_BUT,      MenuManager_Home_LongStopBut                                                    ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_UP_BUT,             MenuManager_Home_UpBut                                                          ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_DOWN_BUT,           MenuManager_Home_DownBut                                                        ),
-  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_UP_DOWN_BUT,        MenuManager_Home_UpDownBut                                                      )
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_UP_DOWN_BUT,        MenuManager_Home_UpDownBut                                                      ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_ADD_BUT,            MenuManager_Home_AddBut                                                         ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUB_BUT,            MenuManager_Home_SubBut                                                         )
 };
 
 
@@ -334,6 +340,35 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_LongStartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  {
     if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
     {
       (ProgramManager_gAutoSeqConfig.sequenceIndex)--;
@@ -359,7 +394,7 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
 }
 
 /*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
@@ -388,26 +423,15 @@ static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmCon
 }
 
 /*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_LongStartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType MenuManager_Home_UpDownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
-  }
+  Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
   
   return FSM_GUARD_TRUE;
 }
 
 /*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  
-  
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType MenuManager_Home_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
@@ -432,7 +456,7 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
 }
 
 /*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+static Fsm_GuardType MenuManager_Home_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
@@ -453,14 +477,6 @@ static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmCon
     /* Should never executed here */
   }
 
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_UpDownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
-  
   return FSM_GUARD_TRUE;
 }
 

@@ -374,6 +374,13 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void)
       dataHierachy = (ProgramManager_Control_RunWashStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_RunWashStruct));
       dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT;
 
+      dataHierachy->oneSecondElapsed  = ProgramManager_AutoRunWaterHeat_OneSecondElapsed;
+      dataHierachy->tempCounter       = ProgramManager_AutoRunWaterHeat_TempCounter;
+      dataHierachy->presCounter       = ProgramManager_AutoRunWaterHeat_PresCounter;
+      dataHierachy->motorState        = ProgramManager_AutoRunWaterHeat_MotorState;
+      dataHierachy->motorCounter      = ProgramManager_AutoRunWaterHeat_MotorCounter;
+      dataHierachy->motorCounterMax   = ProgramManager_AutoRunWaterHeat_MotorCounterMax;
+
       ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
       Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNWATERHEAT_EVENT_RUN_WASH);

@@ -941,6 +941,36 @@
               <FilePath>..\Appl\programManager\_0000000000_program_Idle.c</FilePath>
             </File>
             <File>
+              <FileName>_1000000000_program_AutoPreRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1000000000_program_AutoPreRun.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1100000000_program_AutoRunWaterHeat.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1100000000_program_AutoRunWaterHeat.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1200000000_program_AutoRunWash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1200000000_program_AutoRunWash.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1300000000_program_AutoRunDrain.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1300000000_program_AutoRunDrain.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1400000000_program_AutoRunExtract.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1400000000_program_AutoRunExtract.c</FilePath>
+            </File>
+            <File>
+              <FileName>_1500000000_program_AutoPostRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_1500000000_program_AutoPostRun.c</FilePath>
+            </File>
+            <File>
               <FileName>programManager_Mem.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\programManager_Mem.c</FilePath>

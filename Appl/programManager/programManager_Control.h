@@ -105,6 +105,12 @@ typedef struct
 typedef struct 
 {
   uint32_t dataId;
+  uint32_t oneSecondElapsed;
+  uint32_t tempCounter;
+  uint32_t presCounter;
+  uint32_t motorState;
+  uint32_t motorCounter;
+  uint32_t motorCounterMax;
 } ProgramManager_Control_RunWashStruct;
 
 typedef struct 
@@ -159,6 +165,8 @@ void ProgramManager_Control_TogglePauseResumeHandler(void);
 
 bool ProgramManager_Control_CheckNextStepAvailable(void);
 bool ProgramManager_Control_CheckPrevStepAvailable(void);
+bool ProgramManager_Control_GetNextStepAvailable(uint32_t *nextStep);
+bool ProgramManager_Control_GetPrevStepAvailable(uint32_t *prevStep);
 
 void ProgramManager_Control_TxRxSignalSubMainFunction(void);
 void ProgramManager_Control_AnalyzeDataSubMainFunction(void);

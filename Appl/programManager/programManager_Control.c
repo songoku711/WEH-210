@@ -464,11 +464,65 @@ bool ProgramManager_Control_CheckPrevStepAvailable(void)
        stepIndex < ProgramManager_gAutoSeqConfig.currentStep; \
        stepIndex++)
   {
-    if ((ProgramManager_gAutoSeqConfig.normStep)[stepIndex].isActive == true)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[stepIndex].isActive == (bool)true)
     {
       retVal = true;
       break;
     }
+  }
+
+  return retVal;
+}
+
+/*=============================================================================================*/
+bool ProgramManager_Control_GetNextStepAvailable(uint32_t *nextStep)
+{
+  bool retVal = false;
+  uint8_t stepIdx;
+
+  if (ProgramManager_gAutoSeqConfig.currentStep != PROGRAMMANAGER_STEP_NUM_MAX)
+  {
+    for (stepIdx = (uint8_t)(ProgramManager_gAutoSeqConfig.currentStep + 1U); stepIdx < PROGRAMMANAGER_STEP_NUM_MAX; stepIdx++)
+    {
+      if (ProgramManager_gAutoSeqConfig.normStep[stepIdx].isActive == (bool)true)
+      {
+        *nextStep = (uint32_t)stepIdx;
+        break;
+      }
+    }
+
+    if (stepIdx == PROGRAMMANAGER_STEP_NUM_MAX)
+    {
+      *nextStep = (uint32_t)PROGRAMMANAGER_STEP_NUM_MAX;
+    }
+
+    retVal = true;
+  }
+
+  return retVal;
+}
+
+/*=============================================================================================*/
+bool ProgramManager_Control_GetPrevStepAvailable(uint32_t *prevStep)
+{
+  bool retVal = false;
+  uint8_t stepIndex;
+  uint8_t stepTemp = (uint8_t)255U;
+
+  for (stepIndex = (uint8_t)0U; \
+       stepIndex < ProgramManager_gAutoSeqConfig.currentStep; \
+       stepIndex++)
+  {
+    if ((ProgramManager_gAutoSeqConfig.normStep)[stepIndex].isActive == true)
+    {
+      stepTemp = stepIndex;
+    }
+  }
+
+  if (stepTemp != (uint8_t)255U)
+  {
+    *prevStep = (uint32_t)stepTemp;
+    retVal = true;
   }
 
   return retVal;

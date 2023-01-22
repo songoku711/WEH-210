@@ -32,7 +32,7 @@ extern Fsm_EventEntryStruct MenuManager_PowerOn_StateMachine[2];
 /** State init (1) */
 extern Fsm_EventEntryStruct MenuManager_Init_StateMachine[3];
 /** State home (2) */
-extern Fsm_EventEntryStruct MenuManager_Home_StateMachine[10];
+extern Fsm_EventEntryStruct MenuManager_Home_StateMachine[12];
 /** State mainSetting (3) */
 extern Fsm_EventEntryStruct MenuManager_MainSetting_StateMachine[8];
 /** State setToDefault (4) */
