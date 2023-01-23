@@ -199,18 +199,23 @@ static void ProgramManager_AutoRunExtract_InternalCheckMotorCondition(void)
         {
           case PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_FIRSTRUN:
             ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.fwdRunTime;
+            ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.fwdRunSpeed;
             break;
           case PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_MID:
             ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.midExtractTime;
+            ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.midExtractSpeed;
             break;
           case PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH1:
             ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.highExtractTime1;
+            ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.highExtractSpeed1;
             break;
           case PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH2:
             ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.highExtractTime2;
+            ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.highExtractSpeed2;
             break;
           case PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH3:
             ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.highExtractTime3;
+            ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.highExtractSpeed3;
             break;
           default:
             ProgramManager_AutoRunExtract_MotorCounterMax = (uint32_t)0U;
@@ -239,6 +244,8 @@ static void ProgramManager_AutoRunExtract_InternalCheckMotorCondition(void)
             ProgramManager_AutoRunExtract_MotorCounterMax = (uint32_t)0U;
             break;
         }
+
+        ProgramManager_AutoRunExtract_MotorSpeed = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
 
         break;
       }
@@ -348,7 +355,7 @@ static Fsm_GuardType ProgramManager_AutoRunExtract_Entry(Fsm_ContextStructPtr co
     ProgramManager_AutoRunExtract_MotorState = PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_FWD;
     ProgramManager_AutoRunExtract_MotorCounter = (uint32_t)0U;
     ProgramManager_AutoRunExtract_MotorCounterMax = ProgramManager_gParamConfig.extractCfg.fwdRunTime;
-    ProgramManager_AutoRunExtract_MotorSpeed = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
+    ProgramManager_AutoRunExtract_MotorSpeed = ProgramManager_gParamConfig.extractCfg.fwdRunSpeed;
 
     ProgramManager_SubMainFunctionPush(ProgramManager_AutoRunExtract_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_AutoRunExtract_SubTickHandler;

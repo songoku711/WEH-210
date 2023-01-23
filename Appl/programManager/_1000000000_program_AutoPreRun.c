@@ -213,11 +213,18 @@ static void ProgramManager_AutoPreRun_InternalCheckTempCondition(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
 {
+  Fsm_DataHierachyStruct *dataHierachy;
+
   if (ProgramManager_Control_NotPauseAndError())
   {
     if ((ProgramManager_AutoPreRun_TempCounter >= PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX) || \
         (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX))
     {
+      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+      dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
+
+      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+      
       Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH);
 
       ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
@@ -226,6 +233,11 @@ static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
     }
     else if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
     {
+      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+      dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
+
+      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+
       Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT);
 
       ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
@@ -261,7 +273,9 @@ static void ProgramManager_AutoPreRun_InternalControlOutput(void)
 static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_Control_PreRunStruct* enterDataHierachy;
+  Fsm_DataHierachyStruct *dataHierachy;
   HAL_StatusTypeDef retVal = HAL_OK;
+  bool runExtract = false;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -276,7 +290,7 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const 
       /* Execute step is extract step */
       if (ProgramManager_gAutoSeqConfig.currentStep == PROGRAMMANAGER_STEP_NUM_MAX)
       {
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_EXTRACT);
+        runExtract = true;
       }
 
       /* Release previous state data hierachy */
@@ -296,7 +310,7 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const 
   if (retVal == HAL_OK)
   {
     /* Extract step will jump to RUN_EXTRACT state immediately */
-    if (ProgramManager_gAutoSeqConfig.currentStep != PROGRAMMANAGER_STEP_NUM_MAX)
+    if (runExtract == false)
     {
       ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTOPRERUN_INTERNALDATALENGTH);
 
@@ -306,6 +320,15 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const 
 
       ProgramManager_SubMainFunctionPush(ProgramManager_AutoPreRun_SubMainFunction);
       ProgramManager_SubTickHandler = ProgramManager_AutoPreRun_SubTickHandler;
+    }
+    else
+    {
+      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+      dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
+
+      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+
+      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_EXTRACT);
     }
 
     return FSM_GUARD_TRUE;

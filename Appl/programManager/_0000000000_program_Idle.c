@@ -62,6 +62,7 @@ static void ProgramManager_Idle_SubTickHandler(void);
 static bool ProgramManager_Idle_InternalCommandHandler(void)
 {
   uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
+  ProgramManager_Control_PreRunStruct *dataHierachy;
   bool stateTransit = false;
 
   ProgramManager_Control_RetrieveCommand(&command);
@@ -71,8 +72,16 @@ static bool ProgramManager_Idle_InternalCommandHandler(void)
     case PROGRAMMANAGER_CONTROL_COMMAND_START:
     {
       if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true) && \
-          (ProgramManager_gSensorDoorOpenErr == (uint8_t)0U))
+          (ProgramManager_gSensorDoorOpenErr == PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR))
       {
+        dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+        dataHierachy->dataId = PROGRAMMANAGER_STATE_IDLE;
+        dataHierachy->executeStep = ProgramManager_gAutoSeqConfig.currentStep;
+
+        ProgramManager_gInitStepIdx = ProgramManager_gAutoSeqConfig.currentStep;
+
+        ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+
         Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_PRE_RUN);
 
         stateTransit = (bool)true;

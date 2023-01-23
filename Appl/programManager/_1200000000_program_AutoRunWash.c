@@ -358,7 +358,7 @@ static void ProgramManager_AutoRunWash_InternalControlOutput(void)
   if (ProgramManager_gPresThresExceeded == (bool)false)
   {
     ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
-                                        (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode);
+                                        (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
   }
   else
   {

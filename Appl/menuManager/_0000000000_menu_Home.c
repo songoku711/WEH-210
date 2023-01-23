@@ -65,6 +65,7 @@ extern "C" {
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_Home_SequenceIdxStr[] =              "PROGRAM %02d";
 static const uint8_t MenuManager_Home_StepIdxStr[] =                  "STEP %02d";
+static const uint8_t MenuManager_Home_StepExtStr[] =                  "STEP EX";
 static const uint8_t MenuManager_Home_NotifyStateNotAvailStr[] =      "NOT AVAILABLE";
 static const uint8_t MenuManager_Home_NotifyStateDoorOpenStr[] =      "DOOR OPEN    ";
 static const uint8_t MenuManager_Home_NotifyStateReadyStr[] =         "READY        ";
@@ -95,7 +96,7 @@ static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[9] =
 /** Menu manager button event mapping configuration */
 static MenuManager_ButEventMapConfStruct MenuManager_Home_ButEventMapConf =
 {
-  .butEventMapNum             = (uint8_t)7U,
+  .butEventMapNum             = (uint8_t)9U,
   .butEventMapCfg             = &MenuManager_Home_ButEventMap
 };
 
@@ -161,7 +162,14 @@ static void MenuManager_Home_LcdShowSequenceStep(void)
   LCD_SetCursorPos(MENUMANAGER_HOME_SEQUENCE_INDEX_XPOS, MENUMANAGER_HOME_SEQUENCE_INDEX_YPOS, LCD_CURSOR_BY_FONT);
   LCD_PutString(tempStr);
 
-  sprintf((char *)tempStr, (const char *)MenuManager_Home_StepIdxStr, ProgramManager_gAutoSeqConfig.currentStep + 1U);
+  if (ProgramManager_gAutoSeqConfig.currentStep != PROGRAMMANAGER_STEP_NUM_MAX)
+  {
+    sprintf((char *)tempStr, (const char *)MenuManager_Home_StepIdxStr, ProgramManager_gAutoSeqConfig.currentStep + 1U);
+  }
+  else
+  {
+    sprintf((char *)tempStr, (const char *)MenuManager_Home_StepExtStr);
+  }
 
   LCD_SetCursorPos(MENUMANAGER_HOME_STEP_INDEX_XPOS, MENUMANAGER_HOME_STEP_INDEX_YPOS, LCD_CURSOR_BY_FONT);
   LCD_PutString(tempStr);
@@ -176,7 +184,7 @@ static void MenuManager_Home_LcdShowNotifyState(void)
   {
     LCD_PutString((uint8_t *)MenuManager_Home_NotifyStateNotAvailStr);
   }
-  else if (ProgramManager_gSensorDoorOpenErr != (uint8_t)0U)
+  else if (ProgramManager_gSensorDoorOpenErr != PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR)
   {
     LCD_PutString((uint8_t *)MenuManager_Home_NotifyStateDoorOpenStr);
   }
@@ -342,6 +350,10 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
   }
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME);
+  }
 
   return FSM_GUARD_TRUE;
 }
@@ -349,6 +361,11 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_STOP);
+  }
+
   return FSM_GUARD_TRUE;
 }
 
@@ -369,9 +386,9 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
+    if (ProgramManager_gAutoSeqConfig.sequenceIndex < ((uint8_t)(PROGRAMMANAGER_SEQUENCE_NUM_MAX) - (uint8_t)1U))
     {
-      (ProgramManager_gAutoSeqConfig.sequenceIndex)--;
+      (ProgramManager_gAutoSeqConfig.sequenceIndex)++;
 
       ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
 
@@ -380,10 +397,6 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
 
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
-  }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME);
   }
   else
   {
@@ -398,9 +411,9 @@ static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmCon
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    if (ProgramManager_gAutoSeqConfig.sequenceIndex < ((uint8_t)(PROGRAMMANAGER_SEQUENCE_NUM_MAX) - (uint8_t)1U))
+    if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
     {
-      (ProgramManager_gAutoSeqConfig.sequenceIndex)++;
+      (ProgramManager_gAutoSeqConfig.sequenceIndex)--;
 
       ProgramManager_SequenceIndex_SetData(ProgramManager_gAutoSeqConfig.sequenceIndex);
 
@@ -409,10 +422,6 @@ static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmCon
 
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
-  }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_STOP);
   }
   else
   {

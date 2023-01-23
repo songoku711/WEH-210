@@ -54,6 +54,8 @@ static uint8_t ProgramManager_Control_RecvSignalCount;
 static uint8_t ProgramManager_Control_AnalyzeDataDelayStart;
 static uint8_t ProgramManager_Control_AnalyzeDataCount;
 
+static uint8_t ProgramManager_Control_InternalCommand;
+
 static uint16_t ProgramManager_PauseOutput;
 
 static float   ProgramManager_gRealTemperature;
@@ -74,6 +76,7 @@ uint16_t ProgramManager_gCurrentPresThreshold;
 bool ProgramManager_gTempThresExceeded;
 bool ProgramManager_gPresThresExceeded;
 
+uint8_t ProgramManager_gInitStepIdx;
 uint16_t ProgramManager_gCurrentWashRunTime;
 uint16_t ProgramManager_gCurrentWashStopTime;
 ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
@@ -381,14 +384,16 @@ void ProgramManager_Control_Init(void)
   ProgramManager_Control_AnalyzeDataDelayStart = PROGRAMMANAGER_CONTROL_ANALYZEDATA_DELAYSTART_MAX;
   ProgramManager_Control_AnalyzeDataCount = (uint8_t)0U;
 
+  ProgramManager_Control_InternalCommand = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
+
   ProgramManager_PauseOutput = (uint16_t)0U;
 
   ProgramManager_gRealTemperature = (float)0.0f;
   ProgramManager_gRealPressure = (float)0.0f;
 
-  ProgramManager_gSensorInverterErr = (uint8_t)0U;
-  ProgramManager_gSensorImbalanceErr = (uint8_t)0U;
-  ProgramManager_gSensorDoorOpenErr = (uint8_t)0U;
+  ProgramManager_gSensorInverterErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR;
+  ProgramManager_gSensorImbalanceErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR;
+  ProgramManager_gSensorDoorOpenErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR;
 
   ProgramManager_gCurrentTemperature = (uint8_t)0U;
   ProgramManager_gCurrentPressure = (uint16_t)0U;
@@ -410,13 +415,15 @@ void ProgramManager_Control_Init(void)
 /*=============================================================================================*/
 void ProgramManager_Control_SetCommand(uint8_t command)
 {
-
+  ProgramManager_Control_InternalCommand = command;
 }
 
 /*=============================================================================================*/
 void ProgramManager_Control_RetrieveCommand(uint8_t *command)
 {
+  *command = ProgramManager_Control_InternalCommand;
 
+  ProgramManager_Control_InternalCommand = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
 }
 
 

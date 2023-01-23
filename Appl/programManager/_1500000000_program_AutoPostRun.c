@@ -81,7 +81,8 @@ static void ProgramManager_AutoPostRun_SubTickHandler(void);
 static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
 {
   bool retVal;
-  ProgramManager_Control_PreRunStruct *dataHierachy;
+  ProgramManager_Control_PreRunStruct *preRunDataHierachy;
+  Fsm_DataHierachyStruct* idleDataHierachy;
   uint32_t step;
 
   if (ProgramManager_AutoPostRun_PostExec == (uint32_t)0U)
@@ -94,7 +95,15 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
       {
         if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
         {
+          idleDataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+          idleDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+
+          ProgramManager_FsmContext.dataHierachy = idleDataHierachy;
+
           Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_IDLE);
+
+          /* Reset initial step index */
+          ProgramManager_gAutoSeqConfig.currentStep = ProgramManager_gInitStepIdx;
         }
         else if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP)
         {
@@ -102,11 +111,11 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
 
           if (retVal == true)
           {
-            dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
-            dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
-            dataHierachy->executeStep = step;
+            preRunDataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+            preRunDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+            preRunDataHierachy->executeStep = step;
 
-            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)preRunDataHierachy;
 
             Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_PRE_RUN);
           }
@@ -117,11 +126,11 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
 
           if (retVal == true)
           {
-            dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
-            dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
-            dataHierachy->executeStep = step;
+            preRunDataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+            preRunDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+            preRunDataHierachy->executeStep = step;
 
-            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)preRunDataHierachy;
 
             Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_PRE_RUN);
           }
@@ -137,7 +146,15 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
       {
         if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
         {
+          idleDataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+          idleDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+
+          ProgramManager_FsmContext.dataHierachy = idleDataHierachy;
+
           Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_IDLE);
+
+          /* Reset initial step index */
+          ProgramManager_gAutoSeqConfig.currentStep = ProgramManager_gInitStepIdx;
         }
         else if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP)
         {
@@ -145,11 +162,11 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
 
           if (retVal == true)
           {
-            dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
-            dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
-            dataHierachy->executeStep = step;
+            preRunDataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+            preRunDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+            preRunDataHierachy->executeStep = step;
 
-            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+            ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)preRunDataHierachy;
 
             Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_PRE_RUN);
           }
@@ -165,7 +182,15 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
       {
         if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
         {
+          idleDataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
+          idleDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
+
+          ProgramManager_FsmContext.dataHierachy = idleDataHierachy;
+
           Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_IDLE);
+
+          /* Reset initial step index */
+          ProgramManager_gAutoSeqConfig.currentStep = ProgramManager_gInitStepIdx;
         }
         else
         {

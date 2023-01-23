@@ -75,6 +75,7 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET              (2U)
 
 #define PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK                      (uint16_t)0x0060U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET                    (5U)
 
 #define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK                     (uint16_t)0x0080U
 #define PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_OFFSET                   (7U)
@@ -139,6 +140,7 @@ extern uint16_t ProgramManager_gCurrentPresThreshold;
 extern bool ProgramManager_gTempThresExceeded;
 extern bool ProgramManager_gPresThresExceeded;
 
+extern uint8_t ProgramManager_gInitStepIdx;
 extern uint16_t ProgramManager_gCurrentWashRunTime;
 extern uint16_t ProgramManager_gCurrentWashStopTime;
 extern ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
