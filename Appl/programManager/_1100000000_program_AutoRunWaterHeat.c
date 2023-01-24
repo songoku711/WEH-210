@@ -59,11 +59,11 @@ extern "C" {
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_EVENT_RUN_WASH                PROGRAMMANAGER_EVENT_SUBMENU_1
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_EVENT_POST_RUN                PROGRAMMANAGER_EVENT_SUBMENU_2
 
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_FWD                1U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_STOP1              2U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_REV                3U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_STOP2              4U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_MAX                5U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_FWD                0U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_STOP1              1U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_REV                2U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_STOP2              3U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_MAX                4U
 
 /** Program manager event handlers */
 static Fsm_GuardType ProgramManager_AutoRunWaterHeat_Entry            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
@@ -92,6 +92,8 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckMotorCondition(void);
 
 static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void);
 static void ProgramManager_AutoRunWaterHeat_InternalControlOutput(void);
+
+static void ProgramManager_AutoRunWaterHeat_InternalUpdateLcdParams(void);
 
 static void ProgramManager_AutoRunWaterHeat_SubMainFunction(void);
 static void ProgramManager_AutoRunWaterHeat_SubTickHandler(void);
@@ -197,6 +199,14 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckLevelCondition(void)
     {
       ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
     }
+
+    if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
+    {
+      if (ProgramManager_AutoRunWaterHeat_PresTimeout != (uint32_t)0U)
+      {
+        ProgramManager_AutoRunWaterHeat_PresTimeout -= (uint32_t)1U;
+      }
+    }
   }
   else
   {
@@ -222,14 +232,16 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckLevelCondition(void)
         ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
       }
     }
+
+    if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
+    {
+      ProgramManager_AutoRunWaterHeat_PresTimeout = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.maxTimeFill) * (uint32_t)12000U;
+    }
   }
 
-  if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
+  if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout != (bool)true)
   {
-    if (ProgramManager_AutoRunWaterHeat_PresTimeout != (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_PresTimeout -= (uint32_t)1U;
-    }
+    ProgramManager_AutoRunWaterHeat_PresTimeout += (uint32_t)1U;
   }
 }
 
@@ -256,6 +268,14 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckTempCondition(void)
     {
       ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
     }
+
+    if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+    {
+      if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
+      {
+        ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
+      }
+    }
   }
   else
   {
@@ -281,14 +301,16 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckTempCondition(void)
         ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
       }
     }
+
+    if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+    {
+      ProgramManager_AutoRunWaterHeat_TempTimeout = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxTimeHeat) * (uint32_t)12000U;
+    }
   }
 
-  if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+  if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout != (bool)true)
   {
-    if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
-    }
+    ProgramManager_AutoRunWaterHeat_TempTimeout += (uint32_t)1U;
   }
 }
 
@@ -347,10 +369,6 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void)
           conditionOk = (bool)false;
         }
       }
-      else
-      {
-        conditionOk = (bool)false;
-      }
     }
 
     /* Pressure threshold not reach, and timeout not elapse if configured */
@@ -362,10 +380,6 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void)
         {
           conditionOk = (bool)false;
         }
-      }
-      else
-      {
-        conditionOk = (bool)false;
       }
     }
 
@@ -471,6 +485,38 @@ static void ProgramManager_AutoRunWaterHeat_InternalControlOutput(void)
   }
 }
 
+/*=============================================================================================*/
+static void ProgramManager_AutoRunWaterHeat_InternalUpdateLcdParams(void)
+{
+  uint32_t timeTemp;
+
+  if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true) && \
+      (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)false))
+  {
+    timeTemp = ProgramManager_AutoRunWaterHeat_TempTimeout;
+  }
+  else if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)false) && \
+           (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true))
+  {
+    timeTemp = ProgramManager_AutoRunWaterHeat_PresTimeout;
+  }
+  else if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true) && \
+           (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true))
+  {
+    timeTemp = (ProgramManager_AutoRunWaterHeat_TempTimeout < ProgramManager_AutoRunWaterHeat_PresTimeout) ? ProgramManager_AutoRunWaterHeat_TempTimeout : ProgramManager_AutoRunWaterHeat_PresTimeout;
+  }
+  else
+  {
+    timeTemp = ProgramManager_AutoRunWaterHeat_TempTimeout;
+  }
+
+  /* Time elapsed in second = time * (5 ticks per period) / 1000 ticks */
+  timeTemp = timeTemp / (uint32_t)200U;
+
+  ProgramManager_gTimeCountMin = timeTemp / (uint32_t)60U;
+  ProgramManager_gTimeCountSec = timeTemp % (uint32_t)60U;
+}
+
 
 
 /*=============================================================================================*/
@@ -555,6 +601,8 @@ static void ProgramManager_AutoRunWaterHeat_SubMainFunction(void)
     ProgramManager_AutoRunWaterHeat_InternalCheckMotorCondition();
 
     ProgramManager_AutoRunWaterHeat_InternalControlOutput();
+
+    ProgramManager_AutoRunWaterHeat_InternalUpdateLcdParams();
 
     ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit();
   }

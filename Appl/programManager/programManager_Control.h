@@ -145,6 +145,11 @@ extern uint16_t ProgramManager_gCurrentWashRunTime;
 extern uint16_t ProgramManager_gCurrentWashStopTime;
 extern ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
 
+extern uint8_t ProgramManager_gTimeCountMin;
+extern uint8_t ProgramManager_gTimeCountSec;
+extern uint8_t ProgramManager_gSpinIndex;
+extern uint8_t ProgramManager_gMotorState;
+
 extern uint8_t ProgramManager_gIsPaused;
 extern uint8_t ProgramManager_gIsError;
 
@@ -156,7 +161,7 @@ extern uint16_t ProgramManager_gCurrentOutput;
 *                                     FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-#define ProgramManager_Control_NotPauseAndError()                     ((ProgramManager_gIsPaused == (uint8_t)0U) && (ProgramManager_gIsError == (uint8_t)0U))
+#define ProgramManager_Control_NotPauseAndError()                     ((ProgramManager_gIsPaused == (uint8_t)0U) /* && (ProgramManager_gIsError == (uint8_t)0U) */)
 
 void ProgramManager_Control_Init(void);
 

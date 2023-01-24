@@ -49,16 +49,16 @@ extern "C" {
 #define PROGRAMMANAGER_AUTORUNEXTRACT_EVENT_RUN_BALANCE               PROGRAMMANAGER_EVENT_SUBMENU_1
 #define PROGRAMMANAGER_AUTORUNEXTRACT_EVENT_POST_RUN                  PROGRAMMANAGER_EVENT_SUBMENU_2
 
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_FIRSTRUN           1U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_MID                2U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH1              3U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH2              4U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH3              5U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_MAX                6U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_FIRSTRUN           0U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_MID                1U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH1              2U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH2              3U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_HIGH3              4U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_EXTRACTLEVEL_MAX                5U
 
-#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_FWD                  1U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_STOP                 2U
-#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_MAX                  3U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_FWD                  0U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_STOP                 1U
+#define PROGRAMMANAGER_AUTORUNEXTRACT_MOTORSTATE_MAX                  2U
 
 /** Program manager event handlers */
 static Fsm_GuardType ProgramManager_AutoRunExtract_Entry              (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
@@ -85,6 +85,8 @@ static void ProgramManager_AutoRunExtract_InternalCheckMotorCondition(void);
 
 static void ProgramManager_AutoRunExtract_InternalCheckStateTransit(void);
 static void ProgramManager_AutoRunExtract_InternalControlOutput(void);
+
+static void ProgramManager_AutoRunExtract_InternalUpdateLcdParams(void);
 
 static void ProgramManager_AutoRunExtract_SubMainFunction(void);
 static void ProgramManager_AutoRunExtract_SubTickHandler(void);
@@ -378,6 +380,20 @@ static Fsm_GuardType ProgramManager_AutoRunExtract_Exit(Fsm_ContextStructPtr con
   return FSM_GUARD_TRUE;
 }
 
+/*=============================================================================================*/
+static void ProgramManager_AutoRunExtract_InternalUpdateLcdParams(void)
+{
+  uint32_t timeTemp;
+
+  timeTemp = ProgramManager_AutoRunExtract_MotorCounterMax - ProgramManager_AutoRunExtract_MotorCounter;
+
+  ProgramManager_gTimeCountMin = timeTemp / (uint32_t)60U;
+  ProgramManager_gTimeCountSec = timeTemp % (uint32_t)60U;
+
+  ProgramManager_gSpinIndex = (uint8_t)ProgramManager_AutoRunExtract_ExtractLevel;
+  ProgramManager_gMotorState = (uint8_t)ProgramManager_AutoRunExtract_MotorState;
+}
+
 
 
 /*=============================================================================================*/
@@ -392,6 +408,8 @@ static void ProgramManager_AutoRunExtract_SubMainFunction(void)
     ProgramManager_AutoRunExtract_InternalCheckMotorCondition();
 
     ProgramManager_AutoRunExtract_InternalControlOutput();
+
+    ProgramManager_AutoRunExtract_InternalUpdateLcdParams();
 
     ProgramManager_AutoRunExtract_InternalCheckStateTransit();
   }

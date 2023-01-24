@@ -81,6 +81,11 @@ uint16_t ProgramManager_gCurrentWashRunTime;
 uint16_t ProgramManager_gCurrentWashStopTime;
 ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
 
+uint8_t ProgramManager_gTimeCountMin;
+uint8_t ProgramManager_gTimeCountSec;
+uint8_t ProgramManager_gSpinIndex;
+uint8_t ProgramManager_gMotorState;
+
 uint8_t ProgramManager_gIsPaused;
 uint8_t ProgramManager_gIsError;
 
@@ -403,6 +408,11 @@ void ProgramManager_Control_Init(void)
 
   ProgramManager_gTempThresExceeded = (bool)false;
   ProgramManager_gPresThresExceeded = (bool)false;
+
+  ProgramManager_gTimeCountMin = (uint8_t)0U;
+  ProgramManager_gTimeCountSec = (uint8_t)0U;
+  ProgramManager_gSpinIndex = (uint8_t)0U;
+  ProgramManager_gMotorState = (uint8_t)0U;
 
   ProgramManager_gIsPaused = (uint8_t)0U;
   ProgramManager_gIsError = (uint8_t)0U;

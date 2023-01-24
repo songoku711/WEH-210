@@ -201,6 +201,10 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
       }
     }
 
+    /* Reset global parameters */
+    ProgramManager_gTimeCountMin = (uint32_t)0U;
+    ProgramManager_gTimeCountSec = (uint32_t)0U;
+
     ProgramManager_AutoPostRun_PostExec = (uint32_t)1U;
   }
 }

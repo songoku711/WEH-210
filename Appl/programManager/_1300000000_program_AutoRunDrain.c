@@ -72,6 +72,8 @@ static void ProgramManager_AutoRunDrain_InternalCheckLevelCondition(void);
 static void ProgramManager_AutoRunDrain_InternalCheckStateTransit(void);
 static void ProgramManager_AutoRunDrain_InternalControlOutput(void);
 
+static void ProgramManager_AutoRunDrain_InternalUpdateLcdParams(void);
+
 static void ProgramManager_AutoRunDrain_SubMainFunction(void);
 static void ProgramManager_AutoRunDrain_SubTickHandler(void);
 
@@ -226,6 +228,13 @@ static void ProgramManager_AutoRunDrain_InternalControlOutput(void)
   }
 }
 
+/*=============================================================================================*/
+static void ProgramManager_AutoRunDrain_InternalUpdateLcdParams(void)
+{
+  ProgramManager_gTimeCountMin = (uint32_t)0U;
+  ProgramManager_gTimeCountSec = (uint32_t)0U;
+}
+
 
 
 /*=============================================================================================*/
@@ -296,6 +305,8 @@ static void ProgramManager_AutoRunDrain_SubMainFunction(void)
     ProgramManager_AutoRunDrain_InternalCheckLevelCondition();
 
     ProgramManager_AutoRunDrain_InternalControlOutput();
+
+    ProgramManager_AutoRunDrain_InternalUpdateLcdParams();
 
     ProgramManager_AutoRunDrain_InternalCheckStateTransit();
   }
