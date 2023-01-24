@@ -20,6 +20,8 @@ extern "C" {
 
 #include "ioManager.h"
 
+#include "hc595.h"
+
 
 
 /*===============================================================================================
@@ -101,6 +103,8 @@ static IoManager_ButtonConfStruct IoManager_buttonCfg[IOMANAGER_BUTTON_NUM] =
 
 static IoManager_StateType IoManager_gState = IOMANAGER_STATE_INIT;
 
+uint8_t IoManager_gLedIndication[2];
+
 
 
 extern osThreadId_t ioExtIrqCbkTaskHandle;
@@ -115,6 +119,8 @@ extern osMessageQueueId_t ioButtonStateQueueHandle;
 
 static void IoManager_TimerElapsedCbk(TIM_HandleTypeDef *xTimer);
 
+static void IoManager_InternalUpdateLedIndicationSubMainFunction(void);
+
 
 
 /*===============================================================================================
@@ -124,6 +130,23 @@ static void IoManager_TimerElapsedCbk(TIM_HandleTypeDef *xTimer);
 static void IoManager_TimerElapsedCbk(TIM_HandleTypeDef *xTimer)
 {
   osThreadFlagsSet(ioExtIrqCbkTaskHandle, (uint32_t)IOMANAGER_BUTTON_TIMEOUT_FLAG);
+}
+
+/*=============================================================================================*/
+static void IoManager_InternalUpdateLedIndicationSubMainFunction(void)
+{
+  static uint8_t updateCount = (uint8_t)0U;
+
+  if (updateCount < (uint8_t)20U)
+  {
+    updateCount++;
+  }
+  else
+  {
+    updateCount = (uint8_t)0U;
+
+    HC595_WriteByte(0, IoManager_gLedIndication, (uint8_t)2U);
+  }
 }
 
 
@@ -138,6 +161,9 @@ void IoManager_Init(void)
   IoManager_curNumButtonPressed = (uint8_t)0U;
   
   HAL_TIM_RegisterCallback(IOMANAGER_TIMER_INSTANCE, HAL_TIM_PERIOD_ELAPSED_CB_ID, IoManager_TimerElapsedCbk);
+
+  IoManager_gLedIndication[0] = (uint8_t)0xFFU;
+  IoManager_gLedIndication[1] = (uint8_t)0xFFU;
 
   IoManager_gState = IOMANAGER_STATE_READY;
 }
@@ -155,7 +181,7 @@ IoManager_StateType IoManager_GetCurrentState(void)
 /*=============================================================================================*/
 void IoManager_MainFunction(void)
 {
-
+  IoManager_InternalUpdateLedIndicationSubMainFunction();
 }
 
 /*=============================================================================================*/

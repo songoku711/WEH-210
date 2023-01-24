@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F407xx,USE_HAL_DRIVER,STM32_THREAD_SAFE_STRATEGY=4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Appl/menuManager;../Appl/programManager;../Appl/ioManager;../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Middlewares/Third_Party/Fsm;../Middlewares/Third_Party/Lcd;../Middlewares/Third_Party/MemIf;../Middlewares/Third_Party/eModbus/modbus/include;../Middlewares/Third_Party/eModbus/modbus/rtu;../Middlewares/Third_Party/eModbus/port;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Drivers/BSP/AT24C32;../Drivers/BSP/ST7565R;../Utilities/Fonts</IncludePath>
+              <IncludePath>../Appl/menuManager;../Appl/programManager;../Appl/ioManager;../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Middlewares/Third_Party/Fsm;../Middlewares/Third_Party/Lcd;../Middlewares/Third_Party/MemIf;../Middlewares/Third_Party/eModbus/modbus/include;../Middlewares/Third_Party/eModbus/modbus/rtu;../Middlewares/Third_Party/eModbus/port;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Drivers/BSP/AT24C32;../Drivers/BSP/ST7565R;..\Drivers\BSP\HC595;../Utilities/Fonts</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1254,6 +1254,11 @@
               <FileName>st7565r.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\BSP\ST7565R\st7565r.c</FilePath>
+            </File>
+            <File>
+              <FileName>hc595.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\BSP\HC595\hc595.c</FilePath>
             </File>
           </Files>
         </Group>

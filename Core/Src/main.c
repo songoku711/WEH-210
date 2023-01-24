@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "at24c32.h"
 #include "st7565r.h"
+#include "hc595.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,7 +88,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  HAL_Delay(500);
+  
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -105,6 +106,9 @@ int main(void)
   
   AT24C32_Init();
   ST7565R_Init();
+  HC595_Init();
+  
+  HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Init scheduler */
