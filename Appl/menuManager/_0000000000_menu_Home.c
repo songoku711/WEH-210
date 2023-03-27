@@ -52,12 +52,6 @@ extern "C" {
 #define MENUMANAGER_HOME_STATE_XPOS                                   (uint32_t)10U
 #define MENUMANAGER_HOME_STATE_YPOS                                   (uint32_t)2U
 
-#define MENUMANAGER_HOME_STEP_PARAM_XPOS                              (uint32_t)1U
-#define MENUMANAGER_HOME_STEP_PARAM_YPOS                              (uint32_t)4U
-
-#define MENUMANAGER_HOME_MOTOR_STATE_XPOS                             (uint32_t)15U
-#define MENUMANAGER_HOME_MOTOR_STATE_YPOS                             (uint32_t)4U
-
 #define MENUMANAGER_HOME_INV_XPOS                                     (uint32_t)1U
 #define MENUMANAGER_HOME_INV_YPOS                                     (uint32_t)6U
 
@@ -94,27 +88,8 @@ static const uint8_t MenuManager_Home_NotifyRunningStr[] =            "RUNNING  
 static const uint8_t MenuManager_Home_StateWaterHeatStr[] =           "WATER HEAT";
 static const uint8_t MenuManager_Home_StateWashStr[] =                "WASH      ";
 static const uint8_t MenuManager_Home_StateDrainStr[] =               "DRAIN     ";
-static const uint8_t MenuManager_Home_StateExtractStr[] =             "EXTRACT   ";
-static const uint8_t MenuManager_Home_StateBalanceStr[] =             "BALANCE   ";
 
-static const uint8_t MenuManager_Home_StepParamSpinStr[] =            "SPIN: %2d/%2d";
-static const uint8_t* MenuManager_Home_StepParamMotorStateStr[] = 
-{
-  "FWD ",
-  "STOP",
-  "REV ",
-  "STOP",
-  "    "
-};
-static const uint8_t* MenuManager_Home_StepParamExtLvlStr[] = 
-{
-  "FIRST RUN",
-  "MID SPEED",
-  "H. SPD 1 ",
-  "H. SPD 2 ",
-  "H. SPD 3 ",
-  "         "
-};
+
 
 static const uint8_t MenuManager_Home_InputStateInvStr[] =            "INV";
 static const uint8_t MenuManager_Home_InputStateImbStr[] =            "IMB";
@@ -128,8 +103,6 @@ static const uint8_t MenuManager_Home_TemperatureEnableStr[] =        "%3d/%3d";
 static const uint8_t MenuManager_Home_TemperatureDisableStr[] =       "%3d/---";
 static const uint8_t MenuManager_Home_PressureEnableStr[] =           "%3d/%3d";
 static const uint8_t MenuManager_Home_PressureDisableStr[] =          "%3d/---";
-
-static const uint8_t MenuManager_Home_BlankStr[] =                    "                   ";
 
 
 
@@ -195,7 +168,6 @@ Fsm_EventEntryStruct MenuManager_Home_StateMachine[12] =
 static void MenuManager_Home_LcdShowSequenceStep(void);
 static void MenuManager_Home_LcdShowNotifyState(void);
 static void MenuManager_Home_LcdShowInputState(void);
-static void MenuManager_Home_LcdShowStepParams(void);
 static void MenuManager_Home_LcdShowCountDown(void);
 static void MenuManager_Home_LcdShowTemperature(void);
 static void MenuManager_Home_LcdShowPressure(void);
@@ -267,12 +239,6 @@ static void MenuManager_Home_LcdShowNotifyState(void)
       case PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN:
         LCD_PutString((uint8_t *)MenuManager_Home_StateDrainStr);
         break;
-      case PROGRAMMANAGER_STATE_AUTO_RUN_EXTRACT:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateExtractStr);
-        break;
-      case PROGRAMMANAGER_STATE_AUTO_RUN_BALANCE:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateBalanceStr);
-        break;
       default:
         break;
     }
@@ -317,39 +283,6 @@ static void MenuManager_Home_LcdShowInputState(void)
   else
   {
     LCD_PutString((uint8_t *)MenuManager_Home_InputStateNoneStr);
-  }
-}
-
-/*=============================================================================================*/
-static void MenuManager_Home_LcdShowStepParams(void)
-{
-  uint8_t tempStr[20];
-
-  LCD_SetCursorPos(MENUMANAGER_HOME_STEP_PARAM_XPOS, MENUMANAGER_HOME_STEP_PARAM_YPOS, LCD_CURSOR_BY_FONT);
-
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_AUTO_RUN_WASH)
-  {
-    sprintf((char *)tempStr, (const char *)MenuManager_Home_StepParamSpinStr, \
-                             ProgramManager_gSpinIndex + 1U, \
-                             (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washNum);
-
-    LCD_PutString(tempStr);
-
-    LCD_SetCursorPos(MENUMANAGER_HOME_MOTOR_STATE_XPOS, MENUMANAGER_HOME_MOTOR_STATE_YPOS, LCD_CURSOR_BY_FONT);
-
-    LCD_PutString((uint8_t *)MenuManager_Home_StepParamMotorStateStr[ProgramManager_gMotorState]);
-  }
-  else if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_AUTO_RUN_EXTRACT)
-  {
-    LCD_PutString((uint8_t *)MenuManager_Home_StepParamExtLvlStr[ProgramManager_gSpinIndex]);
-
-    LCD_SetCursorPos(MENUMANAGER_HOME_MOTOR_STATE_XPOS, MENUMANAGER_HOME_MOTOR_STATE_YPOS, LCD_CURSOR_BY_FONT);
-
-    LCD_PutString((uint8_t *)MenuManager_Home_StepParamMotorStateStr[ProgramManager_gMotorState]);
-  }
-  else
-  {
-    LCD_PutString((uint8_t *)MenuManager_Home_BlankStr);
   }
 }
 
@@ -654,7 +587,6 @@ static void MenuManager_Home_SubMainFunction(void)
   else if (MenuManager_Home_SubMainFuncCounter == MENUMANAGER_HOME_SUBMAINFUNCCOUNTER_UPDATE_2)
   {
     MenuManager_Home_LcdShowInputState();
-    MenuManager_Home_LcdShowStepParams();
     MenuManager_Home_LcdShowCountDown();
   }
   else if (MenuManager_Home_SubMainFuncCounter == MENUMANAGER_HOME_SUBMAINFUNCCOUNTER_UPDATE_3)

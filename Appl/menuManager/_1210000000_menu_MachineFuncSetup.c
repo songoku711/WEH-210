@@ -44,24 +44,26 @@ static const uint8_t MenuManager_FillUseTimeout_ChildTitleStr[] =     "FILL USE 
 static const uint8_t MenuManager_ManOperateWhenAuto_ChildTitleStr[] = "MAN OP WHEN AUTO";
 static const uint8_t MenuManager_TempUnit_ChildTitleStr[] =           "TEMP UNIT";
 static const uint8_t MenuManager_DrainValveStatus_ChildTitleStr[] =   "DRAIN VALVE STAT";
+static const uint8_t MenuManager_WashMachine_ChildTitleStr[] =        "WASH MACHINE TYPE";
 
 static const uint8_t MenuManager_MachineFuncSetup_MainTitleStr[] =    "MACHINE FUNCTION";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_MachineFuncSetup_ChildMenu[6] =
+static MenuManager_ChildMenuStruct MenuManager_MachineFuncSetup_ChildMenu[7] =
 {
   { &MenuManager_DrainWhileDoorOpen_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_HeatUseTimeout_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_2             },
   { &MenuManager_FillUseTimeout_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_3             },
   { &MenuManager_ManOperateWhenAuto_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_4             },
   { &MenuManager_TempUnit_ChildTitleStr,                              MENUMANAGER_EVENT_SUBMENU_5             },
-  { &MenuManager_DrainValveStatus_ChildTitleStr,                      MENUMANAGER_EVENT_SUBMENU_6             }
+  { &MenuManager_DrainValveStatus_ChildTitleStr,                      MENUMANAGER_EVENT_SUBMENU_6             },
+  { &MenuManager_WashMachine_ChildTitleStr,                           MENUMANAGER_EVENT_SUBMENU_7             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_MachineFuncSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)6U,
+  .childMenuNum               = (uint8_t)7U,
   .childMenuCfg               = &MenuManager_MachineFuncSetup_ChildMenu
 };
 
@@ -93,7 +95,7 @@ static Fsm_GuardType MenuManager_MachineFuncSetup_UpBut               (Fsm_Conte
 static Fsm_GuardType MenuManager_MachineFuncSetup_DownBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[11] =
+Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[12] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_MachineFuncSetup_Entry                                              ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_DRAIN_WHILE_DOOR_OPEN ),
@@ -102,6 +104,7 @@ Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[11] =
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_MAN_OPERATE_WHEN_AUTO ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_TEMP_UNIT             ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_DRAIN_VALVE_STATUS    ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_WASH_MACHINE          ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_MachineFuncSetup_UpBut                                              ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_MachineFuncSetup_DownBut                                            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_MachineFuncSetup_StartBut                                           ),
@@ -181,7 +184,8 @@ static Fsm_GuardType MenuManager_MachineFuncSetup_Entry(Fsm_ContextStructPtr con
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_FILL_USE_TIMEOUT)       || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MAN_OPERATE_WHEN_AUTO)  || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_TEMP_UNIT)              || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_VALVE_STATUS))
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_VALVE_STATUS)     || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_WASH_MACHINE))
     {
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);

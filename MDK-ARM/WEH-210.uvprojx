@@ -656,124 +656,44 @@
               <FilePath>..\Appl\menuManager\_126B000000_menu_MaxWashSpeed.c</FilePath>
             </File>
             <File>
-              <FileName>_1270000000_menu_ExtractSetup.c</FileName>
+              <FileName>_1270000000_menu_DrainSetup.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1270000000_menu_ExtractSetup.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1270000000_menu_DrainSetup.c</FilePath>
             </File>
             <File>
-              <FileName>_1271000000_menu_BalanceLevel.c</FileName>
+              <FileName>_1271000000_menu_DrainSetupParam.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1271000000_menu_BalanceLevel.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1271000000_menu_DrainSetupParam.c</FilePath>
             </File>
             <File>
-              <FileName>_1272000000_menu_BalanceDrainLevel.c</FileName>
+              <FileName>_1271100000_menu_DrainSetupTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1272000000_menu_BalanceDrainLevel.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1271100000_menu_DrainSetupTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1273000000_menu_BalanceWithWaterTime.c</FileName>
+              <FileName>_1271200000_menu_DrainSetupSpeed.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1273000000_menu_BalanceWithWaterTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1271200000_menu_DrainSetupSpeed.c</FilePath>
             </File>
             <File>
-              <FileName>_1274000000_menu_BalanceDrainWaterTime.c</FileName>
+              <FileName>_1272000000_menu_DrainOffTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1274000000_menu_BalanceDrainWaterTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1272000000_menu_DrainOffTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1275000000_menu_BalanceDelayTime.c</FileName>
+              <FileName>_1273000000_menu_MaxDrainExtrTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1275000000_menu_BalanceDelayTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1273000000_menu_MaxDrainExtrTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1276000000_menu_FwdRunTime.c</FileName>
+              <FileName>_1274000000_menu_ReDrainExtrTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1276000000_menu_FwdRunTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1274000000_menu_ReDrainExtrTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1277000000_menu_MidExtractTime.c</FileName>
+              <FileName>_1275000000_menu_MaxDrainExtrSpeed.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1277000000_menu_MidExtractTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1278000000_menu_MidExtractDelayTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1278000000_menu_MidExtractDelayTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1279000000_menu_HighExtractTime1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1279000000_menu_HighExtractTime1.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127A000000_menu_HighExtractTime2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127A000000_menu_HighExtractTime2.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127B000000_menu_HighExtractTime3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127B000000_menu_HighExtractTime3.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127C000000_menu_HighExtractDelayTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127C000000_menu_HighExtractDelayTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127D000000_menu_MaxExtractTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127D000000_menu_MaxExtractTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127E000000_menu_ReextractTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127E000000_menu_ReextractTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127F000000_menu_ReextractWashTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127F000000_menu_ReextractWashTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127G000000_menu_BalanceSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127G000000_menu_BalanceSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127H000000_menu_FwdRunSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127H000000_menu_FwdRunSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127I000000_menu_MidExtractSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127I000000_menu_MidExtractSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127J000000_menu_HighExtractSpeed1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127J000000_menu_HighExtractSpeed1.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127K000000_menu_HighExtractSpeed2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127K000000_menu_HighExtractSpeed2.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127L000000_menu_HighExtractSpeed3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127L000000_menu_HighExtractSpeed3.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127M000000_menu_MaxMidExtractSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127M000000_menu_MaxMidExtractSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_127N000000_menu_MaxHighExtractSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_127N000000_menu_MaxHighExtractSpeed.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1275000000_menu_MaxDrainExtrSpeed.c</FilePath>
             </File>
             <File>
               <FileName>_1280000000_menu_DoorLockSetup.c</FileName>
@@ -856,9 +776,9 @@
               <FilePath>..\Appl\menuManager\_1311413000_menu_StepWashSpeed.c</FilePath>
             </File>
             <File>
-              <FileName>_1311500000_menu_StepWashNum.c</FileName>
+              <FileName>_1311500000_menu_StepWashTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311500000_menu_StepWashNum.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311500000_menu_StepWashTime.c</FilePath>
             </File>
             <File>
               <FileName>_1311600000_menu_StepTempMode.c</FileName>
@@ -881,34 +801,29 @@
               <FilePath>..\Appl\menuManager\_1311710000_menu_StepLevelModeCustom.c</FilePath>
             </File>
             <File>
-              <FileName>_1312000000_menu_StepExtractParam.c</FileName>
+              <FileName>_1311800000_menu_StepDrainMode.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312000000_menu_StepExtractParam.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311800000_menu_StepDrainMode.c</FilePath>
             </File>
             <File>
-              <FileName>_1312100000_menu_StepBalanceTime.c</FileName>
+              <FileName>_1311810000_menu_StepDrainModeCustom.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312100000_menu_StepBalanceTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311810000_menu_StepDrainModeCustom.c</FilePath>
             </File>
             <File>
-              <FileName>_1312200000_menu_StepMidExtractTime.c</FileName>
+              <FileName>_1311811000_menu_StepDrainModeParam.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312200000_menu_StepMidExtractTime.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311811000_menu_StepDrainModeParam.c</FilePath>
             </File>
             <File>
-              <FileName>_1312300000_menu_StepHighExtractTime1.c</FileName>
+              <FileName>_1311811100_menu_StepDrainModeTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312300000_menu_StepHighExtractTime1.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311811100_menu_StepDrainModeTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1312400000_menu_StepHighExtractTime2.c</FileName>
+              <FileName>_1311811200_menu_StepDrainModeSpeed.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312400000_menu_StepHighExtractTime2.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1312500000_menu_StepHighExtractTime3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1312500000_menu_StepHighExtractTime3.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311811200_menu_StepDrainModeSpeed.c</FilePath>
             </File>
             <File>
               <FileName>menuManager_Common.c</FileName>
@@ -961,14 +876,9 @@
               <FilePath>..\Appl\programManager\_1300000000_program_AutoRunDrain.c</FilePath>
             </File>
             <File>
-              <FileName>_1400000000_program_AutoRunExtract.c</FileName>
+              <FileName>_1400000000_program_AutoPostRun.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_1400000000_program_AutoRunExtract.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1500000000_program_AutoPostRun.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\programManager\_1500000000_program_AutoPostRun.c</FilePath>
+              <FilePath>..\Appl\programManager\_1400000000_program_AutoPostRun.c</FilePath>
             </File>
             <File>
               <FileName>programManager_Mem.c</FileName>

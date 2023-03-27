@@ -44,7 +44,7 @@ static const uint8_t MenuManager_FillLevelSetup_ChildTitleStr[] =     "FILL AND 
 static const uint8_t MenuManager_HeatTempSetup_ChildTitleStr[] =      "HEAT AND TEMP";
 static const uint8_t MenuManager_SoapSetup_ChildTitleStr[] =          "SOAP SETUP";
 static const uint8_t MenuManager_WashSetup_ChildTitleStr[] =          "WASH SETUP";
-static const uint8_t MenuManager_ExtractSetup_ChildTitleStr[] =       "EXTRACT SETUP";
+static const uint8_t MenuManager_DrainSetup_ChildTitleStr[] =         "DRAIN SETUP";
 static const uint8_t MenuManager_DoorLockSetup_ChildTitleStr[] =      "DOOR AND LOCK";
 
 static const uint8_t MenuManager_MachineSetup_MainTitleStr[] =        "MACHINE SETUP";
@@ -58,7 +58,7 @@ static MenuManager_ChildMenuStruct MenuManager_MachineSetup_ChildMenu[8] =
   { &MenuManager_HeatTempSetup_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_4             },
   { &MenuManager_SoapSetup_ChildTitleStr,                             MENUMANAGER_EVENT_SUBMENU_5             },
   { &MenuManager_WashSetup_ChildTitleStr,                             MENUMANAGER_EVENT_SUBMENU_6             },
-  { &MenuManager_ExtractSetup_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_7             },
+  { &MenuManager_DrainSetup_ChildTitleStr,                            MENUMANAGER_EVENT_SUBMENU_7             },
   { &MenuManager_DoorLockSetup_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_8             }
 };
 
@@ -106,7 +106,7 @@ Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[13] =
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_HEAT_TEMP_SETUP       ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_SOAP_SETUP            ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_WASH_SETUP            ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_EXTRACT_SETUP         ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_DRAIN_SETUP           ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_DOOR_LOCK_SETUP       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_MachineSetup_UpBut                                                  ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_MachineSetup_DownBut                                                ),
@@ -188,7 +188,7 @@ static Fsm_GuardType MenuManager_MachineSetup_Entry(Fsm_ContextStructPtr const p
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_HEAT_TEMP_SETUP)    || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_SOAP_SETUP)         || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_WASH_SETUP)         || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_EXTRACT_SETUP)      || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP)        || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DOOR_LOCK_SETUP))
     {
       /* Release previous state data hierachy */

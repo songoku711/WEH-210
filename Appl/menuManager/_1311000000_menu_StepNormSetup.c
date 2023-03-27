@@ -53,26 +53,28 @@ static const uint8_t MenuManager_StepIsActive_ChildTitleStr[] =       "ACTIVE ST
 static const uint8_t MenuManager_StepWaterMode_ChildTitleStr[] =      "WATER MODE";
 static const uint8_t MenuManager_StepSoapMode_ChildTitleStr[] =       "SUPPLY MODE";
 static const uint8_t MenuManager_StepWashMode_ChildTitleStr[] =       "WASH MODE";
-static const uint8_t MenuManager_StepWashNum_ChildTitleStr[] =        "WASH SPIN NUMBER";
+static const uint8_t MenuManager_StepWashTime_ChildTitleStr[] =       "WASH TIME";
 static const uint8_t MenuManager_StepTempMode_ChildTitleStr[] =       "TEMP MODE";
 static const uint8_t MenuManager_StepLevelMode_ChildTitleStr[] =      "LEVEL MODE";
+static const uint8_t MenuManager_StepDrainMode_ChildTitleStr[] =      "DRAIN MODE";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_StepNormSetup_ChildMenu[7] =
+static MenuManager_ChildMenuStruct MenuManager_StepNormSetup_ChildMenu[8] =
 {
   { &MenuManager_StepIsActive_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_StepWaterMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_2             },
   { &MenuManager_StepSoapMode_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_3             },
   { &MenuManager_StepWashMode_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_StepWashNum_ChildTitleStr,                           MENUMANAGER_EVENT_SUBMENU_5             },
+  { &MenuManager_StepWashTime_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_5             },
   { &MenuManager_StepTempMode_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_6             },
-  { &MenuManager_StepLevelMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_7             }
+  { &MenuManager_StepLevelMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_7             },
+  { &MenuManager_StepDrainMode_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_8             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_StepNormSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)7U,
+  .childMenuNum               = (uint8_t)8U,
   .childMenuCfg               = &MenuManager_StepNormSetup_ChildMenu
 };
 
@@ -104,16 +106,17 @@ static Fsm_GuardType MenuManager_StepNormSetup_UpBut                  (Fsm_Conte
 static Fsm_GuardType MenuManager_StepNormSetup_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_StepNormSetup_StateMachine[12] =
+Fsm_EventEntryStruct MenuManager_StepNormSetup_StateMachine[13] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepNormSetup_Entry                                                 ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STEP_IS_ACTIVE        ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_STEP_WATER_MODE       ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_STEP_SOAP_MODE        ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_STEP_WASH_MODE        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_STEP_WASH_NUM         ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_STEP_WASH_TIME         ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_STEP_TEMP_MODE        ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_STEP_LEVEL_MODE       ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE       ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepNormSetup_UpBut                                                 ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepNormSetup_DownBut                                               ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepNormSetup_StartBut                                              ),
@@ -231,11 +234,13 @@ static Fsm_GuardType MenuManager_StepNormSetup_Entry(Fsm_ContextStructPtr const 
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_SOAP_MODE)           || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_MODE)           || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_MODE_CUSTOM)    || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_NUM)            || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_WASH_TIME)           || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_TEMP_MODE)           || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_TEMP_MODE_CUSTOM)    || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_LEVEL_MODE)          || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_LEVEL_MODE_CUSTOM))
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_LEVEL_MODE_CUSTOM)   || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE)          || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_CUSTOM))
     {
       ProgramManager_NormStepConfig_IsActive_GetData((uint8_t)MenuManager_StepNormSetup_SeqIdx, (uint8_t)MenuManager_StepNormSetup_StepIdx, &tempIsActive);
     

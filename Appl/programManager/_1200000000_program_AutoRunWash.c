@@ -279,8 +279,7 @@ static void ProgramManager_AutoRunWash_InternalCheckTempCondition(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunWash_InternalCheckMotorCondition(void)
 {
-  if ((ProgramManager_AutoRunWash_MotorCounter >= ProgramManager_AutoRunWash_MotorCounterMax) && \
-      (ProgramManager_AutoRunWash_WashCount < (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washNum))
+  if (ProgramManager_AutoRunWash_MotorCounter >= ProgramManager_AutoRunWash_MotorCounterMax)
   {
     ProgramManager_AutoRunWash_MotorCounter = (uint32_t)0U;
 
@@ -288,9 +287,6 @@ static void ProgramManager_AutoRunWash_InternalCheckMotorCondition(void)
 
     if (ProgramManager_AutoRunWash_MotorState >= PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_MAX)
     {
-      /* One round completed */
-      ProgramManager_AutoRunWash_WashCount += (uint32_t)1U;
-
       ProgramManager_AutoRunWash_MotorState = PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD;
     }
 
@@ -325,8 +321,10 @@ static void ProgramManager_AutoRunWash_InternalCheckStateTransit(void)
 
   if (ProgramManager_Control_NotPauseAndError())
   {
-    /* Number of wash times reached */
-    if (ProgramManager_AutoRunWash_WashCount < (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washNum)
+    /* Wash times expired, and motor state is in stop state */
+    if ((ProgramManager_AutoRunWash_WashCount != (uint32_t)0U) || \
+        (ProgramManager_AutoRunWash_MotorState != PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_STOP1) || \
+        (ProgramManager_AutoRunWash_MotorState != PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_STOP2))
     {
       conditionOk = (bool)false;
     }
@@ -403,12 +401,11 @@ static void ProgramManager_AutoRunWash_InternalUpdateLcdParams(void)
 {
   uint32_t timeTemp;
 
-  timeTemp = ProgramManager_AutoRunWash_MotorCounterMax - ProgramManager_AutoRunWash_MotorCounter;
+  timeTemp = ProgramManager_AutoRunWash_WashCount;
 
   ProgramManager_gTimeCountMin = timeTemp / (uint32_t)60U;
   ProgramManager_gTimeCountSec = timeTemp % (uint32_t)60U;
 
-  ProgramManager_gSpinIndex = (uint8_t)ProgramManager_AutoRunWash_WashCount;
   ProgramManager_gMotorState = (uint8_t)ProgramManager_AutoRunWash_MotorState;
 }
 
@@ -432,7 +429,7 @@ static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const
       ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
       ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
 
-      ProgramManager_AutoRunWash_WashCount = (uint32_t)0U;
+      ProgramManager_AutoRunWash_WashCount = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].washTime;
 
       ProgramManager_AutoRunWash_MotorState = PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD;
       ProgramManager_AutoRunWash_MotorCounter = (uint32_t)0U;
@@ -453,7 +450,7 @@ static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const
       ProgramManager_AutoRunWash_TempCounter = enterDataHierachy->tempCounter;
       ProgramManager_AutoRunWash_PresCounter = enterDataHierachy->presCounter;
 
-      ProgramManager_AutoRunWash_WashCount = (uint32_t)0U;
+      ProgramManager_AutoRunWash_WashCount = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].washTime;
 
       ProgramManager_AutoRunWash_MotorState = enterDataHierachy->motorState;
       ProgramManager_AutoRunWash_MotorCounter = enterDataHierachy->motorCounter;
@@ -529,6 +526,11 @@ static void ProgramManager_AutoRunWash_SubTickHandler(void)
     ProgramManager_AutoRunWash_OneSecondElapsed = (uint32_t)0U;
 
     ProgramManager_AutoRunWash_MotorCounter += (uint32_t)1U;
+
+    if (ProgramManager_AutoRunWash_WashCount != (uint32_t)0U)
+    {
+      ProgramManager_AutoRunWash_WashCount -= (uint32_t)1U;
+    }
   }
 }
 

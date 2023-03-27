@@ -44,7 +44,7 @@ extern Fsm_EventEntryStruct MenuManager_SetDefaultProg_StateMachine[5];
 /** State machineSetup (7) */
 extern Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[13];
 /** State machineFuncSetup (8) */
-extern Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[11];
+extern Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[12];
 /** State drainWhileDoorOpen (9) */
 extern Fsm_EventEntryStruct MenuManager_DrainWhileDoorOpen_StateMachine[7];
 /** State heatUseTimeout (10) */
@@ -57,6 +57,8 @@ extern Fsm_EventEntryStruct MenuManager_ManOperateWhenAuto_StateMachine[7];
 extern Fsm_EventEntryStruct MenuManager_TempUnit_StateMachine[7];
 /** State drainValveStatus (14) */
 extern Fsm_EventEntryStruct MenuManager_DrainValveStatus_StateMachine[7];
+/** State washMachine (14) */
+extern Fsm_EventEntryStruct MenuManager_WashMachine_StateMachine[7];
 /** State inputStatusSetup (15) */
 extern Fsm_EventEntryStruct MenuManager_InputStatusSetup_StateMachine[9];
 /** State doorClosed (16) */
@@ -133,54 +135,22 @@ extern Fsm_EventEntryStruct MenuManager_DelWashSpeed_StateMachine[7];
 extern Fsm_EventEntryStruct MenuManager_HvyWashSpeed_StateMachine[7];
 /** State maxWashSpeed (52) */
 extern Fsm_EventEntryStruct MenuManager_MaxWashSpeed_StateMachine[7];
-/** State extractSetup (53) */
-extern Fsm_EventEntryStruct MenuManager_ExtractSetup_StateMachine[28];
-/** State balanceLevel (54) */
-extern Fsm_EventEntryStruct MenuManager_BalanceLevel_StateMachine[9];
-/** State balanceDrainLevel (55) */
-extern Fsm_EventEntryStruct MenuManager_BalanceDrainLevel_StateMachine[9];
-/** State balanceWithWaterTime (56) */
-extern Fsm_EventEntryStruct MenuManager_BalanceWithWaterTime_StateMachine[9];
-/** State balanceDrainWaterTime (57) */
-extern Fsm_EventEntryStruct MenuManager_BalanceDrainWaterTime_StateMachine[9];
-/** State balanceDelayTime (58) */
-extern Fsm_EventEntryStruct MenuManager_BalanceDelayTime_StateMachine[9];
-/** State fwdRunTime (59) */
-extern Fsm_EventEntryStruct MenuManager_FwdRunTime_StateMachine[9];
-/** State midExtractTime (60) */
-extern Fsm_EventEntryStruct MenuManager_MidExtractTime_StateMachine[9];
-/** State midExtractDelayTime (61) */
-extern Fsm_EventEntryStruct MenuManager_MidExtractDelayTime_StateMachine[9];
-/** State highExtractTime1 (62) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractTime1_StateMachine[9];
-/** State highExtractTime2 (63) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractTime2_StateMachine[9];
-/** State highExtractTime3 (64) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractTime3_StateMachine[9];
-/** State highExtractDelayTime (65) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractDelayTime_StateMachine[9];
-/** State maxExtractTime (66) */
-extern Fsm_EventEntryStruct MenuManager_MaxExtractTime_StateMachine[9];
-/** State reextractTime (67) */
-extern Fsm_EventEntryStruct MenuManager_ReextractTime_StateMachine[7];
-/** State reextractWashTime (68) */
-extern Fsm_EventEntryStruct MenuManager_ReextractWashTime_StateMachine[9];
-/** State balanceSpeed (69) */
-extern Fsm_EventEntryStruct MenuManager_BalanceSpeed_StateMachine[7];
-/** State fwdRunSpeed (70) */
-extern Fsm_EventEntryStruct MenuManager_FwdRunSpeed_StateMachine[7];
-/** State midExtractSpeed (71) */
-extern Fsm_EventEntryStruct MenuManager_MidExtractSpeed_StateMachine[7];
-/** State highExtractSpeed1 (72) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractSpeed1_StateMachine[7];
-/** State highExtractSpeed2 (73) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractSpeed2_StateMachine[7];
-/** State highExtractSpeed3 (74) */
-extern Fsm_EventEntryStruct MenuManager_HighExtractSpeed3_StateMachine[7];
-/** State maxMidExtractSpeed (75) */
-extern Fsm_EventEntryStruct MenuManager_MaxMidExtractSpeed_StateMachine[7];
-/** State maxHighExtractSpeed (76) */
-extern Fsm_EventEntryStruct MenuManager_MaxHighExtractSpeed_StateMachine[7];
+/** State drainSetup (53) */
+extern Fsm_EventEntryStruct MenuManager_DrainSetup_StateMachine[15];
+/** State drainSetupParam (54) */
+extern Fsm_EventEntryStruct MenuManager_DrainSetupParam_StateMachine[7];
+/** State drainSetupTime (55) */
+extern Fsm_EventEntryStruct MenuManager_DrainSetupTime_StateMachine[9];
+/** State drainSetupSpeed (56) */
+extern Fsm_EventEntryStruct MenuManager_DrainSetupSpeed_StateMachine[7];
+/** State drainOffTime (57) */
+extern Fsm_EventEntryStruct MenuManager_DrainOffTime_StateMachine[9];
+/** State maxDrainExtrTime (58) */
+extern Fsm_EventEntryStruct MenuManager_MaxDrainExtrTime_StateMachine[9];
+/** State reDrainExtrTime (59) */
+extern Fsm_EventEntryStruct MenuManager_ReDrainExtrTime_StateMachine[7];
+/** State maxDrainExtrSpeed (60) */
+extern Fsm_EventEntryStruct MenuManager_MaxDrainExtrSpeed_StateMachine[7];
 /** State doorLockSetup (77) */
 extern Fsm_EventEntryStruct MenuManager_DoorLockSetup_StateMachine[9];
 /** State useLockStopButton (78) */
@@ -194,9 +164,9 @@ extern Fsm_EventEntryStruct MenuManager_UnlockDoorLevel_StateMachine[9];
 /** State programSetup (82) */
 extern Fsm_EventEntryStruct MenuManager_ProgramSetup_StateMachine[6];
 /** State programStepSetup (83) */
-extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[7];
+extern Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[6];
 /** State programMainSetup (84) */
-extern Fsm_EventEntryStruct MenuManager_StepNormSetup_StateMachine[12];
+extern Fsm_EventEntryStruct MenuManager_StepNormSetup_StateMachine[13];
 /** State stepIsActive (85) */
 extern Fsm_EventEntryStruct MenuManager_StepIsActive_StateMachine[7];
 /** State stepWaterMode (86) */
@@ -213,8 +183,8 @@ extern Fsm_EventEntryStruct MenuManager_StepWashRunTime_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_StepWashStopTime_StateMachine[9];
 /** State stepWashSpeed (92) */
 extern Fsm_EventEntryStruct MenuManager_StepWashSpeed_StateMachine[7];
-/** State stepWashNum (93) */
-extern Fsm_EventEntryStruct MenuManager_StepWashNum_StateMachine[9];
+/** State stepWashTime (93) */
+extern Fsm_EventEntryStruct MenuManager_StepWashTime_StateMachine[9];
 /** State stepTempMode (94) */
 extern Fsm_EventEntryStruct MenuManager_StepTempMode_StateMachine[8];
 /** State stepTempModeCustom (95) */
@@ -223,18 +193,16 @@ extern Fsm_EventEntryStruct MenuManager_StepTempModeCustom_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_StepLevelMode_StateMachine[8];
 /** State stepLevelModeCustom (97) */
 extern Fsm_EventEntryStruct MenuManager_StepLevelModeCustom_StateMachine[9];
-/** State stepExtractParam (98) */
-extern Fsm_EventEntryStruct MenuManager_StepExtractParam_StateMachine[10];
-/** State stepBalanceTime (99) */
-extern Fsm_EventEntryStruct MenuManager_StepBalanceTime_StateMachine[9];
-/** State stepMidExtractTime (100) */
-extern Fsm_EventEntryStruct MenuManager_StepMidExtractTime_StateMachine[9];
-/** State stepHighExtractTime1 (101) */
-extern Fsm_EventEntryStruct MenuManager_StepHighExtractTime1_StateMachine[9];
-/** State stepHighExtractTime2 (102) */
-extern Fsm_EventEntryStruct MenuManager_StepHighExtractTime2_StateMachine[9];
-/** State stepHighExtractTime3 (101) */
-extern Fsm_EventEntryStruct MenuManager_StepHighExtractTime3_StateMachine[9];
+/** State stepDrainMode (98) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainMode_StateMachine[8];
+/** State stepDrainModeCustom (99) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainModeCustom_StateMachine[11];
+/** State stepDrainModeParam (100) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainModeParam_StateMachine[7];
+/** State stepDrainModeTime (101) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainModeTime_StateMachine[9];
+/** State stepDrainModeSpeed (102) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainModeSpeed_StateMachine[7];
 
 
 
@@ -245,7 +213,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[104] =
+Fsm_StateDefStruct MenuManager_StateMachine[87] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -300,30 +268,14 @@ Fsm_StateDefStruct MenuManager_StateMachine[104] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HvyWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxWashSpeed_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ExtractSetup_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceLevel_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceDrainLevel_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceWithWaterTime_StateMachine)               },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceDrainWaterTime_StateMachine)              },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceDelayTime_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FwdRunTime_StateMachine)                         },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractDelayTime_StateMachine)                },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime1_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime2_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractTime3_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractDelayTime_StateMachine)               },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxExtractTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReextractTime_StateMachine)                      },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReextractWashTime_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_BalanceSpeed_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FwdRunSpeed_StateMachine)                        },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidExtractSpeed_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed1_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed2_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighExtractSpeed3_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxMidExtractSpeed_StateMachine)                 },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxHighExtractSpeed_StateMachine)                },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetup_StateMachine)                         },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupParam_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupTime_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupSpeed_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainOffTime_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxDrainExtrTime_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReDrainExtrTime_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxDrainExtrSpeed_StateMachine)                  },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorLockSetup_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UseLockStopButton_StateMachine)                  },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorLockValveStatus_StateMachine)                },
@@ -340,17 +292,16 @@ Fsm_StateDefStruct MenuManager_StateMachine[104] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashRunTime_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashStopTime_StateMachine)                   },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashSpeed_StateMachine)                      },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashNum_StateMachine)                        },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepWashTime_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepTempMode_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepTempModeCustom_StateMachine)                 },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepLevelMode_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepLevelModeCustom_StateMachine)                },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepExtractParam_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepBalanceTime_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepMidExtractTime_StateMachine)                 },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepHighExtractTime1_StateMachine)               },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepHighExtractTime2_StateMachine)               },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepHighExtractTime3_StateMachine)               }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainMode_StateMachine)                      },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeCustom_StateMachine)                },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeParam_StateMachine)                 },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeTime_StateMachine)                  },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeSpeed_StateMachine)                 }
 };
 
 void (*MenuManager_SubMainFunction)(void);

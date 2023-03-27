@@ -178,27 +178,8 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
 
         break;
       }
-      case PROGRAMMANAGER_STATE_AUTO_RUN_EXTRACT:
-      {
-        if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
-        {
-          idleDataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
-          idleDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_POST_RUN;
-
-          ProgramManager_FsmContext.dataHierachy = idleDataHierachy;
-
-          Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPOSTRUN_EVENT_IDLE);
-
-          /* Reset initial step index */
-          ProgramManager_gAutoSeqConfig.currentStep = ProgramManager_gInitStepIdx;
-        }
-        else
-        {
-          /* nothing here */
-        }
-
+      default:
         break;
-      }
     }
 
     /* Reset global parameters */
@@ -241,8 +222,7 @@ static Fsm_GuardType ProgramManager_AutoPostRun_Entry(Fsm_ContextStructPtr const
     if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN) || \
         (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT) || \
         (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WASH) || \
-        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN) || \
-        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_EXTRACT))
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN))
     {
       enterDataHierachy = (ProgramManager_Control_PostRunStruct *)(pFsmContext->dataHierachy);
 

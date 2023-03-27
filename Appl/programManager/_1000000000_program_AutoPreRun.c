@@ -47,8 +47,7 @@ extern "C" {
 
 #define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT                PROGRAMMANAGER_EVENT_SUBMENU_1
 #define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH                      PROGRAMMANAGER_EVENT_SUBMENU_2
-#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_EXTRACT                   PROGRAMMANAGER_EVENT_SUBMENU_3
-#define PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN                      PROGRAMMANAGER_EVENT_SUBMENU_4
+#define PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN                      PROGRAMMANAGER_EVENT_SUBMENU_3
 
 
 
@@ -57,13 +56,12 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry                  (Fsm_Conte
 static Fsm_GuardType ProgramManager_AutoPreRun_Exit                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Program manager state machine */
-Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[6] =
+Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[5] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_AutoPreRun_Entry                                                 ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_AutoPreRun_Exit                                                  ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT,                               PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH,                                     PROGRAMMANAGER_STATE_AUTO_RUN_WASH      ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_EXTRACT,                                  PROGRAMMANAGER_STATE_AUTO_RUN_EXTRACT   ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN,                                     PROGRAMMANAGER_STATE_AUTO_POST_RUN      )
 };
 
@@ -273,9 +271,7 @@ static void ProgramManager_AutoPreRun_InternalControlOutput(void)
 static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   ProgramManager_Control_PreRunStruct* enterDataHierachy;
-  Fsm_DataHierachyStruct *dataHierachy;
   HAL_StatusTypeDef retVal = HAL_OK;
-  bool runExtract = false;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
@@ -286,12 +282,6 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const 
       enterDataHierachy = (ProgramManager_Control_PreRunStruct *)(pFsmContext->dataHierachy);
 
       ProgramManager_gAutoSeqConfig.currentStep = enterDataHierachy->executeStep;
-
-      /* Execute step is extract step */
-      if (ProgramManager_gAutoSeqConfig.currentStep == PROGRAMMANAGER_STEP_NUM_MAX)
-      {
-        runExtract = true;
-      }
 
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);
@@ -309,27 +299,14 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry(Fsm_ContextStructPtr const 
 
   if (retVal == HAL_OK)
   {
-    /* Extract step will jump to RUN_EXTRACT state immediately */
-    if (runExtract == false)
-    {
-      ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTOPRERUN_INTERNALDATALENGTH);
+    ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTOPRERUN_INTERNALDATALENGTH);
 
-      ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
-      ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
-      ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
+    ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
+    ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
+    ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
 
-      ProgramManager_SubMainFunctionPush(ProgramManager_AutoPreRun_SubMainFunction);
-      ProgramManager_SubTickHandler = ProgramManager_AutoPreRun_SubTickHandler;
-    }
-    else
-    {
-      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
-      dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
-
-      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
-
-      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_EXTRACT);
-    }
+    ProgramManager_SubMainFunctionPush(ProgramManager_AutoPreRun_SubMainFunction);
+    ProgramManager_SubTickHandler = ProgramManager_AutoPreRun_SubTickHandler;
 
     return FSM_GUARD_TRUE;
   }

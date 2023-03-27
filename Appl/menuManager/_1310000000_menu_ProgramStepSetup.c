@@ -40,8 +40,6 @@ extern "C" {
 #define MENUMANAGER_PROGRAMSTEPSETUP_LCD_ELEMENT_MENU_LENGTH          (16U)
 #define MENUMANAGER_PROGRAMSTEPSETUP_LCD_STEP_ACTIVE_STAT_XPOS        (18U)
 
-#define MENUMANAGER_PROGRAMSTEPSETUP_LISTINDEX_MAX                    (PROGRAMMANAGER_STEP_NUM_MAX + 1U)
-
 
 
 /** Menu manager button event mapping array */
@@ -70,11 +68,10 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_UpBut               (Fsm_Conte
 static Fsm_GuardType MenuManager_ProgramStepSetup_DownBut             (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[7] =
+Fsm_EventEntryStruct MenuManager_ProgramStepSetup_StateMachine[6] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_ProgramStepSetup_Entry                                              ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STEP_NORM_SETUP       ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_STEP_EXTRACT_PARAM    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_ProgramStepSetup_UpBut                                              ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_ProgramStepSetup_DownBut                                            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_ProgramStepSetup_StartBut                                           ),
@@ -124,47 +121,34 @@ static void MenuManager_ProgramStepSetup_LcdShowList(void)
   currentListIndex = MenuManager_Common_LcdGetStartListIndex(MenuManager_ProgramStepSetup_ListIndex, MenuManager_ProgramStepSetup_CurPos);
   currentCursorPos = (uint32_t)MENUMANAGER_COMMON_LCD_CURSOR_MIN;
 
-  listLength = MenuManager_Common_LcdGetListLength((uint32_t)MENUMANAGER_PROGRAMSTEPSETUP_LISTINDEX_MAX);
+  listLength = MenuManager_Common_LcdGetListLength((uint32_t)PROGRAMMANAGER_STEP_NUM_MAX);
   
   MenuManager_Common_LcdClearElementMenuDynamic();
   
   for (; currentCursorPos < (listLength + (uint32_t)MENUMANAGER_COMMON_LCD_CURSOR_MIN); currentCursorPos++, currentListIndex++)
   {
-    if (currentListIndex != PROGRAMMANAGER_STEP_NUM_MAX)
+    sprintf((char *)tempStr, (const char *)MenuManager_Common_StepStr, currentListIndex + 1U);
+
+    MenuManager_Common_LcdShowListElementName
+    (
+      tempStr,
+      MENUMANAGER_PROGRAMSTEPSETUP_LCD_ELEMENT_MENU_LENGTH,
+      MENUMANAGER_COMMON_LCD_ELEMENT_MENU_XPOS,
+      currentCursorPos
+    );
+
+    ProgramManager_NormStepConfig_IsActive_GetData((uint8_t)MenuManager_ProgramStepSetup_SeqIdx, (uint8_t)currentListIndex, &tempIsActive);
+
+    if (tempIsActive != false)
     {
-      sprintf((char *)tempStr, (const char *)MenuManager_Common_StepStr, currentListIndex + 1U);
-
-      MenuManager_Common_LcdShowListElementName
-      (
-        tempStr,
-        MENUMANAGER_PROGRAMSTEPSETUP_LCD_ELEMENT_MENU_LENGTH,
-        MENUMANAGER_COMMON_LCD_ELEMENT_MENU_XPOS,
-        currentCursorPos
-      );
-
-      ProgramManager_NormStepConfig_IsActive_GetData((uint8_t)MenuManager_ProgramStepSetup_SeqIdx, (uint8_t)currentListIndex, &tempIsActive);
-
-      if (tempIsActive != false)
-      {
-        LCD_SetCursorPos(MENUMANAGER_PROGRAMSTEPSETUP_LCD_STEP_ACTIVE_STAT_XPOS, currentCursorPos, LCD_CURSOR_BY_FONT);
-        LCD_PutChar('+');
-      }
-    }
-    else
-    {
-      MenuManager_Common_LcdShowListElementName
-      (
-        (uint8_t *)MenuManager_Common_StepExtractStr,
-        MENUMANAGER_PROGRAMSTEPSETUP_LCD_ELEMENT_MENU_LENGTH,
-        MENUMANAGER_COMMON_LCD_ELEMENT_MENU_XPOS,
-        currentCursorPos
-      );
+      LCD_SetCursorPos(MENUMANAGER_PROGRAMSTEPSETUP_LCD_STEP_ACTIVE_STAT_XPOS, currentCursorPos, LCD_CURSOR_BY_FONT);
+      LCD_PutChar('+');
     }
   }
   
   MenuManager_Common_LcdShowChosenMark(MenuManager_ProgramStepSetup_CurPos);
   
-  MenuManager_Common_LcdShowScrollBar(MenuManager_ProgramStepSetup_ListIndex, MenuManager_ProgramStepSetup_CurPos, (uint8_t)MENUMANAGER_PROGRAMSTEPSETUP_LISTINDEX_MAX);
+  MenuManager_Common_LcdShowScrollBar(MenuManager_ProgramStepSetup_ListIndex, MenuManager_ProgramStepSetup_CurPos, (uint8_t)PROGRAMMANAGER_STEP_NUM_MAX);
   
   MenuManager_Common_LcdUpdateElementMenuDynamic();
 }
@@ -180,8 +164,7 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_Entry(Fsm_ContextStructPtr con
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_NORM_SETUP) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_EXTRACT_PARAM))
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_NORM_SETUP)
     {
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);
@@ -240,14 +223,7 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_StartBut(Fsm_ContextStructPtr 
 
   pFsmContext->dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
-  if (MenuManager_ProgramStepSetup_ListIndex != PROGRAMMANAGER_STEP_NUM_MAX)
-  {
-    Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
-  }
-  else
-  {
-    Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_2);
-  }
+  Fsm_TriggerEvent(&MenuManager_FsmContext, (Fsm_EventType)MENUMANAGER_EVENT_SUBMENU_1);
   
   return FSM_GUARD_TRUE;
 }
@@ -292,12 +268,12 @@ static Fsm_GuardType MenuManager_ProgramStepSetup_UpBut(Fsm_ContextStructPtr con
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_ProgramStepSetup_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (MenuManager_ProgramStepSetup_ListIndex < ((uint32_t)(MENUMANAGER_PROGRAMSTEPSETUP_LISTINDEX_MAX) - (uint32_t)1U))
+  if (MenuManager_ProgramStepSetup_ListIndex < ((uint32_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint32_t)1U))
   {
     MenuManager_ProgramStepSetup_ListIndex += (uint32_t)1U;
   }
   
-  if (MenuManager_ProgramStepSetup_CurPos < MenuManager_Common_LcdMaxCurPos((uint32_t)(MENUMANAGER_PROGRAMSTEPSETUP_LISTINDEX_MAX)))
+  if (MenuManager_ProgramStepSetup_CurPos < MenuManager_Common_LcdMaxCurPos((uint32_t)(PROGRAMMANAGER_STEP_NUM_MAX)))
   {
     MenuManager_ProgramStepSetup_CurPos += (uint32_t)1U;
   }

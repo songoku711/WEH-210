@@ -45,7 +45,14 @@ typedef struct
   uint32_t                    dataId;
   uint32_t                    seqIdx;
   uint32_t                    stepIdx;
+  uint32_t                    drainIdx;
 } MenuManager_Common_ProgramSetupStruct;
+
+typedef struct
+{
+  uint32_t                    dataId;
+  uint32_t                    drainStepIdx;
+} MenuManager_Common_DrainSetupStruct;
 
 
 
@@ -74,7 +81,6 @@ extern const uint8_t MenuManager_Common_TimeStr[];
 
 extern const uint8_t MenuManager_Common_ProgramStr[];
 extern const uint8_t MenuManager_Common_StepStr[];
-extern const uint8_t MenuManager_Common_StepExtractStr[];
 extern const uint8_t MenuManager_Common_ProgramStepStr[];
 extern const uint8_t MenuManager_Common_ProgramStepExtStr[];
 

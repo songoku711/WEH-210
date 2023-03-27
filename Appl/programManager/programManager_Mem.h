@@ -175,89 +175,64 @@ extern "C" {
 
 
 
-/* Base address of extract setup part 1 configuration */
-#define PROGRAMMANAGER_EXTRACTSETUP_PART1_BASE_ADDR                   (uint16_t)0x80
+/* Base address of drain setup configuration */
+#define PROGRAMMANAGER_DRAINSETUP_BASE_ADDR                           (uint16_t)0x80
 
-/* Base address of extract setup part 1 elements */
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_BASE_ADDR            (uint16_t)0x80
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_BASE_ADDR       (uint16_t)0x82
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_BASE_ADDR    (uint16_t)0x84
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_BASE_ADDR   (uint16_t)0x86
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_BASE_ADDR        (uint16_t)0x88
-#define PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_BASE_ADDR              (uint16_t)0x8A
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_BASE_ADDR          (uint16_t)0x8C
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_BASE_ADDR     (uint16_t)0x8E
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_BASE_ADDR        (uint16_t)0x90
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_BASE_ADDR        (uint16_t)0x92
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_BASE_ADDR        (uint16_t)0x94
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_BASE_ADDR    (uint16_t)0x96
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_BASE_ADDR          (uint16_t)0x98
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_BASE_ADDR           (uint16_t)0x9A
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_BASE_ADDR       (uint16_t)0x9C
+/* Base address of drain setup elements */
+#define PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_BASE_ADDR            (uint16_t)0x80
+#define PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_BASE_ADDR          (uint16_t)0x82
+#define PROGRAMMANAGER_DRAINSETUP_BALANCEDRAINTIME_BASE_ADDR          (uint16_t)0x84
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL1DRAINTIME_BASE_ADDR         (uint16_t)0x86
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL2DRAINTIME_BASE_ADDR         (uint16_t)0x88
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL3DRAINTIME_BASE_ADDR         (uint16_t)0x8A
+#define PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_BASE_ADDR           (uint16_t)0x8C
+#define PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINSPEED_BASE_ADDR         (uint16_t)0x8D
+#define PROGRAMMANAGER_DRAINSETUP_BALANCEDRAINSPEED_BASE_ADDR         (uint16_t)0x8E
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL1DRAINSPEED_BASE_ADDR        (uint16_t)0x8F
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL2DRAINSPEED_BASE_ADDR        (uint16_t)0x90
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL3DRAINSPEED_BASE_ADDR        (uint16_t)0x91
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_BASE_ADDR              (uint16_t)0x92
+#define PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_BASE_ADDR          (uint16_t)0x94
+#define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_BASE_ADDR           (uint16_t)0x96
+#define PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_BASE_ADDR         (uint16_t)0x97
 
-/* Offset address from base of extract setup part 1 configuration */
-#define PROGRAMMANAGER_EXTRACTSETUP_PART1_OFFSET                      (uint16_t)0x60
+/* Offset address from base of extract setup configuration */
+#define PROGRAMMANAGER_DRAINSETUP_OFFSET                              (uint16_t)0x60
 
-/* Offset address from base of extract setup part 1 elements */
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_OFFSET               (uint16_t)0x0
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_OFFSET          (uint16_t)0x2
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_OFFSET       (uint16_t)0x4
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_OFFSET      (uint16_t)0x6
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_OFFSET           (uint16_t)0x8
-#define PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_OFFSET                 (uint16_t)0xA
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_OFFSET             (uint16_t)0xC
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_OFFSET        (uint16_t)0xE
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_OFFSET           (uint16_t)0x10
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_OFFSET           (uint16_t)0x12
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_OFFSET           (uint16_t)0x14
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_OFFSET       (uint16_t)0x16
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_OFFSET             (uint16_t)0x18
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_OFFSET              (uint16_t)0x1A
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_OFFSET          (uint16_t)0x1C
-
-
-
-/* Base address of extract setup part 2 configuration */
-#define PROGRAMMANAGER_EXTRACTSETUP_PART2_BASE_ADDR                   (uint16_t)0xA0
-
-/* Base address of extract setup part 2 elements */
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_BASE_ADDR            (uint16_t)0xA0
-#define PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_BASE_ADDR             (uint16_t)0xA1
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_BASE_ADDR         (uint16_t)0xA2
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_BASE_ADDR       (uint16_t)0xA3
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_BASE_ADDR       (uint16_t)0xA4
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_BASE_ADDR       (uint16_t)0xA5
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_BASE_ADDR      (uint16_t)0xA6
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_BASE_ADDR     (uint16_t)0xA7
-
-/* Offset address from base of extract setup part 2 configuration */
-#define PROGRAMMANAGER_EXTRACTSETUP_PART2_OFFSET                      (uint16_t)0x80
-
-/* Offset address from base of extract setup part 2 elements */
-#define PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_OFFSET               (uint16_t)0x0
-#define PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_OFFSET                (uint16_t)0x1
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_OFFSET            (uint16_t)0x2
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_OFFSET          (uint16_t)0x3
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_OFFSET          (uint16_t)0x4
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_OFFSET          (uint16_t)0x5
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_OFFSET         (uint16_t)0x6
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_OFFSET        (uint16_t)0x7
+/* Offset address from base of extract setup elements */
+#define PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET               (uint16_t)0x0
+#define PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET             (uint16_t)0x2
+#define PROGRAMMANAGER_DRAINSETUP_BALANCEDRAINTIME_OFFSET             (uint16_t)0x4
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL1DRAINTIME_OFFSET            (uint16_t)0x6
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL2DRAINTIME_OFFSET            (uint16_t)0x8
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL3DRAINTIME_OFFSET            (uint16_t)0xA
+#define PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET              (uint16_t)0xC
+#define PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINSPEED_OFFSET            (uint16_t)0xD
+#define PROGRAMMANAGER_DRAINSETUP_BALANCEDRAINSPEED_OFFSET            (uint16_t)0xE
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL1DRAINSPEED_OFFSET           (uint16_t)0xF
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL2DRAINSPEED_OFFSET           (uint16_t)0x10
+#define PROGRAMMANAGER_DRAINSETUP_EXTRLVL3DRAINSPEED_OFFSET           (uint16_t)0x11
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET                 (uint16_t)0x12
+#define PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_OFFSET             (uint16_t)0x14
+#define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_OFFSET              (uint16_t)0x16
+#define PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_OFFSET            (uint16_t)0x17
 
 
 
 /* Base address of machine function setup configuration */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR                     (uint16_t)0xC0
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR                     (uint16_t)0xA0
 
 /* Base address of machine function setup elements */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_BASE_ADDR  (uint16_t)0xC0
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_BASE_ADDR      (uint16_t)0xC1
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_BASE_ADDR      (uint16_t)0xC2
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_BASE_ADDR  (uint16_t)0xC3
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_BASE_ADDR            (uint16_t)0xC4
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_BASE_ADDR    (uint16_t)0xC5
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_BASE_ADDR  (uint16_t)0xA0
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_BASE_ADDR      (uint16_t)0xA1
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_BASE_ADDR      (uint16_t)0xA2
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_BASE_ADDR  (uint16_t)0xA3
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_BASE_ADDR            (uint16_t)0xA4
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_BASE_ADDR    (uint16_t)0xA5
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_BASE_ADDR         (uint16_t)0xA6
 
 /* Offset address from base of machine function setup configuration */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_OFFSET                        (uint16_t)0xA0
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_OFFSET                        (uint16_t)0x80
 
 /* Offset address from base of machine function setup elements */
 #define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_OFFSET     (uint16_t)0x0
@@ -266,20 +241,21 @@ extern "C" {
 #define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET     (uint16_t)0x3
 #define PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_OFFSET               (uint16_t)0x4
 #define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_OFFSET       (uint16_t)0x5
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_OFFSET            (uint16_t)0x6
 
 
 
 /* Base address of input status setup configuration */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_BASE_ADDR                     (uint16_t)0xE0
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_BASE_ADDR                     (uint16_t)0xB0
 
 /* Base address of input status setup elements */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_BASE_ADDR          (uint16_t)0xE0
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_EXTRACTSHOCK_BASE_ADDR        (uint16_t)0xE1
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_EMERGENCYSTOP_BASE_ADDR       (uint16_t)0xE2
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_INVERTERERROR_BASE_ADDR       (uint16_t)0xE3
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_BASE_ADDR          (uint16_t)0xB0
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_EXTRACTSHOCK_BASE_ADDR        (uint16_t)0xB1
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_EMERGENCYSTOP_BASE_ADDR       (uint16_t)0xB2
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_INVERTERERROR_BASE_ADDR       (uint16_t)0xB3
 
 /* Offset address from base of input status setup configuration */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_OFFSET                        (uint16_t)0xC0
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_OFFSET                        (uint16_t)0x90
 
 /* Offset address from base of input status setup elements */
 #define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_OFFSET             (uint16_t)0x0
@@ -293,38 +269,35 @@ extern "C" {
 
 /* Base address of program AUTO sequence configuration */
 #define PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR                         (uint16_t)0x100
-#define PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE                        (uint16_t)0xC0
+#define PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE                        (uint16_t)0x280
 
 /* Base address of program MANUAL sequence configuration */
-#define PROGRAMMANAGER_MANUALSEQUENCE_BASE_ADDR                       (uint16_t)0x780
+#define PROGRAMMANAGER_MANUALSEQUENCE_BASE_ADDR                       (uint16_t)0xD80
 
 /* Offset address of normal step configuration in program sequence configuration */
 #define PROGRAMMANAGER_NORMSTEP_OFFSET                                (uint16_t)0x0
-#define PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE                            (uint16_t)0x10
+#define PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE                            (uint16_t)0x40
 
 /* Offset address of normal step elements in program sequence configuration */
 #define PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET                       (uint16_t)0x00
 #define PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET                      (uint16_t)0x01
 #define PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET                       (uint16_t)0x02
 #define PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET                       (uint16_t)0x03
-#define PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET                       (uint16_t)0x04
-#define PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET                      (uint16_t)0x05
-#define PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET                        (uint16_t)0x06
-#define PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET                    (uint16_t)0x07
-#define PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET                   (uint16_t)0x09
-#define PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET                      (uint16_t)0x0B
-#define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0C
-#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x0E
+#define PROGRAMMANAGER_NORMSTEP_DRAINMODE_OFFSET                      (uint16_t)0x04
+#define PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET                       (uint16_t)0x05
+#define PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET                      (uint16_t)0x06
+#define PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET                       (uint16_t)0x07
+#define PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET                    (uint16_t)0x09
+#define PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET                   (uint16_t)0x0B
+#define PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET                      (uint16_t)0x0E
+#define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0F
+#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x10
 
-/* Offset address of extract step configuration in program sequence configuration */
-#define PROGRAMMANAGER_EXTRACTSTEP_OFFSET                             (uint16_t)0xA0
+#define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET                      (uint16_t)0x20
+#define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE                  (uint16_t)0x03
 
-/* Offset address of extract step elements in program sequence configuration */
-#define PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET                 (uint16_t)0x00
-#define PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET              (uint16_t)0x02
-#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET            (uint16_t)0x04
-#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET            (uint16_t)0x06
-#define PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET            (uint16_t)0x08
+#define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINTIME_OFFSET            (uint16_t)0x00
+#define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINSPEED_OFFSET           (uint16_t)0x02
 
 
 
@@ -350,6 +323,8 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_TempUnit_GetData(ProgramManage
 HAL_StatusTypeDef ProgramManager_MachineFuncSetup_TempUnit_SetData(ProgramManager_TempUnitType *data);
 HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainValveStatus_GetData(ProgramManager_RelayEnableStatusType *data);
 HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainValveStatus_SetData(ProgramManager_RelayEnableStatusType *data);
+HAL_StatusTypeDef ProgramManager_MachineFuncSetup_WashMachine_GetData(ProgramManager_WashingMachineType *data);
+HAL_StatusTypeDef ProgramManager_MachineFuncSetup_WashMachine_SetData(ProgramManager_WashingMachineType *data);
 
 
 
@@ -449,55 +424,21 @@ HAL_StatusTypeDef ProgramManager_WashSetup_MaxWashSpeed_SetData(ProgramManager_M
 
 
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_GetData(ProgramManager_ExtractSetupStruct *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_SetData(ProgramManager_ExtractSetupStruct *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_GetData(ProgramManager_DrainSetupStruct *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_SetData(ProgramManager_DrainSetupStruct *data);
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceLevel_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceLevel_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainLevel_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainLevel_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceWithWaterTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceWithWaterTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainWaterTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainWaterTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDelayTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDelayTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractDelayTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractDelayTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime1_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime1_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime2_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime2_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime3_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime3_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractDelayTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractDelayTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxExtractTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxExtractTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractWashTime_GetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractWashTime_SetData(uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceSpeed_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceSpeed_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunSpeed_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunSpeed_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractSpeed_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractSpeed_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed1_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed1_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed2_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed2_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed3_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed3_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxMidExtractSpeed_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxMidExtractSpeed_SetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxHighExtractSpeed_GetData(ProgramManager_MotorSpeedType *data);
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxHighExtractSpeed_SetData(ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_GetData(uint8_t drainStep, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_SetData(uint8_t drainStep, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_GetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_SetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainOffTime_GetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainOffTime_SetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrTime_GetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrTime_SetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_ReDrainExtrTime_GetData(uint8_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_ReDrainExtrTime_SetData(uint8_t *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_GetData(ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_SetData(ProgramManager_MotorSpeedType *data);
 
 
 
@@ -534,12 +475,14 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_GetData(uint8_t seqIdx,
 HAL_StatusTypeDef ProgramManager_NormStepConfig_SoapMode_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_WashModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_DrainModeType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_DrainModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_LevelModeType *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
-HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_WashRunTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_WashStopTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
@@ -550,20 +493,10 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_GetData(uint8_t se
 HAL_StatusTypeDef ProgramManager_NormStepConfig_TempThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data, ProgramManager_TempUnitType tempUnit);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
 HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data);
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_GetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_SetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data);
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint16_t *data);
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data);
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data);
 
 
 

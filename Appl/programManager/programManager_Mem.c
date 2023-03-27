@@ -53,6 +53,7 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
     .manOperateWhenAuto         = true,                                     /* Allow manually change the level, temperature and action when program in AUTO mode */
     .tempUnit                   = PROGRAMMANAGER_TEMP_UNIT_CELSIUS,         /* Temperature Unit is Celsius */
     .drainValveStatus           = PROGRAMMANAGER_RELAY_ENABLE_STAT_NC,      /* Drain valve relay enable status while draining is normal close */
+    .washMachine                = PROGRAMMANAGER_WASHING_MACHINE_MOTOR      /* Washing machine type - motor */
   },
   .inputStatusCfg =                                                         /* Input status setup configuration */
   {
@@ -102,31 +103,17 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
     .hvyWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Default speed of heavy wash */
     .maxWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Max speed of wash. Wash at max speed when the set value is larger than max speed */
   },
-  .extractCfg =                                                             /* Extract setup configuration */
+  .drainCfg =                                                               /* Drain setup configuration */
   {
-    .balanceLevel               = (uint16_t)5U,                             /* Auto fill to level at least before extract to avoid shock */
-    .balanceDrainLevel          = (uint16_t)20U,                            /* If the level is higher than level at most after balance drain, controller will alarm */
-    .balanceWithWaterTime       = (uint16_t)10U,                            /* Balance with water time at extract (seconds) */
-    .balanceDrainWaterTime      = (uint16_t)10U,                            /* Balance drain water time at extract (seconds) */
-    .balanceDelayTime           = (uint16_t)5U,                             /* Delay time from end of balance (seconds) */
-    .fwdRunTime                 = (uint16_t)10U,                            /* Forward run time at beginning of extract (seconds) */
-    .midExtractTime             = (uint16_t)30U,                            /* Time of middle extract (seconds) */
-    .midExtractDelayTime        = (uint16_t)5U,                             /* Delay time from end of mid extract (seconds) */
-    .highExtractTime1           = (uint16_t)20U,                            /* Time of high extract 1 (seconds) */
-    .highExtractTime2           = (uint16_t)40U,                            /* Time of high extract 2 (seconds) */
-    .highExtractTime3           = (uint16_t)40U,                            /* Time of high extract 3 (seconds) */
-    .highExtractDelayTime       = (uint16_t)5U,                             /* Delay time from end of high extract (seconds) */
-    .maxExtractTime             = (uint16_t)60U,                            /* Max time of extract at last phase (seconds) */
-    .reextractTime              = (uint16_t)3U,                             /* Re-extract times when shock. If the times is larger than the set value, controller will alarm (seconds) */
-    .reextractWashTime          = (uint16_t)10U,                            /* Wash time before re-extract to unroll the clothes (seconds) */
-    .balanceSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Balance speed at extract */
-    .fwdRunSpeed                = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Forward run speed at beginning of extract */
-    .midExtractSpeed            = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1,       /* Speed of mid extract */
-    .highExtractSpeed1          = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Speed of high extract 1 */
-    .highExtractSpeed2          = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Speed of high extract 2 */
-    .highExtractSpeed3          = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Speed of high extract 3 */
-    .maxMidExtractSpeed         = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2,       /* Max speed of mid extract */
-    .maxHighExtractSpeed        = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Max speed of high extract */
+    .drainStepCfg[0] =                                                      /* Drain step setup configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainOffTime               = (uint16_t)5U,                             /* Drain off time */
+    .maxDrainExtrTime           = (uint16_t)300U,                           /* Max time of extract drain */
+    .reDrainExtrTime            = (uint16_t)3U,                             /* Re-extract times when shock */
+    .maxDrainExtrSpeed          = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Max speed of extract drain */
   },
   .doorLockCfg =                                                            /* Door lock setup configuration */
   {
@@ -146,22 +133,20 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
     .waterMode                  = (uint8_t)0x01U,                           /* Water mode - cold water */
     .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
     .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
+    .drainMode                  = PROGRAMMANAGER_DRAIN_MODE_DEFAULT,        /* Drain mode - default */
     .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
     .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
-    .washNum                    = (uint8_t)3U,                              /* Number of wash time */
+    .washTime                   = (uint16_t)300U,                           /* Wash time */
     .washRunTime                = (uint16_t)20U,                            /* Wash run time */
     .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
-    .levelThreshold             = (uint16_t)50U                             /* Water level threshold */
-  },
-  .extractStep =
-  {
-    .balanceTime                = (uint16_t)10U,                            /* Balance time at extract */
-    .midExtractTime             = (uint16_t)20U,                            /* Time of middle extract */
-    .highExtractTime1           = (uint16_t)20U,                            /* Time of high extract 1 */
-    .highExtractTime2           = (uint16_t)40U,                            /* Time of high extract 2 */
-    .highExtractTime3           = (uint16_t)40U                             /* Time of high extract 3 */
+    .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
+    .drainStep[0] =                                                         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    }
   }
 };
 
@@ -173,14 +158,20 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
     .waterMode                  = (uint8_t)0x01U,                           /* Water mode - cold water */
     .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
     .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
+    .drainMode                  = PROGRAMMANAGER_DRAIN_MODE_DEFAULT,        /* Drain mode - default */
     .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
     .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
-    .washNum                    = (uint8_t)3U,                              /* Number of wash time */
+    .washTime                   = (uint16_t)300U,                           /* Wash time */
     .washRunTime                = (uint16_t)20U,                            /* Wash run time */
     .washStopTime               = (uint16_t)5U,                             /* Wash stop time */
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
-    .levelThreshold             = (uint16_t)50U                             /* Water level threshold */
+    .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
+    .drainStep[0] =                                                         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    }
   }
 };
 
@@ -205,7 +196,7 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_GetData(ProgramManager_ParamCo
   (void)ProgramManager_HeatTempSetup_GetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_SoapSetup_GetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_GetData        (&(data->washCfg));
-  (void)ProgramManager_ExtractSetup_GetData     (&(data->extractCfg));
+  (void)ProgramManager_DrainSetup_GetData       (&(data->drainCfg));
   (void)ProgramManager_DoorLockSetup_GetData    (&(data->doorLockCfg));
   
   return HAL_OK;
@@ -219,7 +210,7 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_SetData(ProgramManager_ParamCo
   (void)ProgramManager_HeatTempSetup_SetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_SoapSetup_SetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_SetData        (&(data->washCfg));
-  (void)ProgramManager_ExtractSetup_SetData     (&(data->extractCfg));
+  (void)ProgramManager_DrainSetup_SetData       (&(data->drainCfg));
   (void)ProgramManager_DoorLockSetup_SetData    (&(data->doorLockCfg));
   
   return HAL_OK;
@@ -237,6 +228,7 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_GetData(ProgramManager_Machine
   data->manOperateWhenAuto    = (bool)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET];
   data->tempUnit              = (ProgramManager_TempUnitType)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_OFFSET];
   data->drainValveStatus      = (ProgramManager_RelayEnableStatusType)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_OFFSET];
+  data->washMachine           = (ProgramManager_WashingMachineType)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_OFFSET];
   
   return HAL_OK;
 }
@@ -251,6 +243,7 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_SetData(ProgramManager_Machine
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET]  = (uint8_t)(data->manOperateWhenAuto);
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_OFFSET]            = (uint8_t)(data->tempUnit          );
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_OFFSET]    = (uint8_t)(data->drainValveStatus  );
+  recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_OFFSET]         = (uint8_t)(data->washMachine       );
 
   extMemIf.writeByteArray(PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
@@ -337,6 +330,20 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainValveStatus_GetData(Progr
 HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainValveStatus_SetData(ProgramManager_RelayEnableStatusType *data)
 {
   extMemIf.writeByte(PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_BASE_ADDR, (uint8_t) *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_MachineFuncSetup_WashMachine_GetData(ProgramManager_WashingMachineType *data)
+{
+  *data = (ProgramManager_WashingMachineType)(extMemIf.readByte(PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_BASE_ADDR));
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_MachineFuncSetup_WashMachine_SetData(ProgramManager_WashingMachineType *data)
+{
+  extMemIf.writeByte(PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }
@@ -1209,456 +1216,141 @@ HAL_StatusTypeDef ProgramManager_WashSetup_MaxWashSpeed_SetData(ProgramManager_M
 
 
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_GetData(ProgramManager_ExtractSetupStruct *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_GetData(ProgramManager_DrainSetupStruct *data)
 {
+  uint8_t drainStepIdx;
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
 
-  extMemIf.readByteArray(PROGRAMMANAGER_EXTRACTSETUP_PART1_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.readByteArray(PROGRAMMANAGER_DRAINSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
 
-  data->balanceLevel            = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_OFFSET]) << 8U;
-  data->balanceLevel           |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_OFFSET + 1]);
+  for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
+  {
+    (data->drainStepCfg)[drainStepIdx].drainTime  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
+    (data->drainStepCfg)[drainStepIdx].drainTime |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
+  
+    (data->drainStepCfg)[drainStepIdx].drainSpeed = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]);
+  }
 
-  data->balanceDrainLevel       = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_OFFSET]) << 8U;
-  data->balanceDrainLevel      |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_OFFSET + 1]);
+  data->drainOffTime            = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET]) << 8U;
+  data->drainOffTime           |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET + 1]);
 
-  data->balanceWithWaterTime    = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_OFFSET]) << 8U;
-  data->balanceWithWaterTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_OFFSET + 1]);
+  data->maxDrainExtrTime        = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_OFFSET]) << 8U;
+  data->maxDrainExtrTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_OFFSET + 1]);
 
-  data->balanceDrainWaterTime   = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_OFFSET]) << 8U;
-  data->balanceDrainWaterTime  |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_OFFSET + 1]);
-
-  data->balanceDelayTime        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_OFFSET]) << 8U;
-  data->balanceDelayTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_OFFSET + 1]);
-
-  data->fwdRunTime              = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_OFFSET]) << 8U;
-  data->fwdRunTime             |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_OFFSET + 1]);
-
-  data->midExtractTime          = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_OFFSET]) << 8U;
-  data->midExtractTime         |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_OFFSET + 1]);
-
-  data->midExtractDelayTime     = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_OFFSET]) << 8U;
-  data->midExtractDelayTime    |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_OFFSET + 1]);
-
-  data->highExtractTime1        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
-  data->highExtractTime1       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_OFFSET + 1]);
-
-  data->highExtractTime2        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
-  data->highExtractTime2       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_OFFSET + 1]);
-
-  data->highExtractTime3        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
-  data->highExtractTime3       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_OFFSET + 1]);
-
-  data->highExtractDelayTime    = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_OFFSET]) << 8U;
-  data->highExtractDelayTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_OFFSET + 1]);
-
-  data->maxExtractTime          = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_OFFSET]) << 8U;
-  data->maxExtractTime         |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_OFFSET + 1]);
-
-  data->reextractTime           = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_OFFSET]) << 8U;
-  data->reextractTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_OFFSET + 1]);
-
-  data->reextractWashTime       = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_OFFSET]) << 8U;
-  data->reextractWashTime      |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_OFFSET + 1]);
-
-  extMemIf.readByteArray(PROGRAMMANAGER_EXTRACTSETUP_PART2_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
-
-  data->balanceSpeed            = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_OFFSET];
-  data->fwdRunSpeed             = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_OFFSET];
-  data->midExtractSpeed         = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_OFFSET];
-  data->highExtractSpeed1       = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_OFFSET];
-  data->highExtractSpeed2       = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_OFFSET];
-  data->highExtractSpeed3       = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_OFFSET];
-  data->maxMidExtractSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_OFFSET];
-  data->maxHighExtractSpeed     = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_OFFSET];
+  data->reDrainExtrTime         = (recvArr[PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_OFFSET]);
+  data->maxDrainExtrSpeed       = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_OFFSET]);
 
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_SetData(ProgramManager_ExtractSetupStruct *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_SetData(ProgramManager_DrainSetupStruct *data)
 {
+  uint8_t drainStepIdx;
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_OFFSET]              = (uint8_t)(data->balanceLevel >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_OFFSET + 1]          = (uint8_t)(data->balanceLevel & (uint16_t)0x00FFU);
+  for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
+  {
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainTime >> 8U);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_OFFSET]         = (uint8_t)(data->balanceDrainLevel >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_OFFSET + 1]     = (uint8_t)(data->balanceDrainLevel & (uint16_t)0x00FFU);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]              = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainSpeed);
+  }
 
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_OFFSET]      = (uint8_t)(data->balanceWithWaterTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_OFFSET + 1]  = (uint8_t)(data->balanceWithWaterTime & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET]              = (uint8_t)(data->drainOffTime >> 8U);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET + 1]          = (uint8_t)(data->drainOffTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_OFFSET]     = (uint8_t)(data->balanceDrainWaterTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_OFFSET + 1] = (uint8_t)(data->balanceDrainWaterTime & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_OFFSET]          = (uint8_t)(data->maxDrainExtrTime >> 8U);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_OFFSET + 1]      = (uint8_t)(data->maxDrainExtrTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_OFFSET]          = (uint8_t)(data->balanceDelayTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_OFFSET + 1]      = (uint8_t)(data->balanceDelayTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_OFFSET]                = (uint8_t)(data->fwdRunTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_OFFSET + 1]            = (uint8_t)(data->fwdRunTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_OFFSET]            = (uint8_t)(data->midExtractTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_OFFSET + 1]        = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_OFFSET]       = (uint8_t)(data->midExtractDelayTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_OFFSET + 1]   = (uint8_t)(data->midExtractDelayTime & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_OFFSET]           = data->reDrainExtrTime;
   
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_OFFSET]          = (uint8_t)(data->highExtractTime1 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_OFFSET + 1]      = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
+  recvArr[PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_OFFSET]         = (uint8_t)(data->maxDrainExtrSpeed);
   
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_OFFSET]          = (uint8_t)(data->highExtractTime2 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_OFFSET + 1]      = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
-  
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_OFFSET]          = (uint8_t)(data->highExtractTime3 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_OFFSET + 1]      = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
-  
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_OFFSET]      = (uint8_t)(data->highExtractDelayTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_OFFSET + 1]  = (uint8_t)(data->highExtractDelayTime & (uint16_t)0x00FFU);
-  
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_OFFSET]            = (uint8_t)(data->maxExtractTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_OFFSET + 1]        = (uint8_t)(data->maxExtractTime & (uint16_t)0x00FFU);
-  
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_OFFSET]             = (uint8_t)(data->reextractTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_OFFSET + 1]         = (uint8_t)(data->reextractTime & (uint16_t)0x00FFU);
-  
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_OFFSET]         = (uint8_t)(data->reextractWashTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_OFFSET + 1]     = (uint8_t)(data->reextractWashTime & (uint16_t)0x00FFU);
-
-  extMemIf.writeByteArray(PROGRAMMANAGER_EXTRACTSETUP_PART1_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
-
-  memset(recvArr, (uint8_t)0U, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_OFFSET]              = (uint8_t)(data->balanceSpeed       );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_OFFSET]               = (uint8_t)(data->fwdRunSpeed        );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_OFFSET]           = (uint8_t)(data->midExtractSpeed    );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_OFFSET]         = (uint8_t)(data->highExtractSpeed1  );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_OFFSET]         = (uint8_t)(data->highExtractSpeed2  );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_OFFSET]         = (uint8_t)(data->highExtractSpeed3  );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_OFFSET]        = (uint8_t)(data->maxMidExtractSpeed );
-  recvArr[PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_OFFSET]       = (uint8_t)(data->maxHighExtractSpeed);
-
-  extMemIf.writeByteArray(PROGRAMMANAGER_EXTRACTSETUP_PART2_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.writeByteArray(PROGRAMMANAGER_DRAINSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceLevel_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_GetData(uint8_t drainStep, uint16_t *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_BASE_ADDR);
+  *data = extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceLevel_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_SetData(uint8_t drainStep, uint16_t *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCELEVEL_BASE_ADDR, *data);
+  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U), *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainLevel_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_GetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_BASE_ADDR);
+  *data = (ProgramManager_MotorSpeedType)(extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_BASE_ADDR + (uint16_t)drainStep));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainLevel_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_SetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINLEVEL_BASE_ADDR, *data);
+  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_BASE_ADDR + (uint16_t)drainStep, (uint8_t) *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceWithWaterTime_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainOffTime_GetData(uint16_t *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_BASE_ADDR);
+  *data = extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_BASE_ADDR);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceWithWaterTime_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_DrainOffTime_SetData(uint16_t *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEWITHWATERTIME_BASE_ADDR, *data);
+  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_BASE_ADDR, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainWaterTime_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrTime_GetData(uint16_t *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_BASE_ADDR);
+  *data = extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_BASE_ADDR);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDrainWaterTime_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrTime_SetData(uint16_t *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDRAINWATERTIME_BASE_ADDR, *data);
+  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRTIME_BASE_ADDR, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDelayTime_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_ReDrainExtrTime_GetData(uint8_t *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_BASE_ADDR);
+  *data = extMemIf.readByte(PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_BASE_ADDR);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceDelayTime_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_ReDrainExtrTime_SetData(uint8_t *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_BALANCEDELAYTIME_BASE_ADDR, *data);
+  extMemIf.writeByte(PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_BASE_ADDR, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunTime_GetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_GetData(ProgramManager_MotorSpeedType *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_BASE_ADDR);
+  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_BASE_ADDR));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunTime_SetData(uint16_t *data)
+HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_SetData(ProgramManager_MotorSpeedType *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractDelayTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractDelayTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime1_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime1_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME1_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime2_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime2_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME2_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime3_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractTime3_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTTIME3_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractDelayTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractDelayTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxExtractTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxExtractTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractWashTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_ReextractWashTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTWASHTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_BalanceSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_BALANCESPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_FwdRunSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_FWDRUNSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MidExtractSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed1_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed1_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED1_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed2_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed2_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED2_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed3_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_HighExtractSpeed3_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTSPEED3_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxMidExtractSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxMidExtractSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_MAXMIDEXTRACTSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxHighExtractSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractSetup_MaxHighExtractSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_EXTRACTSETUP_MAXHIGHEXTRACTSPEED_BASE_ADDR, (uint8_t) *data);
+  extMemIf.writeByte(PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }
@@ -1796,8 +1488,6 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_GetData(ProgramManager_AutoSeqCon
     ProgramManager_NormStepConfig_GetData(data->sequenceIndex, stepIndex, &(data->normStep)[stepIndex], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
   }
 
-  ProgramManager_ExtractStepConfig_GetData(data->sequenceIndex, &(data->extractStep));
-  
   return HAL_OK;
 }
 
@@ -1814,8 +1504,6 @@ HAL_StatusTypeDef ProgramManager_AutoSeqConfig_SetData(ProgramManager_AutoSeqCon
     {
       ProgramManager_NormStepConfig_SetData(sequenceIndex, stepIndex, &(data->normStep)[0], ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
     }
-
-    ProgramManager_ExtractStepConfig_SetData(sequenceIndex, &(data->extractStep));
   }
 
   return HAL_OK;
@@ -1838,13 +1526,14 @@ HAL_StatusTypeDef ProgramManager_SequenceIndex_SetData(uint8_t data)
 HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
+  uint8_t  drainStepIdx;
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx);
 
-  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
+  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
 
   /* Check if sequence index is from AUTO or MANUAL mode configuration */
   if (seqIdx < PROGRAMMANAGER_SEQUENCE_NUM_MAX)
@@ -1855,7 +1544,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
     data->soap1Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
     data->soap2Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
     data->soap3Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->drainMode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
+    data->drainComMode        = PROGRAMMANAGER_COMMON_MODE_AUTO;
   }
   else
   {
@@ -1865,7 +1554,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
     data->soap1Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
     data->soap2Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
     data->soap3Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->drainMode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
+    data->drainComMode        = PROGRAMMANAGER_COMMON_MODE_MANUAL;
   }
 
   data->isActive              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
@@ -1873,10 +1562,12 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->waterMode             = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]);
   data->soapMode              = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]);
   data->washMode              = (ProgramManager_WashModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]);
+  data->drainMode             = (ProgramManager_DrainModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_DRAINMODE_OFFSET]);
   data->tempMode              = (ProgramManager_TempModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]);
   data->levelMode             = (ProgramManager_LevelModeType)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]);
 
-  data->washNum               = recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET];
+  data->washTime              = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET]) << 8U;
+  data->washTime             |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET + 1]);
 
   data->washRunTime           = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET]) << 8U;
   data->washRunTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET + 1]);
@@ -1898,23 +1589,43 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->levelThreshold        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]) << 8U;
   data->levelThreshold       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]);
 
+  memset(recvArr, (uint8_t)0U, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET;
+
+  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+
+  for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
+  {
+    (data->drainStep)[drainStepIdx].drainTime  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
+    (data->drainStep)[drainStepIdx].drainTime |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
+  
+    (data->drainStep)[drainStepIdx].drainSpeed = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]);
+  }
+
   return HAL_OK;
 }
 
 HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_NormStepConfigStruct *data, ProgramManager_TempUnitType tempUnit)
 {
   uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
+  uint8_t  drainStepIdx;
+  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]                    = (uint8_t)(data->isActive    );
+  recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]                    = (uint8_t)(data->isActive);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]                   = (uint8_t)(data->waterMode   );
-  recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]                    = (uint8_t)(data->soapMode    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]                    = (uint8_t)(data->washMode    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]                    = (uint8_t)(data->tempMode    );
-  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]                   = (uint8_t)(data->levelMode   );
+  recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]                   = (uint8_t)(data->waterMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_SOAPMODE_OFFSET]                    = (uint8_t)(data->soapMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHMODE_OFFSET]                    = (uint8_t)(data->washMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_DRAINMODE_OFFSET]                   = (uint8_t)(data->drainMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_TEMPMODE_OFFSET]                    = (uint8_t)(data->tempMode);
+  recvArr[PROGRAMMANAGER_NORMSTEP_LEVELMODE_OFFSET]                   = (uint8_t)(data->levelMode);
 
-  recvArr[PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET]                     = (uint8_t)(data->washNum     );
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET]                    = (uint8_t)(data->washTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET + 1]                = (uint8_t)(data->washTime & (uint16_t)0x00FFU);
 
   recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET]                 = (uint8_t)(data->washRunTime >> 8U);
   recvArr[PROGRAMMANAGER_NORMSTEP_WASHRUNTIME_OFFSET + 1]             = (uint8_t)(data->washRunTime & (uint16_t)0x00FFU);
@@ -1950,7 +1661,24 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx);
 
-  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
+  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+
+  memset(recvArr, (uint8_t)0U, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+
+  for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
+  {
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainStep)[drainStepIdx].drainTime >> 8U);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainStep)[drainStepIdx].drainTime & (uint16_t)0x00FFU);
+
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]              = (uint8_t)((data->drainStep)[drainStepIdx].drainSpeed);
+  }
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET;
+  
+  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
   
   return HAL_OK;
 }
@@ -2067,6 +1795,34 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_WashMode_SetData(uint8_t seqIdx,
   return HAL_OK;
 }
 
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_DrainModeType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINMODE_OFFSET;
+
+  *data = (ProgramManager_DrainModeType)(extMemIf.readByte(addr));
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainMode_SetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_DrainModeType *data)
+{
+  uint16_t addr;
+
+  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
+         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINMODE_OFFSET;
+
+  extMemIf.writeByte(addr, (uint8_t) *data);
+  
+  return HAL_OK;
+}
+
 HAL_StatusTypeDef ProgramManager_NormStepConfig_TempMode_GetData(uint8_t seqIdx, uint8_t stepIdx, ProgramManager_TempModeType *data)
 {
   uint16_t addr;
@@ -2123,30 +1879,30 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelMode_SetData(uint8_t seqIdx
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET;
 
-  *data = extMemIf.readByte(addr);
+  *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_WashNum_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_WashTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_WASHNUM_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_WASHTIME_OFFSET;
 
-  extMemIf.writeByte(addr, *data);
+  extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
@@ -2312,204 +2068,66 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t s
   return HAL_OK;
 }
 
-
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_GetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data)
-{
-  uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET;
-  
-  extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-
-  data->balanceTime           = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET]) << 8U;
-  data->balanceTime          |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET + 1]);
-
-  data->midExtractTime        = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET]) << 8U;
-  data->midExtractTime       |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET + 1]);
-
-  data->highExtractTime1      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET]) << 8U;
-  data->highExtractTime1     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET + 1]);
-
-  data->highExtractTime2      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET]) << 8U;
-  data->highExtractTime2     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET + 1]);
-
-  data->highExtractTime3      = (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET]) << 8U;
-  data->highExtractTime3     |= (uint16_t)(recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET + 1]);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_SetData(uint8_t seqIdx, ProgramManager_ExtractStepConfigStruct *data)
-{
-  uint16_t addr;
-  uint8_t  recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
-
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET]              = (uint8_t)(data->balanceTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET + 1]          = (uint8_t)(data->balanceTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET]           = (uint8_t)(data->midExtractTime >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET + 1]       = (uint8_t)(data->midExtractTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET]         = (uint8_t)(data->highExtractTime1 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET + 1]     = (uint8_t)(data->highExtractTime1 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET]         = (uint8_t)(data->highExtractTime2 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET + 1]     = (uint8_t)(data->highExtractTime2 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET]         = (uint8_t)(data->highExtractTime3 >> 8U);
-  recvArr[PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET + 1]     = (uint8_t)(data->highExtractTime3 & (uint16_t)0x00FFU);
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET;
-
-  extMemIf.writeByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_GetData(uint8_t seqIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINTIME_OFFSET;
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_BalanceTime_SetData(uint8_t seqIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_BALANCETIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINTIME_OFFSET;
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_GetData(uint8_t seqIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINSPEED_OFFSET;
 
-  *data = extMemIf.readInteger(addr);
+  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(addr));
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_MidExtractTime_SetData(uint8_t seqIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_MIDEXTRACTTIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
+         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINSPEED_OFFSET;
 
-  extMemIf.writeInteger(addr, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_GetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET;
-
-  *data = extMemIf.readInteger(addr);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime1_SetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME1_OFFSET;
-
-  extMemIf.writeInteger(addr, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_GetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET;
-
-  *data = extMemIf.readInteger(addr);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime2_SetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME2_OFFSET;
-
-  extMemIf.writeInteger(addr, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_GetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET;
-
-  *data = extMemIf.readInteger(addr);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_ExtractStepConfig_HighExtractTime3_SetData(uint8_t seqIdx, uint16_t *data)
-{
-  uint16_t addr;
-
-  addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
-         + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
-         +  PROGRAMMANAGER_EXTRACTSTEP_OFFSET \
-         +  PROGRAMMANAGER_EXTRACTSTEP_HIGHEXTRACTTIME3_OFFSET;
-
-  extMemIf.writeInteger(addr, *data);
+  extMemIf.writeByte(addr, (uint8_t) *data);
   
   return HAL_OK;
 }

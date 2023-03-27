@@ -60,7 +60,6 @@ const uint8_t MenuManager_Common_TimeStr[] =                          "TIMES:";
 
 const uint8_t MenuManager_Common_ProgramStr[] =                       "PROGRAM %02d";
 const uint8_t MenuManager_Common_StepStr[] =                          "STEP %02d";
-const uint8_t MenuManager_Common_StepExtractStr[] =                   "STEP EXTRACT";
 const uint8_t MenuManager_Common_ProgramStepStr[] =                   "PROG %02d STP %02d";
 const uint8_t MenuManager_Common_ProgramStepExtStr[] =                "PROG %02d STP EXT";
 

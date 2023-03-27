@@ -33,7 +33,17 @@ extern "C" {
 #define PROGRAMMANAGER_STEP_NUM_MAX                                   (uint8_t)10U
 
 /* Maximum number of sequences that controller stores */
-#define PROGRAMMANAGER_SEQUENCE_NUM_MAX                               (uint8_t)10U
+#define PROGRAMMANAGER_SEQUENCE_NUM_MAX                               (uint8_t)5U
+
+/* Maximum number of drain steps in a step */
+#define PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX                         (uint8_t)6U
+
+#define PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX                 (0U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX               (1U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX               (2U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX             (3U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX             (4U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX             (5U)
 
 
 
@@ -131,6 +141,22 @@ typedef enum _ProgramManager_TempModeType
   PROGRAMMANAGER_TEMP_MODE_NUM                                        /* Number of water temp modes */
 } ProgramManager_TempModeType;
 
+/* Program drain mode type */
+typedef enum _ProgramManager_DrainModeType
+{
+  PROGRAMMANAGER_DRAIN_MODE_DEFAULT,                                  /* Drain mode is default type */
+  PROGRAMMANAGER_DRAIN_MODE_CUSTOM,                                   /* Drain mode is custom type */
+  PROGRAMMANAGER_DRAIN_MODE_NUM                                       /* Number of drain modes */
+} ProgramManager_DrainModeType;
+
+/* Washing machine type */
+typedef enum _ProgramManager_WashingMachineType
+{
+  PROGRAMMANAGER_WASHING_MACHINE_MOTOR,                               /* Motor type */
+  PROGRAMMANAGER_WASHING_MACHINE_INVERTER,                            /* Inverter type */
+  PROGRAMMANAGER_WASHING_MACHINE_NUM                                  /* Number of washing machine type */
+} ProgramManager_WashingMachineType;
+
 
 
 
@@ -147,6 +173,7 @@ typedef struct _ProgramManager_MachineFuncSetupStruct
   bool                                            manOperateWhenAuto;                     /* Allow manually change the level, temperature and action when program in AUTO mode (1) */
   ProgramManager_TempUnitType                     tempUnit;                               /* Temperature Unit */
   ProgramManager_RelayEnableStatusType            drainValveStatus;                       /* Drain valve relay enable status while draining */
+  ProgramManager_WashingMachineType               washMachine;                            /* Washing machine type */
 } ProgramManager_MachineFuncSetupStruct;
 
 /* Program sensor input status setup structure */
@@ -231,53 +258,27 @@ typedef struct _ProgramManager_WashSetupStruct
 #define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MIN                      (0U)
 #define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MAX                      (256U)
 
-/* Program manager extract setup structure */
-typedef struct _ProgramManager_ExtractSetupStruct
+/* Program manager drain setup structure */
+typedef struct _ProgramManager_DrainStepSetupStruct
 {
-  uint16_t                                        balanceLevel;                           /* Auto fill to level at least before extract to avoid shock */
-  uint16_t                                        balanceDrainLevel;                      /* If the level is higher than level at most after balance drain, controller will alarm */
-  uint16_t                                        balanceWithWaterTime;                   /* Balance with water time at extract */
-  uint16_t                                        balanceDrainWaterTime;                  /* Balance drain water time at extract */
-  uint16_t                                        balanceDelayTime;                       /* Delay time from end of balance */
-  uint16_t                                        fwdRunTime;                             /* Forward run time at beginning of extract */
-  uint16_t                                        midExtractTime;                         /* Time of middle extract */
-  uint16_t                                        midExtractDelayTime;                    /* Delay time from end of mid extract */
-  uint16_t                                        highExtractTime1;                       /* Time of high extract 1 */
-  uint16_t                                        highExtractTime2;                       /* Time of high extract 2 */
-  uint16_t                                        highExtractTime3;                       /* Time of high extract 3 */
-  uint16_t                                        highExtractDelayTime;                   /* Delay time from end of high extract */
-  uint16_t                                        maxExtractTime;                         /* Max time of extract at last phase */
-  uint16_t                                        reextractTime;                          /* Re-extract times when shock. If the times is larger than the set value, controller will alarm */
-  uint16_t                                        reextractWashTime;                      /* Wash time before re-extract to unroll the clothes */
-  ProgramManager_MotorSpeedType                   balanceSpeed;                           /* Balance speed at extract */
-  ProgramManager_MotorSpeedType                   fwdRunSpeed;                            /* Forward run speed at beginning of extract */
-  ProgramManager_MotorSpeedType                   midExtractSpeed;                        /* Speed of mid extract */
-  ProgramManager_MotorSpeedType                   highExtractSpeed1;                      /* Speed of high extract 1 */
-  ProgramManager_MotorSpeedType                   highExtractSpeed2;                      /* Speed of high extract 2 */
-  ProgramManager_MotorSpeedType                   highExtractSpeed3;                      /* Speed of high extract 3 */
-  ProgramManager_MotorSpeedType                   maxMidExtractSpeed;                     /* Max speed of mid extract */
-  ProgramManager_MotorSpeedType                   maxHighExtractSpeed;                    /* Max speed of high extract */
-} ProgramManager_ExtractSetupStruct;
+  uint16_t                                        drainTime;                              /* Drain running time */
+  ProgramManager_MotorSpeedType                   drainSpeed;                             /* Drain running speed */
+} ProgramManager_DrainStepSetupStruct;
 
-#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_LEVEL_MIN                  (0U)
-#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_LEVEL_MAX                  (100U)
+typedef struct _ProgramManager_DrainSetupStruct
+{
+  ProgramManager_DrainStepSetupStruct             drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX];  /* Drain step configuration */
+  uint16_t                                        drainOffTime;                           /* Drain off time */
+  uint16_t                                        maxDrainExtrTime;                       /* Max time of extract drain */
+  uint8_t                                         reDrainExtrTime;                        /* Re-extract times when shock. If the times is larger than the set value, controller will alarm */
+  ProgramManager_MotorSpeedType                   maxDrainExtrSpeed;                      /* Max speed of extract drain */
+} ProgramManager_DrainSetupStruct;
 
-#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_TIME_MIN                   (0U)
-#define PROGRAMMANAGER_EXTRACTSETUP_COMMON_TIME_MAX                   (256U)
+#define PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN                     (0U)
+#define PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MAX                     (9999U)
 
-#define PROGRAMMANAGER_EXTRACTSETUP_FWDRUNTIME_NORM                   (5U)
-
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_MIN           (10U)
-#define PROGRAMMANAGER_EXTRACTSETUP_MIDEXTRACTDELAYTIME_MAX           (255U)
-
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_MIN          (20U)
-#define PROGRAMMANAGER_EXTRACTSETUP_HIGHEXTRACTDELAYTIME_MAX          (255U)
-
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_MIN                (0U)
-#define PROGRAMMANAGER_EXTRACTSETUP_MAXEXTRACTTIME_MAX                (256U)
-
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_MIN                 (0U)
-#define PROGRAMMANAGER_EXTRACTSETUP_REEXTRACTTIME_MAX                 (9U)
+#define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_MIN                 (0U)
+#define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_MAX                 (9U)
 
 /* Program manager door lock setup structure */
 typedef struct _ProgramManager_DoorLockSetupStruct
@@ -299,7 +300,7 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
   ProgramManager_HeatTempSetupStruct              heatTempCfg;                            /* Heat temperature setup configuration */
   ProgramManager_SoapSetupStruct                  soapCfg;                                /* Soap setup configuration */
   ProgramManager_WashSetupStruct                  washCfg;                                /* Wash setup configuration */
-  ProgramManager_ExtractSetupStruct               extractCfg;                             /* Extract setup configuration */
+  ProgramManager_DrainSetupStruct                 drainCfg;                               /* Drain setup configuration */
   ProgramManager_DoorLockSetupStruct              doorLockCfg;                            /* Door lock setup configuration */
 } ProgramManager_ParamConfigSetupStruct;
 
@@ -311,43 +312,41 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
 
 
 /* Program manager normal step structure */
+typedef struct _ProgramManager_DrainStepConfigStruct
+{
+  uint16_t                                        drainTime;                              /* Drain running time */
+  ProgramManager_MotorSpeedType                   drainSpeed;                             /* Drain running speed */
+} ProgramManager_DrainStepConfigStruct;
+
 typedef struct _ProgramManager_NormStepConfigStruct
 {
   /* For manual only */
-  ProgramManager_CommonModeType                   coldWaterMode;      /* Cold water control mode */
-  ProgramManager_CommonModeType                   hotWaterMode;       /* Hot water control mode */
-  ProgramManager_CommonModeType                   heatMode;           /* Heat control mode */
-  ProgramManager_CommonModeType                   soap1Mode;          /* Soap 1 control mode */
-  ProgramManager_CommonModeType                   soap2Mode;          /* Soap 2 control mode */
-  ProgramManager_CommonModeType                   soap3Mode;          /* Soap 3 control mode */
-  ProgramManager_CommonModeType                   drainMode;          /* Drain control mode */
+  ProgramManager_CommonModeType                   coldWaterMode;                          /* Cold water control mode */
+  ProgramManager_CommonModeType                   hotWaterMode;                           /* Hot water control mode */
+  ProgramManager_CommonModeType                   heatMode;                               /* Heat control mode */
+  ProgramManager_CommonModeType                   soap1Mode;                              /* Soap 1 control mode */
+  ProgramManager_CommonModeType                   soap2Mode;                              /* Soap 2 control mode */
+  ProgramManager_CommonModeType                   soap3Mode;                              /* Soap 3 control mode */
+  ProgramManager_CommonModeType                   drainComMode;                           /* Drain control mode */
   /* Common parameters */
-  bool                                            isActive;           /* This step is active during AUTO mode */
-  uint8_t                                         waterMode;          /* Water mode: bit 0 - uses cold water, bit 1 - uses hot water */
-  uint8_t                                         soapMode;           /* Soap mode: bit 0 - uses soap 1, bit 1 - uses soap 2, bit 2 - uses soap 3 */
-  ProgramManager_WashModeType                     washMode;           /* Wash time mode */
-  ProgramManager_TempModeType                     tempMode;           /* Water temp mode */
-  ProgramManager_LevelModeType                    levelMode;          /* Water level mode */
-  uint8_t                                         washNum;            /* Number of wash time */
-  uint16_t                                        washRunTime;        /* Wash run time */
-  uint16_t                                        washStopTime;       /* Wash stop time */
-  ProgramManager_MotorSpeedType                   washSpeed;          /* Wash speed */
-  uint8_t                                         tempThreshold;      /* Water temperature threshold */
-  uint16_t                                        levelThreshold;     /* Water level threshold */
+  bool                                            isActive;                               /* This step is active during AUTO mode */
+  uint8_t                                         waterMode;                              /* Water mode: bit 0 - uses cold water, bit 1 - uses hot water */
+  uint8_t                                         soapMode;                               /* Soap mode: bit 0 - uses soap 1, bit 1 - uses soap 2, bit 2 - uses soap 3 */
+  ProgramManager_WashModeType                     washMode;                               /* Wash time mode */
+  ProgramManager_DrainModeType                    drainMode;                              /* Drain time mode */
+  ProgramManager_TempModeType                     tempMode;                               /* Water temp mode */
+  ProgramManager_LevelModeType                    levelMode;                              /* Water level mode */
+  uint16_t                                        washTime;                               /* Wash time */
+  uint16_t                                        washRunTime;                            /* Wash run time */
+  uint16_t                                        washStopTime;                           /* Wash stop time */
+  ProgramManager_MotorSpeedType                   washSpeed;                              /* Wash speed */
+  uint8_t                                         tempThreshold;                          /* Water temperature threshold */
+  uint16_t                                        levelThreshold;                         /* Water level threshold */
+  ProgramManager_DrainStepConfigStruct            drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX]; /* Drain step configuration */
 } ProgramManager_NormStepConfigStruct;
 
-#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHNUM_MIN                     (0U)
-#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHNUM_MAX                     (100U)
-
-/* Program manager unload step structure */
-typedef struct _ProgramManager_ExtractStepConfigStruct
-{
-  uint16_t                                        balanceTime;        /* Balance time at extract */
-  uint16_t                                        midExtractTime;     /* Time of middle extract */
-  uint16_t                                        highExtractTime1;   /* Time of high extract 1 */
-  uint16_t                                        highExtractTime2;   /* Time of high extract 2 */
-  uint16_t                                        highExtractTime3;   /* Time of high extract 3 */
-} ProgramManager_ExtractStepConfigStruct;
+#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHTIME_MIN                    (0U)
+#define PROGRAMMANAGER_NORMSTEPCONFIG_WASHTIME_MAX                    (9999U)
 
 /* Program manager AUTO sequence structure */
 typedef struct _ProgramManager_AutoSeqConfigStruct
@@ -355,7 +354,6 @@ typedef struct _ProgramManager_AutoSeqConfigStruct
   uint8_t                                         sequenceIndex;
   uint8_t                                         currentStep;
   ProgramManager_NormStepConfigStruct             normStep[PROGRAMMANAGER_STEP_NUM_MAX];
-  ProgramManager_ExtractStepConfigStruct          extractStep;
 } ProgramManager_AutoSeqConfigStruct;
 
 /* Program manager MANUAL sequence structure */
