@@ -536,10 +536,20 @@ void ProgramManager_Control_TogglePauseResumeHandler(void)
 bool ProgramManager_Control_CheckNextStepAvailable(void)
 {
   bool retVal = false;
+  uint8_t stepIndex;
 
-  if (ProgramManager_gAutoSeqConfig.currentStep != PROGRAMMANAGER_STEP_NUM_MAX)
+  if (ProgramManager_gAutoSeqConfig.currentStep != (PROGRAMMANAGER_STEP_NUM_MAX - (uint8_t)1U))
   {
-    retVal = true;
+    for (stepIndex = ProgramManager_gAutoSeqConfig.currentStep + (uint8_t)1U; \
+        stepIndex < PROGRAMMANAGER_STEP_NUM_MAX; \
+        stepIndex++)
+    {
+      if ((ProgramManager_gAutoSeqConfig.normStep)[stepIndex].isActive == (bool)true)
+      {
+        retVal = true;
+        break;
+      }
+    }
   }
 
   return retVal;
@@ -569,24 +579,23 @@ bool ProgramManager_Control_CheckPrevStepAvailable(void)
 bool ProgramManager_Control_GetNextStepAvailable(uint32_t *nextStep)
 {
   bool retVal = false;
-  uint8_t stepIdx;
+  uint8_t stepIndex;
+  uint8_t stepTemp = (uint8_t)255U;
 
-  if (ProgramManager_gAutoSeqConfig.currentStep != PROGRAMMANAGER_STEP_NUM_MAX)
+  for (stepIndex = ProgramManager_gAutoSeqConfig.currentStep + (uint8_t)1U; \
+       stepIndex < PROGRAMMANAGER_STEP_NUM_MAX; \
+       stepIndex++)
   {
-    for (stepIdx = (uint8_t)(ProgramManager_gAutoSeqConfig.currentStep + 1U); stepIdx < PROGRAMMANAGER_STEP_NUM_MAX; stepIdx++)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[stepIndex].isActive == true)
     {
-      if (ProgramManager_gAutoSeqConfig.normStep[stepIdx].isActive == (bool)true)
-      {
-        *nextStep = (uint32_t)stepIdx;
-        break;
-      }
+      stepTemp = stepIndex;
+      break;
     }
+  }
 
-    if (stepIdx == PROGRAMMANAGER_STEP_NUM_MAX)
-    {
-      *nextStep = (uint32_t)PROGRAMMANAGER_STEP_NUM_MAX;
-    }
-
+  if (stepTemp != (uint8_t)255U)
+  {
+    *nextStep = (uint32_t)stepTemp;
     retVal = true;
   }
 

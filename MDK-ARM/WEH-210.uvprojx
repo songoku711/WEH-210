@@ -466,6 +466,11 @@
               <FilePath>..\Appl\menuManager\_1216000000_menu_DrainValveStatus.c</FilePath>
             </File>
             <File>
+              <FileName>_1217000000_menu_WashMachine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\menuManager\_1217000000_menu_WashMachine.c</FilePath>
+            </File>
+            <File>
               <FileName>_1220000000_menu_InputStatusSetup.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1220000000_menu_InputStatusSetup.c</FilePath>

@@ -213,7 +213,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[87] =
+Fsm_StateDefStruct MenuManager_StateMachine[88] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -230,6 +230,7 @@ Fsm_StateDefStruct MenuManager_StateMachine[87] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ManOperateWhenAuto_StateMachine)                 },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempUnit_StateMachine)                           },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainValveStatus_StateMachine)                   },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_WashMachine_StateMachine)                        },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_InputStatusSetup_StateMachine)                   },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorClosed_StateMachine)                         },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ExtractShock_StateMachine)                       },
