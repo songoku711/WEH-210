@@ -105,10 +105,35 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
   },
   .drainCfg =                                                               /* Drain setup configuration */
   {
-    .drainStepCfg[0] =                                                      /* Drain step setup configuration */
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =          /* Drain step configuration */
     {
       .drainTime                = (uint16_t)20U,                            /* Drain running time */
       .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =        /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =        /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =      /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =      /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
+    },
+    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =      /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
     },
     .drainOffTime               = (uint16_t)5U,                             /* Drain off time */
     .maxDrainExtrTime           = (uint16_t)300U,                           /* Max time of extract drain */
@@ -142,10 +167,35 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
-    .drainStep[0] =                                                         /* Drain step configuration */
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =             /* Drain step configuration */
     {
       .drainTime                = (uint16_t)20U,                            /* Drain running time */
       .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =           /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =           /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
     }
   }
 };
@@ -167,10 +217,35 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
-    .drainStep[0] =                                                         /* Drain step configuration */
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =             /* Drain step configuration */
     {
       .drainTime                = (uint16_t)20U,                            /* Drain running time */
       .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =           /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =           /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)10U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)20U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
+    },
+    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =         /* Drain step configuration */
+    {
+      .drainTime                = (uint16_t)40U,                            /* Drain running time */
+      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
     }
   }
 };

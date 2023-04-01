@@ -185,7 +185,7 @@ static void MenuManager_StepWashTime_LcdShowDone(void)
   );
 
   LCD_SetCursorPos(MENUMANAGER_STEPWASHTIME_UNIT_XPOS, MENUMANAGER_STEPWASHTIME_UNIT_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString((uint8_t *)MenuManager_Common_TimeStr);
+  LCD_PutString((uint8_t *)MenuManager_Common_SecondStr);
 
   MenuManager_Common_LcdUpdateAll();
 }
