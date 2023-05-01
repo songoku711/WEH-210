@@ -40,11 +40,8 @@ const uint8_t MenuManager_Common_DoneStr[] =                          "DONE";
 const uint8_t MenuManager_Common_EnableStr[] =                        "ENABLE";
 const uint8_t MenuManager_Common_DisableStr[] =                       "DISABLE";
 
-const uint8_t MenuManager_Common_NormalOpenStr[] =                    "NORMAL OPEN";
-const uint8_t MenuManager_Common_NormalCloseStr[] =                   "NORMAL CLOSE";
-
-const uint8_t MenuManager_Common_ActiveLowStr[] =                     "ACTIVE LOW";
-const uint8_t MenuManager_Common_ActiveHighStr[] =                    "ACTIVE HIGH";
+const uint8_t MenuManager_Common_NormalOnStr[] =                      "NORMAL ON";
+const uint8_t MenuManager_Common_NormalOffStr[] =                     "NORMAL OFF";
 
 const uint8_t MenuManager_Common_OnStr[] =                            "ON ";
 const uint8_t MenuManager_Common_OffStr[] =                           "OFF";

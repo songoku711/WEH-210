@@ -167,9 +167,6 @@ typedef enum _ProgramManager_WashingMachineType
 /* Program machine function setup structure */
 typedef struct _ProgramManager_MachineFuncSetupStruct
 {
-  bool                                            drainWhileDoorOpen;                     /* Open drain valve automatically after open the door for the safety of the operator (1) */
-  bool                                            heatUseTimeout;                         /* Heat must reach desired temperature to switch to wash (0) or automatically switch to wash if timeout expired (1) */
-  bool                                            fillUseTimeout;                         /* Water filling must reach desired level to switch to wash (0) or automatically switch to wash if timeout expired (1) */
   bool                                            manOperateWhenAuto;                     /* Allow manually change the level, temperature and action when program in AUTO mode (1) */
   ProgramManager_TempUnitType                     tempUnit;                               /* Temperature Unit */
   ProgramManager_RelayEnableStatusType            drainValveStatus;                       /* Drain valve relay enable status while draining */
@@ -188,14 +185,11 @@ typedef struct _ProgramManager_InputStatusSetupStruct
 /* Program manager fill and level setup structure */
 typedef struct _ProgramManager_FillLevelSetupStruct
 {
-  bool                                            autoRefillWhenLow;                      /* Automatically refill water when level is lower than set value (1) */
   uint16_t                                        zeroLevel;                              /* Set the relative zero level */
   uint16_t                                        lowLevel;                               /* Set the low level for water level LOW mode */
   uint16_t                                        midLevel;                               /* Set the middle level for water level MID mode */
   uint16_t                                        highLevel;                              /* Set the high level for water level HIGH mode */
-  uint16_t                                        overbrimLevel;                          /* Set the overbrim level. Drain valve will open when water higher than the overbrim level */
   uint16_t                                        levelDiffRefill;                        /* Automatically refill water when difference between current and set is larger than this value */
-  uint16_t                                        maxTimeFill;                            /* If level is lower than set value after this amount of time, controller will alarm (minutes) */
 } ProgramManager_FillLevelSetupStruct;
 
 #define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MIN                 (0U)
@@ -204,15 +198,9 @@ typedef struct _ProgramManager_FillLevelSetupStruct
 #define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MIN             (0U)
 #define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MAX             (100U)
 
-#define PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_MIN                 (0U)
-#define PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_MAX                 (256U)
-
 /* Program manager heat and temp setup structure */
 typedef struct _ProgramManager_HeatTempSetupStruct
 {
-  bool                                            autoReheatWhenLow;                      /* Automatically re-heat when temperature is lower than set value (1) */
-  uint8_t                                         minWaterTemp;                           /* The minimum value of water set temperature */
-  uint8_t                                         maxWaterTemp;                           /* The maxumum value of water set temperature */
   uint8_t                                         tempThreshold;                          /* The water temperature threshold */
   uint8_t                                         tempDiffReheat;                         /* Auto re-heat when difference between current and set is larger than this value */
   uint16_t                                        maxTimeHeat;                            /* If temperature is lower than set value after this amount of time, controller will alarm (minutes) */
@@ -227,22 +215,9 @@ typedef struct _ProgramManager_HeatTempSetupStruct
 #define PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_MIN                  (0U)
 #define PROGRAMMANAGER_HEATTEMPSETUP_MAXTIMEHEAT_MAX                  (256U)
 
-/* Program manager chemical supply (soap) setup structure */
-typedef struct _ProgramManager_SoapSetupStruct
-{
-  bool                                            stopFillWhenSoap;                       /* Stop fill cold water while soaping to avoid low water pressure (1) */
-  uint16_t                                        timeSoap1;                              /* Default set time of soap 1 (seconds) */
-  uint16_t                                        timeSoap2;                              /* Default set time of soap 2 (seconds) */
-  uint16_t                                        timeSoap3;                              /* Default set time of soap 3 (seconds) */
-} ProgramManager_SoapSetupStruct;
-
-#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MIN                        (0U)
-#define PROGRAMMANAGER_SOAPSETUP_TIME_SOAP_MAX                        (255U)
-
 /* Program manager wash setup structure */
 typedef struct _ProgramManager_WashSetupStruct
 {
-  uint16_t                                        minPauseFwdRev;                         /* Minimum time pause between forward and reverse to avoid motor overload (seconds) */
   uint16_t                                        stdWashRunTime;                         /* Standard wash run time (seconds) */
   uint16_t                                        stdWashStopTime;                        /* Standard wash stop time (seconds) */
   uint16_t                                        delWashRunTime;                         /* Delicate wash run time (seconds) */
@@ -252,7 +227,6 @@ typedef struct _ProgramManager_WashSetupStruct
   ProgramManager_MotorSpeedType                   stdWashSpeed;                           /* Default speed of standard wash */
   ProgramManager_MotorSpeedType                   delWashSpeed;                           /* Default speed of delicate wash */
   ProgramManager_MotorSpeedType                   hvyWashSpeed;                           /* Default speed of heavy wash */
-  ProgramManager_MotorSpeedType                   maxWashSpeed;                           /* Max speed of wash. Wash at max speed when the set value is larger than max speed */
 } ProgramManager_WashSetupStruct;
 
 #define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MIN                      (0U)
@@ -298,7 +272,6 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
   ProgramManager_InputStatusSetupStruct           inputStatusCfg;                         /* Input status setup configuration */
   ProgramManager_FillLevelSetupStruct             fillLevelCfg;                           /* Fill level setup configuration */
   ProgramManager_HeatTempSetupStruct              heatTempCfg;                            /* Heat temperature setup configuration */
-  ProgramManager_SoapSetupStruct                  soapCfg;                                /* Soap setup configuration */
   ProgramManager_WashSetupStruct                  washCfg;                                /* Wash setup configuration */
   ProgramManager_DrainSetupStruct                 drainCfg;                               /* Drain setup configuration */
   ProgramManager_DoorLockSetupStruct              doorLockCfg;                            /* Door lock setup configuration */

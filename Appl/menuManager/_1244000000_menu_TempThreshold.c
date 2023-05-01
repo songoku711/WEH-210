@@ -222,8 +222,16 @@ static Fsm_GuardType MenuManager_TempThreshold_Entry(Fsm_ContextStructPtr const 
       MenuManager_TempThreshold_Counter = (uint32_t)0U;
       MenuManager_TempThreshold_CurPos = (uint32_t)0U;
 
-      MenuManager_TempThreshold_ValueMin = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.minWaterTemp);
-      MenuManager_TempThreshold_ValueMax = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxWaterTemp);
+      if (ProgramManager_gParamConfig.machineFuncCfg.tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+      {
+        MenuManager_TempThreshold_ValueMin = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MIN;
+        MenuManager_TempThreshold_ValueMax = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MAX;
+      }
+      else
+      {
+        MenuManager_TempThreshold_ValueMin = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MIN;
+        MenuManager_TempThreshold_ValueMax = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MAX;
+      }
 
       MenuManager_TempThreshold_Value = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.tempThreshold);
 
@@ -267,7 +275,7 @@ static Fsm_GuardType MenuManager_TempThreshold_Exit(Fsm_ContextStructPtr const p
   MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
-  dataHierachy->dataId = MENUMANAGER_STATE_MAX_WATER_TEMP;
+  dataHierachy->dataId = MENUMANAGER_STATE_TEMP_THRESHOLD;
 
   pFsmContext->dataHierachy = dataHierachy;
 

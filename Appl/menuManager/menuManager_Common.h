@@ -61,11 +61,11 @@ extern const uint8_t MenuManager_Common_DoneStr[];
 extern const uint8_t MenuManager_Common_EnableStr[];
 extern const uint8_t MenuManager_Common_DisableStr[];
 
-extern const uint8_t MenuManager_Common_NormalOpenStr[];
-extern const uint8_t MenuManager_Common_NormalCloseStr[];
+extern const uint8_t MenuManager_Common_NormalOnStr[];
+extern const uint8_t MenuManager_Common_NormalOffStr[];
 
-extern const uint8_t MenuManager_Common_ActiveLowStr[];
-extern const uint8_t MenuManager_Common_ActiveHighStr[];
+extern const uint8_t MenuManager_Common_NormalOffStr[];
+extern const uint8_t MenuManager_Common_NormalOnStr[];
 
 extern const uint8_t MenuManager_Common_OnStr[];
 extern const uint8_t MenuManager_Common_OffStr[];

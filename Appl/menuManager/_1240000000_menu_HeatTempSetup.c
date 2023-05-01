@@ -38,9 +38,6 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_AutoReheatWhenLow_ChildTitleStr[] =  "AUTO REHEAT W LOW";
-static const uint8_t MenuManager_MinWaterTemp_ChildTitleStr[] =       "MIN WATER TEMP";
-static const uint8_t MenuManager_MaxWaterTemp_ChildTitleStr[] =       "MAX WATER TEMP";
 static const uint8_t MenuManager_TempThreshold_ChildTitleStr[] =      "TEMP THRESHOLD";
 static const uint8_t MenuManager_TempDiffReheat_ChildTitleStr[] =     "TEMP DIFF REHEAT";
 static const uint8_t MenuManager_MaxTimeHeat_ChildTitleStr[] =        "MAX TIME HEAT";
@@ -48,20 +45,17 @@ static const uint8_t MenuManager_MaxTimeHeat_ChildTitleStr[] =        "MAX TIME 
 static const uint8_t MenuManager_HeatTempSetup_MainTitleStr[] =       "HEAT AND TEMP";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_HeatTempSetup_ChildMenu[6] =
+static MenuManager_ChildMenuStruct MenuManager_HeatTempSetup_ChildMenu[3] =
 {
-  { &MenuManager_AutoReheatWhenLow_ChildTitleStr,                     MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_MinWaterTemp_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_2             },
-  { &MenuManager_MaxWaterTemp_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_3             },
-  { &MenuManager_TempThreshold_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_TempDiffReheat_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_5             },
-  { &MenuManager_MaxTimeHeat_ChildTitleStr,                           MENUMANAGER_EVENT_SUBMENU_6             }
+  { &MenuManager_TempThreshold_ChildTitleStr,                         MENUMANAGER_EVENT_SUBMENU_1             },
+  { &MenuManager_TempDiffReheat_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_2             },
+  { &MenuManager_MaxTimeHeat_ChildTitleStr,                           MENUMANAGER_EVENT_SUBMENU_3             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_HeatTempSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)6U,
+  .childMenuNum               = (uint8_t)3U,
   .childMenuCfg               = &MenuManager_HeatTempSetup_ChildMenu
 };
 
@@ -93,19 +87,16 @@ static Fsm_GuardType MenuManager_HeatTempSetup_UpBut                  (Fsm_Conte
 static Fsm_GuardType MenuManager_HeatTempSetup_DownBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[11] =
+Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[8] =
 {
-  FSM_TRIGGER_ENTRY             (                                     MenuManager_HeatTempSetup_Entry                                                ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_AUTO_REHEAT_WHEN_LOW  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_MIN_WATER_TEMP        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_MAX_WATER_TEMP        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_TEMP_THRESHOLD        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_TEMP_DIFF_REHEAT      ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_MAX_TIME_HEAT         ),
-  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_HeatTempSetup_UpBut                                                ),
-  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_HeatTempSetup_DownBut                                              ),
-  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_HeatTempSetup_StartBut                                             ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_HeatTempSetup_StopBut,     MENUMANAGER_STATE_MACHINE_SETUP         )
+  FSM_TRIGGER_ENTRY             (                                     MenuManager_HeatTempSetup_Entry                                                 ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_TEMP_THRESHOLD        ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_TEMP_DIFF_REHEAT      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_MAX_TIME_HEAT         ),
+  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_HeatTempSetup_UpBut                                                 ),
+  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_HeatTempSetup_DownBut                                               ),
+  FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_HeatTempSetup_StartBut                                              ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_HeatTempSetup_StopBut,     MENUMANAGER_STATE_MACHINE_SETUP          )
 };
 
 
@@ -176,10 +167,7 @@ static Fsm_GuardType MenuManager_HeatTempSetup_Entry(Fsm_ContextStructPtr const 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_AUTO_REHEAT_WHEN_LOW) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MIN_WATER_TEMP)       || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MAX_WATER_TEMP)       || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_TEMP_THRESHOLD)       || \
+    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_TEMP_THRESHOLD)       || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_TEMP_DIFF_REHEAT)     || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MAX_TIME_HEAT))
     {

@@ -42,15 +42,9 @@ extern Fsm_EventEntryStruct MenuManager_SetDefaultParam_StateMachine[5];
 /** State setDefaultProg (6) */
 extern Fsm_EventEntryStruct MenuManager_SetDefaultProg_StateMachine[5];
 /** State machineSetup (7) */
-extern Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[13];
+extern Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[12];
 /** State machineFuncSetup (8) */
 extern Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[12];
-/** State drainWhileDoorOpen (9) */
-extern Fsm_EventEntryStruct MenuManager_DrainWhileDoorOpen_StateMachine[7];
-/** State heatUseTimeout (10) */
-extern Fsm_EventEntryStruct MenuManager_HeatUseTimeout_StateMachine[7];
-/** State fillUseTimeout (11) */
-extern Fsm_EventEntryStruct MenuManager_FillUseTimeout_StateMachine[7];
 /** State manOperateWhenAuto (12) */
 extern Fsm_EventEntryStruct MenuManager_ManOperateWhenAuto_StateMachine[7];
 /** State tempUnit (13) */
@@ -70,9 +64,7 @@ extern Fsm_EventEntryStruct MenuManager_EmergencyStop_StateMachine[7];
 /** State inverterError (19) */
 extern Fsm_EventEntryStruct MenuManager_InverterError_StateMachine[7];
 /** State fillLevelSetup (20) */
-extern Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[13];
-/** State autoRefillWhenLow (21) */
-extern Fsm_EventEntryStruct MenuManager_AutoRefillWhenLow_StateMachine[7];
+extern Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[10];
 /** State zeroLevel (22) */
 extern Fsm_EventEntryStruct MenuManager_ZeroLevel_StateMachine[9];
 /** State lowLevel (23) */
@@ -81,40 +73,18 @@ extern Fsm_EventEntryStruct MenuManager_LowLevel_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_MidLevel_StateMachine[9];
 /** State highLevel (25) */
 extern Fsm_EventEntryStruct MenuManager_HighLevel_StateMachine[9];
-/** State overbrimLevel (26) */
-extern Fsm_EventEntryStruct MenuManager_OverbrimLevel_StateMachine[9];
 /** State levelDiffRefill (27) */
 extern Fsm_EventEntryStruct MenuManager_LevelDiffRefill_StateMachine[9];
-/** State maxTimeFill (28) */
-extern Fsm_EventEntryStruct MenuManager_MaxTimeFill_StateMachine[9];
 /** State heatTempSetup (29) */
-extern Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[11];
-/** State autoReheatWhenLow (30) */
-extern Fsm_EventEntryStruct MenuManager_AutoReheatWhenLow_StateMachine[7];
-/** State minWaterTemp (31) */
-extern Fsm_EventEntryStruct MenuManager_MinWaterTemp_StateMachine[9];
-/** State maxWaterTemp (32) */
-extern Fsm_EventEntryStruct MenuManager_MaxWaterTemp_StateMachine[9];
+extern Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[8];
 /** State tempThreshold (33) */
 extern Fsm_EventEntryStruct MenuManager_TempThreshold_StateMachine[9];
 /** State tempDiffReheat (34) */
 extern Fsm_EventEntryStruct MenuManager_TempDiffReheat_StateMachine[9];
 /** State maxTimeHeat (35) */
 extern Fsm_EventEntryStruct MenuManager_MaxTimeHeat_StateMachine[9];
-/** State soapSetup (36) */
-extern Fsm_EventEntryStruct MenuManager_SoapSetup_StateMachine[9];
-/** State stopFillWhenSoap (37) */
-extern Fsm_EventEntryStruct MenuManager_StopFillWhenSoap_StateMachine[7];
-/** State timeSoap1 (38) */
-extern Fsm_EventEntryStruct MenuManager_TimeSoap1_StateMachine[9];
-/** State timeSoap2 (39) */
-extern Fsm_EventEntryStruct MenuManager_TimeSoap2_StateMachine[9];
-/** State timeSoap3 (40) */
-extern Fsm_EventEntryStruct MenuManager_TimeSoap3_StateMachine[9];
 /** State washSetup (41) */
-extern Fsm_EventEntryStruct MenuManager_WashSetup_StateMachine[16];
-/** State minPauseFwdRev (42) */
-extern Fsm_EventEntryStruct MenuManager_MinPauseFwdRev_StateMachine[9];
+extern Fsm_EventEntryStruct MenuManager_WashSetup_StateMachine[14];
 /** State stdWashRunTime (43) */
 extern Fsm_EventEntryStruct MenuManager_StdWashRunTime_StateMachine[9];
 /** State stdWashStopTime (44) */
@@ -133,8 +103,6 @@ extern Fsm_EventEntryStruct MenuManager_StdWashSpeed_StateMachine[7];
 extern Fsm_EventEntryStruct MenuManager_DelWashSpeed_StateMachine[7];
 /** State hvyWashSpeed (51) */
 extern Fsm_EventEntryStruct MenuManager_HvyWashSpeed_StateMachine[7];
-/** State maxWashSpeed (52) */
-extern Fsm_EventEntryStruct MenuManager_MaxWashSpeed_StateMachine[7];
 /** State drainSetup (53) */
 extern Fsm_EventEntryStruct MenuManager_DrainSetup_StateMachine[15];
 /** State drainSetupParam (54) */
@@ -213,7 +181,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[88] =
+Fsm_StateDefStruct MenuManager_StateMachine[72] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -224,9 +192,6 @@ Fsm_StateDefStruct MenuManager_StateMachine[88] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SetDefaultProg_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineSetup_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MachineFuncSetup_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainWhileDoorOpen_StateMachine)                 },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatUseTimeout_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FillUseTimeout_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ManOperateWhenAuto_StateMachine)                 },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempUnit_StateMachine)                           },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainValveStatus_StateMachine)                   },
@@ -237,28 +202,16 @@ Fsm_StateDefStruct MenuManager_StateMachine[88] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_EmergencyStop_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_InverterError_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_FillLevelSetup_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoRefillWhenLow_StateMachine)                  },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ZeroLevel_StateMachine)                          },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LowLevel_StateMachine)                           },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidLevel_StateMachine)                           },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighLevel_StateMachine)                          },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_OverbrimLevel_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LevelDiffRefill_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeFill_StateMachine)                        },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatTempSetup_StateMachine)                      },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_AutoReheatWhenLow_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MinWaterTemp_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxWaterTemp_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempThreshold_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempDiffReheat_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxTimeHeat_StateMachine)                        },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SoapSetup_StateMachine)                          },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StopFillWhenSoap_StateMachine)                   },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap1_StateMachine)                          },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap2_StateMachine)                          },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TimeSoap3_StateMachine)                          },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_WashSetup_StateMachine)                          },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MinPauseFwdRev_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashRunTime_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashStopTime_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashRunTime_StateMachine)                     },
@@ -268,7 +221,6 @@ Fsm_StateDefStruct MenuManager_StateMachine[88] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HvyWashSpeed_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetup_StateMachine)                         },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupParam_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupTime_StateMachine)                     },

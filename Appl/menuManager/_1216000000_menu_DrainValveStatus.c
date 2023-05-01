@@ -70,13 +70,13 @@ static MenuManager_DrainValveStatus_IntValMapStruct MenuManager_DrainValveStatus
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_DrainValveStatus_MainTitleStr[] =    "DRAIN VALVE";
+static const uint8_t MenuManager_DrainValveStatus_MainTitleStr[] =    "DRAIN OPEN STAT";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_DrainValveStatus_ChildMenu[2] =
 {
-  { &MenuManager_Common_NormalOpenStr,                                MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_Common_NormalCloseStr,                               MENUMANAGER_EVENT_PREV                  }
+  { &MenuManager_Common_NormalOnStr,                                  MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_NormalOffStr,                                 MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */

@@ -198,7 +198,7 @@ static Fsm_GuardType MenuManager_StdWashSpeed_Entry(Fsm_ContextStructPtr const p
       MenuManager_StdWashSpeed_Counter = (uint32_t)0U;
 
       MenuManager_StdWashSpeed_ValueMin = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-      MenuManager_StdWashSpeed_ValueMax = (uint32_t)(ProgramManager_gParamConfig.washCfg.maxWashSpeed);
+      MenuManager_StdWashSpeed_ValueMax = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_7;
       MenuManager_StdWashSpeed_Value = (uint32_t)(ProgramManager_gParamConfig.washCfg.stdWashSpeed);
     }
     else

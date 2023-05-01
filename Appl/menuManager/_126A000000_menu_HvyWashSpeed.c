@@ -198,7 +198,7 @@ static Fsm_GuardType MenuManager_HvyWashSpeed_Entry(Fsm_ContextStructPtr const p
       MenuManager_HvyWashSpeed_Counter = (uint32_t)0U;
 
       MenuManager_HvyWashSpeed_ValueMin = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-      MenuManager_HvyWashSpeed_ValueMax = (uint32_t)(ProgramManager_gParamConfig.washCfg.maxWashSpeed);
+      MenuManager_HvyWashSpeed_ValueMax = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_7;
       MenuManager_HvyWashSpeed_Value = (uint32_t)(ProgramManager_gParamConfig.washCfg.hvyWashSpeed);
     }
     else

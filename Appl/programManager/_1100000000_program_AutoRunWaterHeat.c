@@ -28,28 +28,20 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_INTERNALDATALENGTH            (uint8_t)11U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_INTERNALDATALENGTH            (uint8_t)7U
 
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_ONESECONDELAPSED_IDX          0U
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_TEMPCOUNTER_IDX               1U
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_PRESCOUNTER_IDX               2U
 #define PROGRAMMANAGER_AUTORUNWATERHEAT_TEMPTIMEOUT_IDX               3U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_PRESTIMEOUT_IDX               4U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP1TIMEOUT_IDX              5U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP2TIMEOUT_IDX              6U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP3TIMEOUT_IDX              7U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_IDX                8U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTER_IDX              9U
-#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTERMAX_IDX           10U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_IDX                4U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTER_IDX              5U
+#define PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTERMAX_IDX           6U
 
 #define ProgramManager_AutoRunWaterHeat_OneSecondElapsed              ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_ONESECONDELAPSED_IDX)
 #define ProgramManager_AutoRunWaterHeat_TempCounter                   ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_TEMPCOUNTER_IDX)
 #define ProgramManager_AutoRunWaterHeat_PresCounter                   ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_PRESCOUNTER_IDX)
 #define ProgramManager_AutoRunWaterHeat_TempTimeout                   ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_TEMPTIMEOUT_IDX)
-#define ProgramManager_AutoRunWaterHeat_PresTimeout                   ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_PRESTIMEOUT_IDX)
-#define ProgramManager_AutoRunWaterHeat_Soap1Timeout                  ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP1TIMEOUT_IDX)
-#define ProgramManager_AutoRunWaterHeat_Soap2Timeout                  ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP2TIMEOUT_IDX)
-#define ProgramManager_AutoRunWaterHeat_Soap3Timeout                  ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_SOAP3TIMEOUT_IDX)
 #define ProgramManager_AutoRunWaterHeat_MotorState                    ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_IDX)
 #define ProgramManager_AutoRunWaterHeat_MotorCounter                  ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTER_IDX)
 #define ProgramManager_AutoRunWaterHeat_MotorCounterMax               ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORCOUNTERMAX_IDX)
@@ -199,49 +191,28 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckLevelCondition(void)
     {
       ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
     }
-
-    if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
-    {
-      if (ProgramManager_AutoRunWaterHeat_PresTimeout != (uint32_t)0U)
-      {
-        ProgramManager_AutoRunWaterHeat_PresTimeout -= (uint32_t)1U;
-      }
-    }
   }
   else
   {
-    /* Auto-refill when low level feature enabled */
-    if (ProgramManager_gParamConfig.fillLevelCfg.autoRefillWhenLow == (bool)true)
+    /* Auto-refill when low level */
+    /* Check pressure with delta offset */
+    if (ProgramManager_gCurrentPressure <= (ProgramManager_gCurrentPresThreshold - ProgramManager_gParamConfig.fillLevelCfg.levelDiffRefill))
     {
-      /* Check pressure with delta offset */
-      if (ProgramManager_gCurrentPressure <= (ProgramManager_gCurrentPresThreshold - ProgramManager_gParamConfig.fillLevelCfg.levelDiffRefill))
+      if (ProgramManager_AutoRunWaterHeat_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
       {
-        if (ProgramManager_AutoRunWaterHeat_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
-        {
-          ProgramManager_gPresThresExceeded = (bool)false;
+        ProgramManager_gPresThresExceeded = (bool)false;
 
-          ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
-        }
-        else
-        {
-          ProgramManager_AutoRunWaterHeat_PresCounter += (uint32_t)1U;
-        }
+        ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
       }
       else
       {
-        ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
+        ProgramManager_AutoRunWaterHeat_PresCounter += (uint32_t)1U;
       }
     }
-
-    if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
+    else
     {
-      ProgramManager_AutoRunWaterHeat_PresTimeout = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.maxTimeFill) * (uint32_t)12000U;
+      ProgramManager_AutoRunWaterHeat_PresCounter = (uint32_t)0U;
     }
-  }
-
-  if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout != (bool)true)
-  {
-    ProgramManager_AutoRunWaterHeat_PresTimeout += (uint32_t)1U;
   }
 }
 
@@ -269,48 +240,33 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckTempCondition(void)
       ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
     }
 
-    if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+    if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
     {
-      if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
-      {
-        ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
-      }
+      ProgramManager_AutoRunWaterHeat_TempTimeout -= (uint32_t)1U;
     }
   }
   else
   {
-    /* Auto-reheat when low temperature feature enabled */
-    if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
+    /* Check temperature with delta offset */
+    if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
     {
-      /* Check temperature with delta offset */
-      if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
+      if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
       {
-        if (ProgramManager_AutoRunWaterHeat_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
-        {
-          ProgramManager_gTempThresExceeded = (bool)false;
+        ProgramManager_gTempThresExceeded = (bool)false;
 
-          ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
-        }
-        else
-        {
-          ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
-        }
+        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
       }
       else
       {
-        ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
+        ProgramManager_AutoRunWaterHeat_TempCounter += (uint32_t)1U;
       }
     }
-
-    if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+    else
     {
-      ProgramManager_AutoRunWaterHeat_TempTimeout = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxTimeHeat) * (uint32_t)12000U;
+      ProgramManager_AutoRunWaterHeat_TempCounter = (uint32_t)0U;
     }
-  }
 
-  if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout != (bool)true)
-  {
-    ProgramManager_AutoRunWaterHeat_TempTimeout += (uint32_t)1U;
+    ProgramManager_AutoRunWaterHeat_TempTimeout = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxTimeHeat) * (uint32_t)12000U;
   }
 }
 
@@ -362,25 +318,16 @@ static void ProgramManager_AutoRunWaterHeat_InternalCheckStateTransit(void)
     /* Temperature threshold not reach, and timeout not elapse if configured */
     if (ProgramManager_gTempThresExceeded == (bool)false)
     {
-      if (ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true)
+      if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
       {
-        if (ProgramManager_AutoRunWaterHeat_TempTimeout != (uint32_t)0U)
-        {
-          conditionOk = (bool)false;
-        }
+        conditionOk = (bool)false;
       }
     }
 
-    /* Pressure threshold not reach, and timeout not elapse if configured */
+    /* Pressure threshold not reach */
     if (ProgramManager_gPresThresExceeded == (bool)false)
     {
-      if (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true)
-      {
-        if (ProgramManager_AutoRunWaterHeat_PresTimeout != (uint32_t)0U)
-        {
-          conditionOk = (bool)false;
-        }
-      }
+      conditionOk = (bool)false;
     }
 
     if (conditionOk == (bool)true)
@@ -426,36 +373,10 @@ static void ProgramManager_AutoRunWaterHeat_InternalControlOutput(void)
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
   }
 
-  /* Control soap with timeout */
-  if ((ProgramManager_AutoRunWaterHeat_Soap1Timeout > (uint32_t)0U) && \
-      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x01))
-  {
-    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-  }
-
-  if ((ProgramManager_AutoRunWaterHeat_Soap2Timeout > (uint32_t)0U) && \
-      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x02))
-  {
-    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-  }
-
-  if ((ProgramManager_AutoRunWaterHeat_Soap3Timeout > (uint32_t)0U) && \
-      ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x04))
-  {
-    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-  }
+  /* @TODO: Control when water level reaches proper level to pour soap into */
+  ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+  ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+  ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
 
   /* Control motor */
   if (ProgramManager_AutoRunWaterHeat_MotorState == PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_FWD)
@@ -490,25 +411,7 @@ static void ProgramManager_AutoRunWaterHeat_InternalUpdateLcdParams(void)
 {
   uint32_t timeTemp;
 
-  if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true) && \
-      (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)false))
-  {
-    timeTemp = ProgramManager_AutoRunWaterHeat_TempTimeout;
-  }
-  else if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)false) && \
-           (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true))
-  {
-    timeTemp = ProgramManager_AutoRunWaterHeat_PresTimeout;
-  }
-  else if ((ProgramManager_gParamConfig.machineFuncCfg.heatUseTimeout == (bool)true) && \
-           (ProgramManager_gParamConfig.machineFuncCfg.fillUseTimeout == (bool)true))
-  {
-    timeTemp = (ProgramManager_AutoRunWaterHeat_TempTimeout < ProgramManager_AutoRunWaterHeat_PresTimeout) ? ProgramManager_AutoRunWaterHeat_TempTimeout : ProgramManager_AutoRunWaterHeat_PresTimeout;
-  }
-  else
-  {
-    timeTemp = ProgramManager_AutoRunWaterHeat_TempTimeout;
-  }
+  timeTemp = ProgramManager_AutoRunWaterHeat_TempTimeout;
 
   /* Time elapsed in second = time * (5 ticks per period) / 1000 ticks */
   timeTemp = timeTemp / (uint32_t)200U;
@@ -554,11 +457,6 @@ static Fsm_GuardType ProgramManager_AutoRunWaterHeat_Entry(Fsm_ContextStructPtr 
 
     /* Timeout in minutes * 60s * 1000 ticks / (5 ticks per period) */
     ProgramManager_AutoRunWaterHeat_TempTimeout = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxTimeHeat) * (uint32_t)12000U;
-    ProgramManager_AutoRunWaterHeat_PresTimeout = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.maxTimeFill) * (uint32_t)12000U;
-
-    ProgramManager_AutoRunWaterHeat_Soap1Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap1);
-    ProgramManager_AutoRunWaterHeat_Soap2Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap2);
-    ProgramManager_AutoRunWaterHeat_Soap3Timeout = (uint32_t)(ProgramManager_gParamConfig.soapCfg.timeSoap3);
 
     ProgramManager_AutoRunWaterHeat_MotorState = PROGRAMMANAGER_AUTORUNWATERHEAT_MOTORSTATE_FWD;
     ProgramManager_AutoRunWaterHeat_MotorCounter = (uint32_t)0U;
@@ -618,21 +516,6 @@ static void ProgramManager_AutoRunWaterHeat_SubTickHandler(void)
     ProgramManager_AutoRunWaterHeat_OneSecondElapsed = (uint32_t)0U;
 
     ProgramManager_AutoRunWaterHeat_MotorCounter += (uint32_t)1U;
-
-    if (ProgramManager_AutoRunWaterHeat_Soap1Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_Soap1Timeout -= (uint32_t)1U;
-    }
-
-    if (ProgramManager_AutoRunWaterHeat_Soap2Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_Soap2Timeout -= (uint32_t)1U;
-    }
-
-    if (ProgramManager_AutoRunWaterHeat_Soap3Timeout > (uint32_t)0U)
-    {
-      ProgramManager_AutoRunWaterHeat_Soap3Timeout -= (uint32_t)1U;
-    }
   }
 }
 

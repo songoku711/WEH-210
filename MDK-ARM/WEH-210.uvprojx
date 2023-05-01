@@ -436,21 +436,6 @@
               <FilePath>..\Appl\menuManager\_1210000000_menu_MachineFuncSetup.c</FilePath>
             </File>
             <File>
-              <FileName>_1211000000_menu_DrainWhileDoorOpen.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1211000000_menu_DrainWhileDoorOpen.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1212000000_menu_HeatUseTimeout.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1212000000_menu_HeatUseTimeout.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1213000000_menu_FillUseTimeout.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1213000000_menu_FillUseTimeout.c</FilePath>
-            </File>
-            <File>
               <FileName>_1214000000_menu_ManOperateWhenAuto.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1214000000_menu_ManOperateWhenAuto.c</FilePath>
@@ -501,11 +486,6 @@
               <FilePath>..\Appl\menuManager\_1230000000_menu_FillLevelSetup.c</FilePath>
             </File>
             <File>
-              <FileName>_1231000000_menu_AutoRefillWhenLow.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1231000000_menu_AutoRefillWhenLow.c</FilePath>
-            </File>
-            <File>
               <FileName>_1232000000_menu_ZeroLevel.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1232000000_menu_ZeroLevel.c</FilePath>
@@ -526,39 +506,14 @@
               <FilePath>..\Appl\menuManager\_1235000000_menu_HighLevel.c</FilePath>
             </File>
             <File>
-              <FileName>_1236000000_menu_OverbrimLevel.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1236000000_menu_OverbrimLevel.c</FilePath>
-            </File>
-            <File>
               <FileName>_1237000000_menu_LevelDiffRefill.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1237000000_menu_LevelDiffRefill.c</FilePath>
             </File>
             <File>
-              <FileName>_1238000000_menu_MaxTimeFill.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1238000000_menu_MaxTimeFill.c</FilePath>
-            </File>
-            <File>
               <FileName>_1240000000_menu_HeatTempSetup.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1240000000_menu_HeatTempSetup.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1241000000_menu_AutoReheatWhenLow.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1241000000_menu_AutoReheatWhenLow.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1242000000_menu_MinWaterTemp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1242000000_menu_MinWaterTemp.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1243000000_menu_MaxWaterTemp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1243000000_menu_MaxWaterTemp.c</FilePath>
             </File>
             <File>
               <FileName>_1244000000_menu_TempThreshold.c</FileName>
@@ -576,39 +531,9 @@
               <FilePath>..\Appl\menuManager\_1246000000_menu_MaxTimeHeat.c</FilePath>
             </File>
             <File>
-              <FileName>_1250000000_menu_SoapSetup.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1250000000_menu_SoapSetup.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1251000000_menu_StopFillWhenSoap.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1251000000_menu_StopFillWhenSoap.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1252000000_menu_TimeSoap1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1252000000_menu_TimeSoap1.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1253000000_menu_TimeSoap2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1253000000_menu_TimeSoap2.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1254000000_menu_TimeSoap3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1254000000_menu_TimeSoap3.c</FilePath>
-            </File>
-            <File>
               <FileName>_1260000000_menu_WashSetup.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1260000000_menu_WashSetup.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1261000000_menu_MinPauseFwdRev.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1261000000_menu_MinPauseFwdRev.c</FilePath>
             </File>
             <File>
               <FileName>_1262000000_menu_StdWashRunTime.c</FileName>
@@ -654,11 +579,6 @@
               <FileName>_126A000000_menu_HvyWashSpeed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_126A000000_menu_HvyWashSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_126B000000_menu_MaxWashSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_126B000000_menu_MaxWashSpeed.c</FilePath>
             </File>
             <File>
               <FileName>_1270000000_menu_DrainSetup.c</FileName>

@@ -237,8 +237,16 @@ static Fsm_GuardType MenuManager_StepTempModeCustom_Entry(Fsm_ContextStructPtr c
         ProgramManager_gParamConfig.machineFuncCfg.tempUnit
       );
 
-      MenuManager_StepTempModeCustom_ValueMin = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.minWaterTemp);
-      MenuManager_StepTempModeCustom_ValueMax = (uint32_t)(ProgramManager_gParamConfig.heatTempCfg.maxWaterTemp);
+      if (ProgramManager_gParamConfig.machineFuncCfg.tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
+      {
+        MenuManager_StepTempModeCustom_ValueMin = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MIN;
+        MenuManager_StepTempModeCustom_ValueMax = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_C_MAX;
+      }
+      else
+      {
+        MenuManager_StepTempModeCustom_ValueMin = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MIN;
+        MenuManager_StepTempModeCustom_ValueMax = (uint32_t)PROGRAMMANAGER_HEATTEMPSETUP_WATER_TEMP_F_MAX;
+      }
 
       MenuManager_StepTempModeCustom_Value = (uint32_t)tempTempThreshold;
 

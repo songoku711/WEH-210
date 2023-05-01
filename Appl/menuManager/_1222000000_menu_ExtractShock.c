@@ -74,8 +74,8 @@ static const uint8_t MenuManager_ExtractShock_MainTitleStr[] =        "EXTRACT S
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_ExtractShock_ChildMenu[2] =
 {
-  { &MenuManager_Common_ActiveLowStr,                                 MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_Common_ActiveHighStr,                                MENUMANAGER_EVENT_PREV                  }
+  { &MenuManager_Common_NormalOffStr,                                 MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_NormalOnStr,                                MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */

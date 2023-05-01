@@ -255,8 +255,15 @@ void ProgramManager_ControlInternal_AnalyzePressure(void)
     presDelayCount--;
   }
 
-  /* Downcast value */
-  ProgramManager_gCurrentPressure = (uint16_t)ProgramManager_gRealPressure;
+  /* Check with zero level to substract with offset */
+  if ((uint16_t)ProgramManager_gRealPressure < ProgramManager_gParamConfig.fillLevelCfg.zeroLevel)
+  {
+    ProgramManager_gCurrentPressure = (uint16_t)0U;
+  }
+  else
+  {
+    ProgramManager_gCurrentPressure = (uint16_t)ProgramManager_gRealPressure - ProgramManager_gParamConfig.fillLevelCfg.zeroLevel;
+  }
 }
 
 /*=============================================================================================*/

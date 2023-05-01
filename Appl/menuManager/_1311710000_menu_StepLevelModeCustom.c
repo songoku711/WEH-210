@@ -213,8 +213,8 @@ static Fsm_GuardType MenuManager_StepLevelModeCustom_Entry(Fsm_ContextStructPtr 
         &tempLevelThreshold
       );
 
-      MenuManager_StepLevelModeCustom_ValueMin = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.zeroLevel);
-      MenuManager_StepLevelModeCustom_ValueMax = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.overbrimLevel);
+      MenuManager_StepLevelModeCustom_ValueMin = (uint32_t)0U;
+      MenuManager_StepLevelModeCustom_ValueMax = (uint32_t)PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX;
 
       MenuManager_StepLevelModeCustom_Value = (uint32_t)tempLevelThreshold;
 

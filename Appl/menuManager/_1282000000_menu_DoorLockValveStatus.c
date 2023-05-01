@@ -75,8 +75,8 @@ static const uint8_t MenuManager_DoorLockValveStatus_MainTitleStr[] = "DOOR LOCK
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_DoorLockValveStatus_ChildMenu[2] =
 {
-  { &MenuManager_Common_NormalOpenStr,                                MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_Common_NormalCloseStr,                               MENUMANAGER_EVENT_PREV                  }
+  { &MenuManager_Common_NormalOnStr,                                  MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_Common_NormalOffStr,                                 MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */

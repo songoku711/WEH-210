@@ -47,9 +47,6 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
 {
   .machineFuncCfg =                                                         /* Machine function setup configuration */
   {
-    .drainWhileDoorOpen         = true,                                     /* Open drain valve automatically after open the door for the safety of the operator */
-    .heatUseTimeout             = true,                                     /* Automatically switch to wash if timeout expired */
-    .fillUseTimeout             = true,                                     /* Automatically switch to wash if timeout expired */
     .manOperateWhenAuto         = true,                                     /* Allow manually change the level, temperature and action when program in AUTO mode */
     .tempUnit                   = PROGRAMMANAGER_TEMP_UNIT_CELSIUS,         /* Temperature Unit is Celsius */
     .drainValveStatus           = PROGRAMMANAGER_RELAY_ENABLE_STAT_NC,      /* Drain valve relay enable status while draining is normal close */
@@ -64,34 +61,20 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
   },
   .fillLevelCfg =                                                           /* Fill level setup configuration */
   {
-    .autoRefillWhenLow          = true,                                     /* Automatically refill water when level is lower than set value */
     .zeroLevel                  = (uint16_t)5U,                             /* Set the relative zero level */
     .lowLevel                   = (uint16_t)20U,                            /* Set the low level for water level LOW mode */
     .midLevel                   = (uint16_t)50U,                            /* Set the middle level for water level MID mode */
     .highLevel                  = (uint16_t)80U,                            /* Set the high level for water level HIGH mode */
-    .overbrimLevel              = (uint16_t)85U,                            /* Set the overbrim level. Drain valve will open when water higher than the overbrim level */
     .levelDiffRefill            = (uint16_t)3U,                             /* Automatically refill water when difference between current and set is larger than this value */
-    .maxTimeFill                = (uint16_t)5U                              /* If level is lower than set value after this amount of time, controller will alarm (minutes) */
   },
   .heatTempCfg =                                                            /* Heat temperature setup configuration */
   {
-    .autoReheatWhenLow          = true,                                     /* Automatically re-heat when temperature is lower than set value */
-    .minWaterTemp               = (uint16_t)20U,                            /* The minimum value of water set temperature */
-    .maxWaterTemp               = (uint16_t)50U,                            /* The maxumum value of water set temperature */
     .tempThreshold              = (uint16_t)30U,                            /* The water temperature threshold */
     .tempDiffReheat             = (uint16_t)2U,                             /* Auto re-heat when difference between current and set is larger than this value */
     .maxTimeHeat                = (uint16_t)5U,                             /* If temperature is lower than set value after this amount of time, controller will alarm (minutes) */
   },
-  .soapCfg =                                                                /* Soap setup configuration */
-  {
-    .stopFillWhenSoap           = true,                                     /* Stop fill cold water while soaping to avoid low water pressure (1) */
-    .timeSoap1                  = (uint16_t)20U,                            /* Default set time of soap 1 (seconds) */
-    .timeSoap2                  = (uint16_t)20U,                            /* Default set time of soap 2 (seconds) */
-    .timeSoap3                  = (uint16_t)20U                             /* Default set time of soap 3 (seconds) */
-  },
   .washCfg =                                                                /* Wash setup configuration */
   {
-    .minPauseFwdRev             = (uint16_t)5U,                             /* Minimum time pause between forward and reverse to avoid motor overload (seconds) */
     .stdWashRunTime             = (uint16_t)20U,                            /* Standard wash run time (seconds) */
     .stdWashStopTime            = (uint16_t)5U,                             /* Standard wash stop time (seconds) */
     .delWashRunTime             = (uint16_t)20U,                            /* Delicate wash run time (seconds) */
@@ -101,7 +84,6 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
     .stdWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Default speed of standard wash */
     .delWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1,       /* Default speed of delicate wash */
     .hvyWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Default speed of heavy wash */
-    .maxWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Max speed of wash. Wash at max speed when the set value is larger than max speed */
   },
   .drainCfg =                                                               /* Drain setup configuration */
   {
@@ -159,7 +141,7 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
     .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
     .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
     .drainMode                  = PROGRAMMANAGER_DRAIN_MODE_DEFAULT,        /* Drain mode - default */
-    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
+    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Temp mode - default */
     .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
     .washTime                   = (uint16_t)300U,                           /* Wash time */
     .washRunTime                = (uint16_t)20U,                            /* Wash run time */
@@ -209,7 +191,7 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
     .soapMode                   = (uint8_t)0x00U,                           /* Soap mode - no soap */
     .washMode                   = PROGRAMMANAGER_WASH_MODE_STANDARD,        /* Wash mode - standard */
     .drainMode                  = PROGRAMMANAGER_DRAIN_MODE_DEFAULT,        /* Drain mode - default */
-    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Soap mode - default */
+    .tempMode                   = PROGRAMMANAGER_TEMP_MODE_DEFAULT,         /* Temp mode - default */
     .levelMode                  = PROGRAMMANAGER_LEVEL_MODE_LOW,            /* Water level mode - low */
     .washTime                   = (uint16_t)300U,                           /* Wash time */
     .washRunTime                = (uint16_t)20U,                            /* Wash run time */
@@ -269,7 +251,6 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_GetData(ProgramManager_ParamCo
   (void)ProgramManager_InputStatusSetup_GetData (&(data->inputStatusCfg));
   (void)ProgramManager_FillLevelSetup_GetData   (&(data->fillLevelCfg));
   (void)ProgramManager_HeatTempSetup_GetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
-  (void)ProgramManager_SoapSetup_GetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_GetData        (&(data->washCfg));
   (void)ProgramManager_DrainSetup_GetData       (&(data->drainCfg));
   (void)ProgramManager_DoorLockSetup_GetData    (&(data->doorLockCfg));
@@ -283,7 +264,6 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_SetData(ProgramManager_ParamCo
   (void)ProgramManager_InputStatusSetup_SetData (&(data->inputStatusCfg));
   (void)ProgramManager_FillLevelSetup_SetData   (&(data->fillLevelCfg));
   (void)ProgramManager_HeatTempSetup_SetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
-  (void)ProgramManager_SoapSetup_SetData        (&(data->soapCfg));
   (void)ProgramManager_WashSetup_SetData        (&(data->washCfg));
   (void)ProgramManager_DrainSetup_SetData       (&(data->drainCfg));
   (void)ProgramManager_DoorLockSetup_SetData    (&(data->doorLockCfg));
@@ -297,9 +277,6 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_GetData(ProgramManager_Machine
 
   extMemIf.readByteArray(PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
-  data->drainWhileDoorOpen    = (bool)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_OFFSET];
-  data->heatUseTimeout        = (bool)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_OFFSET];
-  data->fillUseTimeout        = (bool)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_OFFSET];
   data->manOperateWhenAuto    = (bool)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET];
   data->tempUnit              = (ProgramManager_TempUnitType)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_OFFSET];
   data->drainValveStatus      = (ProgramManager_RelayEnableStatusType)recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_OFFSET];
@@ -312,57 +289,12 @@ HAL_StatusTypeDef ProgramManager_MachineFuncSetup_SetData(ProgramManager_Machine
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_OFFSET]  = (uint8_t)(data->drainWhileDoorOpen);
-  recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_OFFSET]      = (uint8_t)(data->heatUseTimeout    );
-  recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_OFFSET]      = (uint8_t)(data->fillUseTimeout    );
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET]  = (uint8_t)(data->manOperateWhenAuto);
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_OFFSET]            = (uint8_t)(data->tempUnit          );
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_OFFSET]    = (uint8_t)(data->drainValveStatus  );
   recvArr[PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_OFFSET]         = (uint8_t)(data->washMachine       );
 
   extMemIf.writeByteArray(PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainWhileDoorOpen_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_DrainWhileDoorOpen_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINWHILEDOOROPEN_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_HeatUseTimeout_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_HeatUseTimeout_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_MACHINEFUNCSETUP_HEATUSETIMEOUT_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_FillUseTimeout_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_MachineFuncSetup_FillUseTimeout_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_MACHINEFUNCSETUP_FILLUSETIMEOUT_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }
@@ -517,8 +449,6 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_GetData(ProgramManager_FillLevel
 
   extMemIf.readByteArray(PROGRAMMANAGER_FILLLEVELSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
-  data->autoRefillWhenLow   = (bool)recvArr[PROGRAMMANAGER_FILLLEVELSETUP_AUTOREFILLWHENLOW_OFFSET];
-
   data->zeroLevel           = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_ZEROLEVEL_OFFSET]) << 8U;
   data->zeroLevel          |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_ZEROLEVEL_OFFSET + 1]);
 
@@ -531,23 +461,15 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_GetData(ProgramManager_FillLevel
   data->highLevel           = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_OFFSET]) << 8U;
   data->highLevel          |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_OFFSET + 1]);
 
-  data->overbrimLevel       = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_OFFSET]) << 8U;
-  data->overbrimLevel      |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_OFFSET + 1]);
-
   data->levelDiffRefill     = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET]) << 8U;
   data->levelDiffRefill    |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET + 1]);
 
-  data->maxTimeFill         = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_OFFSET]) << 8U;
-  data->maxTimeFill        |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_OFFSET + 1]);
-  
   return HAL_OK;
 }
 
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_SetData(ProgramManager_FillLevelSetupStruct *data)
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
-
-  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_AUTOREFILLWHENLOW_OFFSET]   = (uint8_t)(data->autoRefillWhenLow);
 
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_ZEROLEVEL_OFFSET]           = (uint8_t)(data->zeroLevel >> 8U);
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_ZEROLEVEL_OFFSET + 1]       = (uint8_t)(data->zeroLevel & (uint16_t)0x00FFU);
@@ -561,30 +483,10 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_SetData(ProgramManager_FillLevel
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_OFFSET]           = (uint8_t)(data->highLevel >> 8U);
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_OFFSET + 1]       = (uint8_t)(data->highLevel & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_OFFSET]       = (uint8_t)(data->overbrimLevel >> 8U);
-  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_OFFSET + 1]   = (uint8_t)(data->overbrimLevel & (uint16_t)0x00FFU);
-
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET]     = (uint8_t)(data->levelDiffRefill >> 8U);
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET + 1] = (uint8_t)(data->levelDiffRefill & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_OFFSET]         = (uint8_t)(data->maxTimeFill >> 8U);
-  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_OFFSET + 1]     = (uint8_t)(data->maxTimeFill & (uint16_t)0x00FFU);
-
   extMemIf.writeByteArray(PROGRAMMANAGER_FILLLEVELSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_AutoRefillWhenLow_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_FILLLEVELSETUP_AUTOREFILLWHENLOW_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_AutoRefillWhenLow_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_FILLLEVELSETUP_AUTOREFILLWHENLOW_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }
@@ -645,20 +547,6 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_HighLevel_SetData(uint16_t *data
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_OverbrimLevel_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_OverbrimLevel_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_FILLLEVELSETUP_OVERBRIMLEVEL_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_GetData(uint16_t *data)
 {
   *data = extMemIf.readInteger(PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_BASE_ADDR);
@@ -673,20 +561,6 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_SetData(uint16_t
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_MaxTimeFill_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_FillLevelSetup_MaxTimeFill_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_FILLLEVELSETUP_MAXTIMEFILL_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
 
 
 HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSetupStruct *data, ProgramManager_TempUnitType tempUnit)
@@ -695,19 +569,13 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_GetData(ProgramManager_HeatTempSe
 
   extMemIf.readByteArray(PROGRAMMANAGER_HEATTEMPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
-  data->autoReheatWhenLow     = (bool)recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET];
-
   if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
   {
-    data->minWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET];
-    data->maxWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET];
     data->tempThreshold       = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET];
     data->tempDiffReheat      = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET];
   }
   else
   {
-    data->minWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1];
-    data->maxWaterTemp        = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1];
     data->tempThreshold       = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1];
     data->tempDiffReheat      = recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPDIFFREHEAT_OFFSET + 1];
   }
@@ -722,24 +590,8 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSe
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
 
-  recvArr[PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_OFFSET]      = (uint8_t)(data->autoReheatWhenLow);
-
   if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
   {
-    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET]         = data->minWaterTemp;
-    ProgramManager_Common_CelsiusToFahrenheitConv
-    (
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET),
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1)
-    );
-
-    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET]         = data->maxWaterTemp;
-    ProgramManager_Common_CelsiusToFahrenheitConv
-    (
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET),
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1)
-    );
-
     recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET]        = data->tempThreshold;
     ProgramManager_Common_CelsiusToFahrenheitConv
     (
@@ -756,20 +608,6 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSe
   }
   else
   {
-    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1]     = data->minWaterTemp;
-    ProgramManager_Common_FahrenheitToCelsiusConv
-    (
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET + 1),
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_OFFSET)
-    );
-
-    recvArr[PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1]     = data->maxWaterTemp;
-    ProgramManager_Common_FahrenheitToCelsiusConv
-    (
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET + 1),
-      (recvArr + PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_OFFSET)
-    );
-
     recvArr[PROGRAMMANAGER_HEATTEMPSETUP_TEMPTHRESHOLD_OFFSET + 1]    = data->tempThreshold;
     ProgramManager_Common_FahrenheitToCelsiusConv
     (
@@ -790,92 +628,6 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_SetData(ProgramManager_HeatTempSe
 
   extMemIf.writeByteArray(PROGRAMMANAGER_HEATTEMPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_AutoReheatWhenLow_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_AutoReheatWhenLow_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_AUTOREHEATWHENLOW_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR);
-  }
-  else
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1);
-  }
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MinWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  uint8_t temp;
-
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR, *data);
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1, temp);
-  }
-  else
-  {
-    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR, temp);
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MINWATERTEMP_BASE_ADDR + 1, *data);
-  }
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR);
-  }
-  else
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1);
-  }
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxWaterTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  uint8_t temp;
-
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR, *data);
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1, temp);
-  }
-  else
-  {
-    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR, temp);
-    extMemIf.writeByte(PROGRAMMANAGER_HEATTEMPSETUP_MAXWATERTEMP_BASE_ADDR + 1, *data);
-  }
-
   return HAL_OK;
 }
 
@@ -967,112 +719,11 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxTimeHeat_SetData(uint16_t *dat
 
 
 
-HAL_StatusTypeDef ProgramManager_SoapSetup_GetData(ProgramManager_SoapSetupStruct *data)
-{
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
-
-  extMemIf.readByteArray(PROGRAMMANAGER_SOAPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-
-  data->stopFillWhenSoap  = (bool)recvArr[PROGRAMMANAGER_SOAPSETUP_STOPFILLWHENSOAP_OFFSET];
-
-  data->timeSoap1         = (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_OFFSET]) << 8U;
-  data->timeSoap1        |= (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_OFFSET + 1]);
-
-  data->timeSoap2         = (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_OFFSET]) << 8U;
-  data->timeSoap2        |= (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_OFFSET + 1]);
-
-  data->timeSoap3         = (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_OFFSET]) << 8U;
-  data->timeSoap3        |= (uint16_t)(recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_OFFSET + 1]);
-
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_SetData(ProgramManager_SoapSetupStruct *data)
-{
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
-
-  recvArr[PROGRAMMANAGER_SOAPSETUP_STOPFILLWHENSOAP_OFFSET]  = (uint8_t)(data->stopFillWhenSoap);
-
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_OFFSET]         = (uint8_t)(data->timeSoap1 >> 8U);
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_OFFSET + 1]     = (uint8_t)(data->timeSoap1 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_OFFSET]         = (uint8_t)(data->timeSoap2 >> 8U);
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_OFFSET + 1]     = (uint8_t)(data->timeSoap2 & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_OFFSET]         = (uint8_t)(data->timeSoap3 >> 8U);
-  recvArr[PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_OFFSET + 1]     = (uint8_t)(data->timeSoap3 & (uint16_t)0x00FFU);
-
-  extMemIf.writeByteArray(PROGRAMMANAGER_SOAPSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_StopFillWhenSoap_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_SOAPSETUP_STOPFILLWHENSOAP_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_StopFillWhenSoap_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_SOAPSETUP_STOPFILLWHENSOAP_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap1_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap1_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP1_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap2_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap2_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP2_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap3_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_SoapSetup_TimeSoap3_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_SOAPSETUP_TIMESOAP3_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-
-
 HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruct *data)
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
 
   extMemIf.readByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
-
-  data->minPauseFwdRev    = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_OFFSET]) << 8U;
-  data->minPauseFwdRev   |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_OFFSET + 1]);
 
   data->stdWashRunTime    = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET]) << 8U;
   data->stdWashRunTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET + 1]);
@@ -1095,7 +746,6 @@ HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruc
   data->stdWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_OFFSET];
   data->delWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_OFFSET];
   data->hvyWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET];
-  data->maxWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_MAXWASHSPEED_OFFSET];
 
   return HAL_OK;
 }
@@ -1103,9 +753,6 @@ HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruc
 HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruct *data)
 {
   uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
-
-  recvArr[PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_OFFSET]       = (uint8_t)(data->minPauseFwdRev >> 8U);
-  recvArr[PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_OFFSET + 1]   = (uint8_t)(data->minPauseFwdRev & (uint16_t)0x00FFU);
 
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET]       = (uint8_t)(data->stdWashRunTime >> 8U);
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET + 1]   = (uint8_t)(data->stdWashRunTime & (uint16_t)0x00FFU);
@@ -1128,23 +775,8 @@ HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruc
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_OFFSET]         = (uint8_t)(data->stdWashSpeed);
   recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_OFFSET]         = (uint8_t)(data->delWashSpeed);
   recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET]         = (uint8_t)(data->hvyWashSpeed);
-  recvArr[PROGRAMMANAGER_WASHSETUP_MAXWASHSPEED_OFFSET]         = (uint8_t)(data->maxWashSpeed);
 
   extMemIf.writeByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_MinPauseFwdRev_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_MinPauseFwdRev_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_WASHSETUP_MINPAUSEFWDREV_BASE_ADDR, *data);
   
   return HAL_OK;
 }
@@ -1271,20 +903,6 @@ HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashSpeed_GetData(ProgramManager_M
 HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashSpeed_SetData(ProgramManager_MotorSpeedType *data)
 {
   extMemIf.writeByte(PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_MaxWashSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_WASHSETUP_MAXWASHSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_MaxWashSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_WASHSETUP_MAXWASHSPEED_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }

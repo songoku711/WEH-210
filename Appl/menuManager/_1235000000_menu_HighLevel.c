@@ -200,7 +200,7 @@ static Fsm_GuardType MenuManager_HighLevel_Entry(Fsm_ContextStructPtr const pFsm
       MenuManager_HighLevel_CurPos = (uint32_t)0U;
 
       MenuManager_HighLevel_ValueMin = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.midLevel);
-      MenuManager_HighLevel_ValueMax = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.overbrimLevel);
+      MenuManager_HighLevel_ValueMax = (uint32_t)PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX;
 
       MenuManager_HighLevel_Value = (uint32_t)(ProgramManager_gParamConfig.fillLevelCfg.highLevel);
 

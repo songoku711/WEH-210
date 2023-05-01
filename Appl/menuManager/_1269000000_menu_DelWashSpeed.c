@@ -198,7 +198,7 @@ static Fsm_GuardType MenuManager_DelWashSpeed_Entry(Fsm_ContextStructPtr const p
       MenuManager_DelWashSpeed_Counter = (uint32_t)0U;
 
       MenuManager_DelWashSpeed_ValueMin = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-      MenuManager_DelWashSpeed_ValueMax = (uint32_t)(ProgramManager_gParamConfig.washCfg.maxWashSpeed);
+      MenuManager_DelWashSpeed_ValueMax = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_7;
       MenuManager_DelWashSpeed_Value = (uint32_t)(ProgramManager_gParamConfig.washCfg.delWashSpeed);
     }
     else

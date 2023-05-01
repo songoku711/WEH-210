@@ -72,13 +72,13 @@ static MenuManager_WashMachine_IntValMapStruct MenuManager_WashMachine_IntValMap
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_WashMachine_MainTitleStr[] =         "WASH MACHINE";
 
-static const uint8_t MenuManager_WashMachine_MotorStr[] =             "MOTOR";
+static const uint8_t MenuManager_WashMachine_MagneticStaterStr[] =    "MAGNETIC STARTER";
 static const uint8_t MenuManager_WashMachine_InverterStr[] =          "INVERTER";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_WashMachine_ChildMenu[2] =
 {
-  { &MenuManager_WashMachine_MotorStr,                                MENUMANAGER_EVENT_PREV                  },
+  { &MenuManager_WashMachine_MagneticStaterStr,                       MENUMANAGER_EVENT_PREV                  },
   { &MenuManager_WashMachine_InverterStr,                             MENUMANAGER_EVENT_PREV                  }
 };
 

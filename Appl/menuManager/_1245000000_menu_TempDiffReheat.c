@@ -275,7 +275,7 @@ static Fsm_GuardType MenuManager_TempDiffReheat_Exit(Fsm_ContextStructPtr const 
   MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
-  dataHierachy->dataId = MENUMANAGER_STATE_MAX_WATER_TEMP;
+  dataHierachy->dataId = MENUMANAGER_STATE_TEMP_DIFF_REHEAT;
 
   pFsmContext->dataHierachy = dataHierachy;
 

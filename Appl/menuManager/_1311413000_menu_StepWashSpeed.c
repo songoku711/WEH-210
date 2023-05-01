@@ -207,7 +207,7 @@ static Fsm_GuardType MenuManager_StepWashSpeed_Entry(Fsm_ContextStructPtr const 
       ProgramManager_NormStepConfig_WashSpeed_GetData((uint8_t)MenuManager_StepWashSpeed_SeqIdx, (uint8_t)MenuManager_StepWashSpeed_StepIdx, &tempWashSpeed);
 
       MenuManager_StepWashSpeed_ValueMin = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-      MenuManager_StepWashSpeed_ValueMax = (uint32_t)(ProgramManager_gParamConfig.washCfg.maxWashSpeed);
+      MenuManager_StepWashSpeed_ValueMax = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_7;
       MenuManager_StepWashSpeed_Value = (uint32_t)(tempWashSpeed);
 
       /* Release previous state data hierachy */

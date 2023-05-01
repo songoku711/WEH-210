@@ -178,10 +178,7 @@ static void ProgramManager_AutoRunWash_InternalCheckLevelCondition(void)
     {
       if (ProgramManager_AutoRunWash_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
       {
-        if (ProgramManager_gParamConfig.fillLevelCfg.autoRefillWhenLow == (bool)true)
-        {
-          ProgramManager_gPresThresExceeded = (bool)true;
-        }
+        ProgramManager_gPresThresExceeded = (bool)true;
 
         ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
       }
@@ -197,27 +194,24 @@ static void ProgramManager_AutoRunWash_InternalCheckLevelCondition(void)
   }
   else
   {
-    /* Auto-refill when low level feature enabled */
-    if (ProgramManager_gParamConfig.fillLevelCfg.autoRefillWhenLow == (bool)true)
+    /* Auto-refill when low level */
+    /* Check pressure with delta offset */
+    if (ProgramManager_gCurrentPressure <= (ProgramManager_gCurrentPresThreshold - ProgramManager_gParamConfig.fillLevelCfg.levelDiffRefill))
     {
-      /* Check pressure with delta offset */
-      if (ProgramManager_gCurrentPressure <= (ProgramManager_gCurrentPresThreshold - ProgramManager_gParamConfig.fillLevelCfg.levelDiffRefill))
+      if (ProgramManager_AutoRunWash_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
       {
-        if (ProgramManager_AutoRunWash_PresCounter == PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
-        {
-          ProgramManager_gPresThresExceeded = (bool)false;
+        ProgramManager_gPresThresExceeded = (bool)false;
 
-          ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
-        }
-        else
-        {
-          ProgramManager_AutoRunWash_PresCounter += (uint32_t)1U;
-        }
+        ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
       }
       else
       {
-        ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
+        ProgramManager_AutoRunWash_PresCounter += (uint32_t)1U;
       }
+    }
+    else
+    {
+      ProgramManager_AutoRunWash_PresCounter = (uint32_t)0U;
     }
   }
 }
@@ -232,10 +226,7 @@ static void ProgramManager_AutoRunWash_InternalCheckTempCondition(void)
     {
       if (ProgramManager_AutoRunWash_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
       {
-        if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
-        {
-          ProgramManager_gTempThresExceeded = (bool)true;
-        }
+        ProgramManager_gTempThresExceeded = (bool)true;
 
         ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
       }
@@ -251,27 +242,23 @@ static void ProgramManager_AutoRunWash_InternalCheckTempCondition(void)
   }
   else
   {
-    /* Auto-reheat when low temperature feature enabled */
-    if (ProgramManager_gParamConfig.heatTempCfg.autoReheatWhenLow == (bool)true)
+    /* Check temperature with delta offset */
+    if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
     {
-      /* Check temperature with delta offset */
-      if (ProgramManager_gCurrentTemperature <= (ProgramManager_gCurrentTempThreshold - ProgramManager_gParamConfig.heatTempCfg.tempDiffReheat))
+      if (ProgramManager_AutoRunWash_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
       {
-        if (ProgramManager_AutoRunWash_TempCounter == PROGRAMMANAGER_CONTROL_TEMP_THRES_DELAY)
-        {
-          ProgramManager_gTempThresExceeded = (bool)false;
+        ProgramManager_gTempThresExceeded = (bool)false;
 
-          ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
-        }
-        else
-        {
-          ProgramManager_AutoRunWash_TempCounter += (uint32_t)1U;
-        }
+        ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
       }
       else
       {
-        ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
+        ProgramManager_AutoRunWash_TempCounter += (uint32_t)1U;
       }
+    }
+    else
+    {
+      ProgramManager_AutoRunWash_TempCounter = (uint32_t)0U;
     }
   }
 }
