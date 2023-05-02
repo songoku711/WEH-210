@@ -45,9 +45,10 @@ extern "C" {
 #define PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX                     (uint32_t)200U    /* 200 x 5ms = 1s */
 #define PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX                     (uint32_t)200U    /* 200 x 5ms = 1s */
 
-#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT                PROGRAMMANAGER_EVENT_SUBMENU_1
-#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH                      PROGRAMMANAGER_EVENT_SUBMENU_2
-#define PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN                      PROGRAMMANAGER_EVENT_SUBMENU_3
+#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER                     PROGRAMMANAGER_EVENT_SUBMENU_1
+#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_HEAT                      PROGRAMMANAGER_EVENT_SUBMENU_2
+#define PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH                      PROGRAMMANAGER_EVENT_SUBMENU_3
+#define PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN                      PROGRAMMANAGER_EVENT_SUBMENU_4
 
 
 
@@ -56,11 +57,12 @@ static Fsm_GuardType ProgramManager_AutoPreRun_Entry                  (Fsm_Conte
 static Fsm_GuardType ProgramManager_AutoPreRun_Exit                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Program manager state machine */
-Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[5] =
+Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[6] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_AutoPreRun_Entry                                                 ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_AutoPreRun_Exit                                                  ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT,                               PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER,                                    PROGRAMMANAGER_STATE_AUTO_RUN_WATER     ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_HEAT,                                     PROGRAMMANAGER_STATE_AUTO_RUN_HEAT      ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH,                                     PROGRAMMANAGER_STATE_AUTO_RUN_WASH      ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTOPRERUN_EVENT_POST_RUN,                                     PROGRAMMANAGER_STATE_AUTO_POST_RUN      )
 };
@@ -215,28 +217,26 @@ static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
 
   if (ProgramManager_Control_NotPauseAndError())
   {
-    if ((ProgramManager_AutoPreRun_TempCounter >= PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX) || \
-        (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX))
+    if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
     {
       dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
       dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
 
       ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
       
-      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH);
-
-      ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
-      ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;
-      ProgramManager_AutoPreRun_GlobalCounter = (uint32_t)0U;
-    }
-    else if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
-    {
-      dataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
-      dataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_PRE_RUN;
-
-      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
-
-      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER_HEAT);
+      if ((ProgramManager_AutoPreRun_TempCounter >= PROGRAMMANAGER_AUTOPRERUN_TEMPCOUNTER_MAX) && \
+          (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX))
+      {
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WASH);
+      }
+      else if (ProgramManager_AutoPreRun_PresCounter >= PROGRAMMANAGER_AUTOPRERUN_PRESCOUNTER_MAX)
+      {
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_HEAT);
+      }
+      else
+      {
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTOPRERUN_EVENT_RUN_WATER);
+      }
 
       ProgramManager_AutoPreRun_TempCounter = (uint32_t)0U;
       ProgramManager_AutoPreRun_PresCounter = (uint32_t)0U;

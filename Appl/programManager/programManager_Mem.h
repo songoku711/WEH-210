@@ -58,6 +58,7 @@ extern "C" {
 #define PROGRAMMANAGER_FILLLEVELSETUP_MIDLEVEL_BASE_ADDR              (uint16_t)0x24
 #define PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_BASE_ADDR             (uint16_t)0x26
 #define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_BASE_ADDR       (uint16_t)0x28
+#define PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_BASE_ADDR        (uint16_t)0x2A
 
 /* Offset address from base of fill level setup configuration */
 #define PROGRAMMANAGER_FILLLEVELSETUP_OFFSET                          (uint16_t)0x0
@@ -68,6 +69,7 @@ extern "C" {
 #define PROGRAMMANAGER_FILLLEVELSETUP_MIDLEVEL_OFFSET                 (uint16_t)0x4
 #define PROGRAMMANAGER_FILLLEVELSETUP_HIGHLEVEL_OFFSET                (uint16_t)0x6
 #define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET          (uint16_t)0x8
+#define PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_OFFSET           (uint16_t)0xA
 
 
 
@@ -184,16 +186,16 @@ extern "C" {
 
 
 /* Base address of machine function setup configuration */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR                     (uint16_t)0x70
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_BASE_ADDR                     (uint16_t)0x80
 
 /* Base address of machine function setup elements */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_BASE_ADDR  (uint16_t)0x70
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_BASE_ADDR            (uint16_t)0x71
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_BASE_ADDR    (uint16_t)0x72
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_BASE_ADDR         (uint16_t)0x73
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_BASE_ADDR  (uint16_t)0x80
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_TEMPUNIT_BASE_ADDR            (uint16_t)0x81
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_DRAINVALVESTATUS_BASE_ADDR    (uint16_t)0x82
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_WASHMACHINE_BASE_ADDR         (uint16_t)0x83
 
 /* Offset address from base of machine function setup configuration */
-#define PROGRAMMANAGER_MACHINEFUNCSETUP_OFFSET                        (uint16_t)0x50
+#define PROGRAMMANAGER_MACHINEFUNCSETUP_OFFSET                        (uint16_t)0x60
 
 /* Offset address from base of machine function setup elements */
 #define PROGRAMMANAGER_MACHINEFUNCSETUP_MANOPERATEWHENAUTO_OFFSET     (uint16_t)0x0
@@ -204,16 +206,16 @@ extern "C" {
 
 
 /* Base address of input status setup configuration */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_BASE_ADDR                     (uint16_t)0x80
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_BASE_ADDR                     (uint16_t)0x90
 
 /* Base address of input status setup elements */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_BASE_ADDR          (uint16_t)0x80
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_EXTRACTSHOCK_BASE_ADDR        (uint16_t)0x81
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_EMERGENCYSTOP_BASE_ADDR       (uint16_t)0x82
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_INVERTERERROR_BASE_ADDR       (uint16_t)0x83
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_BASE_ADDR          (uint16_t)0x90
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_EXTRACTSHOCK_BASE_ADDR        (uint16_t)0x91
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_EMERGENCYSTOP_BASE_ADDR       (uint16_t)0x92
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_INVERTERERROR_BASE_ADDR       (uint16_t)0x93
 
 /* Offset address from base of input status setup configuration */
-#define PROGRAMMANAGER_INPUTSTATUSSETUP_OFFSET                        (uint16_t)0x60
+#define PROGRAMMANAGER_INPUTSTATUSSETUP_OFFSET                        (uint16_t)0x70
 
 /* Offset address from base of input status setup elements */
 #define PROGRAMMANAGER_INPUTSTATUSSETUP_DOORCLOSED_OFFSET             (uint16_t)0x0
@@ -249,7 +251,7 @@ extern "C" {
 #define PROGRAMMANAGER_NORMSTEP_WASHSTOPTIME_OFFSET                   (uint16_t)0x0B
 #define PROGRAMMANAGER_NORMSTEP_WASHSPEED_OFFSET                      (uint16_t)0x0E
 #define PROGRAMMANAGER_NORMSTEP_TEMPTHRESHOLD_OFFSET                  (uint16_t)0x0F
-#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x10
+#define PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET                 (uint16_t)0x11
 
 #define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET                      (uint16_t)0x20
 #define PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE                  (uint16_t)0x03
@@ -307,6 +309,8 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_HighLevel_GetData(uint16_t *data
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_HighLevel_SetData(uint16_t *data);
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_GetData(uint16_t *data);
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_SetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_FillLevelSetup_SoapStartLevel_GetData(uint16_t *data);
+HAL_StatusTypeDef ProgramManager_FillLevelSetup_SoapStartLevel_SetData(uint16_t *data);
 
 
 

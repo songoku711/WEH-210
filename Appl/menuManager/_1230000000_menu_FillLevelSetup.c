@@ -43,23 +43,25 @@ static const uint8_t MenuManager_LowLevel_ChildTitleStr[] =           "LOW LEVEL
 static const uint8_t MenuManager_MidLevel_ChildTitleStr[] =           "MIDDLE LEVEL";
 static const uint8_t MenuManager_HighLevel_ChildTitleStr[] =          "HIGH LEVEL";
 static const uint8_t MenuManager_LevelDiffRefill_ChildTitleStr[] =    "LEVEL DIFF REFILL";
+static const uint8_t MenuManager_SoapStartLevel_ChildTitleStr[] =     "SOAP START LEVEL";
 
 static const uint8_t MenuManager_FillLevelSetup_MainTitleStr[] =      "FILL AND LEVEL";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_FillLevelSetup_ChildMenu[5] =
+static MenuManager_ChildMenuStruct MenuManager_FillLevelSetup_ChildMenu[6] =
 {
   { &MenuManager_ZeroLevel_ChildTitleStr,                             MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_LowLevel_ChildTitleStr,                              MENUMANAGER_EVENT_SUBMENU_2             },
   { &MenuManager_MidLevel_ChildTitleStr,                              MENUMANAGER_EVENT_SUBMENU_3             },
   { &MenuManager_HighLevel_ChildTitleStr,                             MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_LevelDiffRefill_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_5             }
+  { &MenuManager_LevelDiffRefill_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_5             },
+  { &MenuManager_SoapStartLevel_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_6             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_FillLevelSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)5U,
+  .childMenuNum               = (uint8_t)6U,
   .childMenuCfg               = &MenuManager_FillLevelSetup_ChildMenu
 };
 
@@ -91,7 +93,7 @@ static Fsm_GuardType MenuManager_FillLevelSetup_UpBut                 (Fsm_Conte
 static Fsm_GuardType MenuManager_FillLevelSetup_DownBut               (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[10] =
+Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[11] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_FillLevelSetup_Entry                                                ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_ZERO_LEVEL            ),
@@ -99,6 +101,7 @@ Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[10] =
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_MID_LEVEL             ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_HIGH_LEVEL            ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_LEVEL_DIFF_REFILL     ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_SOAP_START_LEVEL      ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_FillLevelSetup_UpBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_FillLevelSetup_DownBut                                              ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_FillLevelSetup_StartBut                                             ),
@@ -177,7 +180,8 @@ static Fsm_GuardType MenuManager_FillLevelSetup_Entry(Fsm_ContextStructPtr const
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_LOW_LEVEL)            || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MID_LEVEL)            || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_HIGH_LEVEL)           || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_LEVEL_DIFF_REFILL))
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_LEVEL_DIFF_REFILL)    || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_SOAP_START_LEVEL))
     {
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);

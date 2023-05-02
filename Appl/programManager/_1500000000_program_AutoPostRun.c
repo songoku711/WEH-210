@@ -90,7 +90,8 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
     switch (ProgramManager_AutoPostRun_PrevState)
     {
       case PROGRAMMANAGER_STATE_AUTO_PRE_RUN:
-      case PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT:
+      case PROGRAMMANAGER_STATE_AUTO_RUN_WATER:
+      case PROGRAMMANAGER_STATE_AUTO_RUN_HEAT:
       case PROGRAMMANAGER_STATE_AUTO_RUN_WASH:
       {
         if (ProgramManager_AutoPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
@@ -219,9 +220,10 @@ static Fsm_GuardType ProgramManager_AutoPostRun_Entry(Fsm_ContextStructPtr const
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN) || \
-        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT) || \
-        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WASH) || \
+    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN)    || \
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER)  || \
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_HEAT)   || \
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WASH)   || \
         (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN))
     {
       enterDataHierachy = (ProgramManager_Control_PostRunStruct *)(pFsmContext->dataHierachy);

@@ -189,7 +189,7 @@ static Fsm_GuardType MenuManager_DrainSetupSpeed_Entry(Fsm_ContextStructPtr cons
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP)
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP_PARAM)
     {
       enterDataHierachy = (MenuManager_Common_DrainSetupStruct *)(pFsmContext->dataHierachy);
 

@@ -112,7 +112,7 @@ typedef struct
   uint32_t motorState;
   uint32_t motorCounter;
   uint32_t motorCounterMax;
-} ProgramManager_Control_RunWashStruct;
+} ProgramManager_Control_RunStruct;
 
 typedef struct 
 {

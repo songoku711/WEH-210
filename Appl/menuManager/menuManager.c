@@ -64,7 +64,7 @@ extern Fsm_EventEntryStruct MenuManager_EmergencyStop_StateMachine[7];
 /** State inverterError (19) */
 extern Fsm_EventEntryStruct MenuManager_InverterError_StateMachine[7];
 /** State fillLevelSetup (20) */
-extern Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[10];
+extern Fsm_EventEntryStruct MenuManager_FillLevelSetup_StateMachine[11];
 /** State zeroLevel (22) */
 extern Fsm_EventEntryStruct MenuManager_ZeroLevel_StateMachine[9];
 /** State lowLevel (23) */
@@ -75,6 +75,8 @@ extern Fsm_EventEntryStruct MenuManager_MidLevel_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_HighLevel_StateMachine[9];
 /** State levelDiffRefill (27) */
 extern Fsm_EventEntryStruct MenuManager_LevelDiffRefill_StateMachine[9];
+/** State soapStartLevel (28) */
+extern Fsm_EventEntryStruct MenuManager_SoapStartLevel_StateMachine[9];
 /** State heatTempSetup (29) */
 extern Fsm_EventEntryStruct MenuManager_HeatTempSetup_StateMachine[8];
 /** State tempThreshold (33) */
@@ -181,7 +183,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[72] =
+Fsm_StateDefStruct MenuManager_StateMachine[73] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -207,6 +209,7 @@ Fsm_StateDefStruct MenuManager_StateMachine[72] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MidLevel_StateMachine)                           },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HighLevel_StateMachine)                          },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_LevelDiffRefill_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_SoapStartLevel_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HeatTempSetup_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempThreshold_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_TempDiffReheat_StateMachine)                     },

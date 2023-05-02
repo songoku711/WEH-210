@@ -1,5 +1,5 @@
 /* 
- * File:   _1200000000_program_AutoRunWash.c
+ * File:   _1300000000_program_AutoRunWash.c
  * Author: Long
  * 
  * In RUN_WATER_HEAT state, 
@@ -401,7 +401,7 @@ static void ProgramManager_AutoRunWash_InternalUpdateLcdParams(void)
 /*=============================================================================================*/
 static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  ProgramManager_Control_RunWashStruct* enterDataHierachy;
+  ProgramManager_Control_RunStruct* enterDataHierachy;
   HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
@@ -426,9 +426,10 @@ static Fsm_GuardType ProgramManager_AutoRunWash_Entry(Fsm_ContextStructPtr const
       ProgramManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
     }
-    else if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT)
+    else if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WATER) || \
+             (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_HEAT))
     {
-      enterDataHierachy = (ProgramManager_Control_RunWashStruct *)(pFsmContext->dataHierachy);
+      enterDataHierachy = (ProgramManager_Control_RunStruct *)(pFsmContext->dataHierachy);
 
       ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWASH_INTERNALDATALENGTH);
 

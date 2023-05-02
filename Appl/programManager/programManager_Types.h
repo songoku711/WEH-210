@@ -190,6 +190,7 @@ typedef struct _ProgramManager_FillLevelSetupStruct
   uint16_t                                        midLevel;                               /* Set the middle level for water level MID mode */
   uint16_t                                        highLevel;                              /* Set the high level for water level HIGH mode */
   uint16_t                                        levelDiffRefill;                        /* Automatically refill water when difference between current and set is larger than this value */
+  uint16_t                                        soapStartLevel;                         /* Reached water level to pour soap */
 } ProgramManager_FillLevelSetupStruct;
 
 #define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MIN                 (0U)
@@ -223,7 +224,7 @@ typedef struct _ProgramManager_WashSetupStruct
   uint16_t                                        delWashRunTime;                         /* Delicate wash run time (seconds) */
   uint16_t                                        delWashStopTime;                        /* Delicate wash stop time (seconds) */
   uint16_t                                        hvyWashRunTime;                         /* Heavy wash run time (seconds) */
-  uint16_t                                        hvyWashStopTime;                        /* Heavy wash stop time (seconds). When is set to 0, it becomes single wash */
+  uint16_t                                        hvyWashStopTime;                        /* Heavy wash stop time (seconds) */
   ProgramManager_MotorSpeedType                   stdWashSpeed;                           /* Default speed of standard wash */
   ProgramManager_MotorSpeedType                   delWashSpeed;                           /* Default speed of delicate wash */
   ProgramManager_MotorSpeedType                   hvyWashSpeed;                           /* Default speed of heavy wash */

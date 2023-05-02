@@ -85,7 +85,8 @@ static const uint8_t MenuManager_Home_NotifyDoorOpenStr[] =           "DOOR OPEN
 static const uint8_t MenuManager_Home_NotifyReadyStr[] =              "READY              ";
 static const uint8_t MenuManager_Home_NotifyRunningStr[] =            "RUNNING            ";
 
-static const uint8_t MenuManager_Home_StateWaterHeatStr[] =           "WATER HEAT";
+static const uint8_t MenuManager_Home_StateWaterStr[] =               "WATER     ";
+static const uint8_t MenuManager_Home_StateHeatStr[] =                "HEAT      ";
 static const uint8_t MenuManager_Home_StateWashStr[] =                "WASH      ";
 static const uint8_t MenuManager_Home_StateDrainStr[] =               "DRAIN     ";
 
@@ -230,8 +231,11 @@ static void MenuManager_Home_LcdShowNotifyState(void)
 
     switch (ProgramManager_GetCurrentState())
     {
-      case PROGRAMMANAGER_STATE_AUTO_RUN_WATER_HEAT:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateWaterHeatStr);
+      case PROGRAMMANAGER_STATE_AUTO_RUN_WATER:
+        LCD_PutString((uint8_t *)MenuManager_Home_StateWaterStr);
+        break;
+      case PROGRAMMANAGER_STATE_AUTO_RUN_HEAT:
+        LCD_PutString((uint8_t *)MenuManager_Home_StateHeatStr);
         break;
       case PROGRAMMANAGER_STATE_AUTO_RUN_WASH:
         LCD_PutString((uint8_t *)MenuManager_Home_StateWashStr);

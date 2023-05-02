@@ -66,6 +66,7 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
     .midLevel                   = (uint16_t)50U,                            /* Set the middle level for water level MID mode */
     .highLevel                  = (uint16_t)80U,                            /* Set the high level for water level HIGH mode */
     .levelDiffRefill            = (uint16_t)3U,                             /* Automatically refill water when difference between current and set is larger than this value */
+    .soapStartLevel             = (uint16_t)10U,                            /* Reached water level to pour soap */
   },
   .heatTempCfg =                                                            /* Heat temperature setup configuration */
   {
@@ -464,6 +465,9 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_GetData(ProgramManager_FillLevel
   data->levelDiffRefill     = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET]) << 8U;
   data->levelDiffRefill    |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET + 1]);
 
+  data->soapStartLevel      = (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_OFFSET]) << 8U;
+  data->soapStartLevel     |= (uint16_t)(recvArr[PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_OFFSET + 1]);
+
   return HAL_OK;
 }
 
@@ -485,6 +489,9 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_SetData(ProgramManager_FillLevel
 
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET]     = (uint8_t)(data->levelDiffRefill >> 8U);
   recvArr[PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_OFFSET + 1] = (uint8_t)(data->levelDiffRefill & (uint16_t)0x00FFU);
+
+  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_OFFSET]      = (uint8_t)(data->soapStartLevel >> 8U);
+  recvArr[PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_OFFSET + 1]  = (uint8_t)(data->soapStartLevel & (uint16_t)0x00FFU);
 
   extMemIf.writeByteArray(PROGRAMMANAGER_FILLLEVELSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
@@ -557,6 +564,20 @@ HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_GetData(uint16_t
 HAL_StatusTypeDef ProgramManager_FillLevelSetup_LevelDiffRefill_SetData(uint16_t *data)
 {
   extMemIf.writeInteger(PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_BASE_ADDR, *data);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_FillLevelSetup_SoapStartLevel_GetData(uint16_t *data)
+{
+  *data = extMemIf.readInteger(PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_BASE_ADDR);
+  
+  return HAL_OK;
+}
+
+HAL_StatusTypeDef ProgramManager_FillLevelSetup_SoapStartLevel_SetData(uint16_t *data)
+{
+  extMemIf.writeInteger(PROGRAMMANAGER_FILLLEVELSETUP_SOAPSTARTLEVEL_BASE_ADDR, *data);
   
   return HAL_OK;
 }
@@ -721,9 +742,9 @@ HAL_StatusTypeDef ProgramManager_HeatTempSetup_MaxTimeHeat_SetData(uint16_t *dat
 
 HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruct *data)
 {
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE];
+  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
 
-  extMemIf.readByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.readByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
 
   data->stdWashRunTime    = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET]) << 8U;
   data->stdWashRunTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET + 1]);
@@ -752,7 +773,7 @@ HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruc
 
 HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruct *data)
 {
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_BLOCK_SIZE] = { 0U };
+  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
 
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET]       = (uint8_t)(data->stdWashRunTime >> 8U);
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHRUNTIME_OFFSET + 1]   = (uint8_t)(data->stdWashRunTime & (uint16_t)0x00FFU);
@@ -776,7 +797,7 @@ HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruc
   recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_OFFSET]         = (uint8_t)(data->delWashSpeed);
   recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET]         = (uint8_t)(data->hvyWashSpeed);
 
-  extMemIf.writeByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
+  extMemIf.writeByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
   return HAL_OK;
 }
