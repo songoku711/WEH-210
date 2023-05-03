@@ -309,9 +309,26 @@ static void ProgramManager_AutoRunWash_InternalCheckStateTransit(void)
   if (ProgramManager_Control_NotPauseAndError())
   {
     /* Wash times expired, and motor state is in stop state */
-    if ((ProgramManager_AutoRunWash_WashCount != (uint32_t)0U) || \
-        (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD) || \
-        (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_REV))
+    if (ProgramManager_AutoRunWash_WashCount != (uint32_t)0U)
+    {
+      conditionOk = (bool)false;
+    }
+
+    if ((ProgramManager_AutoRunWash_WashCount == (uint32_t)0U) && \
+        (
+          (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD) || \
+          (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_REV) \
+        ))
+    {
+      conditionOk = (bool)false;
+    }
+
+    if ((ProgramManager_AutoRunWash_WashCount == (uint32_t)0U) && \
+        (
+          (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_STOP1) || \
+          (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_STOP2) \
+        ) && \
+        (ProgramManager_AutoRunWash_MotorCounter != (ProgramManager_AutoRunWash_MotorCounterMax - (uint32_t)1U)))
     {
       conditionOk = (bool)false;
     }
