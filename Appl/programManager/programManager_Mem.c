@@ -78,57 +78,20 @@ const ProgramManager_ParamConfigSetupStruct ProgramManager_gParamDefConfig =
   {
     .stdWashRunTime             = (uint16_t)20U,                            /* Standard wash run time (seconds) */
     .stdWashStopTime            = (uint16_t)5U,                             /* Standard wash stop time (seconds) */
-    .delWashRunTime             = (uint16_t)20U,                            /* Delicate wash run time (seconds) */
-    .delWashStopTime            = (uint16_t)5U,                             /* Delicate wash stop time (seconds) */
-    .hvyWashRunTime             = (uint16_t)20U,                            /* Heavy wash run time (seconds) */
-    .hvyWashStopTime            = (uint16_t)5U,                             /* Heavy wash stop time (seconds). When is set to 0, it becomes single wash */
     .stdWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Default speed of standard wash */
-    .delWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1,       /* Default speed of delicate wash */
-    .hvyWashSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3,       /* Default speed of heavy wash */
   },
   .drainCfg =                                                               /* Drain setup configuration */
   {
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =          /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =        /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =        /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =      /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =      /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
-    },
-    .drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =      /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
-    },
-    .drainOffTime               = (uint16_t)5U,                             /* Drain off time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX]           = (uint16_t)30U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL4_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainOffTime               = (uint16_t)25U,                            /* Drain off time */
     .maxDrainExtrTime           = (uint16_t)300U,                           /* Max time of extract drain */
     .reDrainExtrTime            = (uint16_t)3U,                             /* Re-extract times when shock */
     .maxDrainExtrSpeed          = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Max speed of extract drain */
-  },
-  .doorLockCfg =                                                            /* Door lock setup configuration */
-  {
-    .useLockStopButton          = true,                                     /* Use door lock controlled by pressing STOP button */
-    .doorLockValveStatus        = PROGRAMMANAGER_RELAY_ENABLE_STAT_NC,      /* Door lock valve status when door is closed */
-    .unlockDoorTemp             = (uint16_t)30U,                            /* Can't unlock the door when temperature is higher than safety temperature */
-    .unlockDoorLevel            = (uint16_t)5U                              /* Can't unlock the door when level is higher than safety level */
   }
 };
 
@@ -150,36 +113,13 @@ const ProgramManager_AutoSeqConfigStruct ProgramManager_gAutoSeqDefConfig =
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =             /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =           /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =           /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
-    }
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX]           = (uint16_t)30U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL4_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainOffTime               = (uint16_t)25U                             /* Drain off time */
   }
 };
 
@@ -200,36 +140,13 @@ const ProgramManager_ManualSeqConfigStruct ProgramManager_gManualSeqDefConfig =
     .washSpeed                  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0,       /* Wash speed */
     .tempThreshold              = (uint16_t)30U,                            /* Water temperature threshold */
     .levelThreshold             = (uint16_t)50U,                            /* Water level threshold */
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX] =             /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX] =           /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX] =           /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)10U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)20U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2        /* Drain running speed */
-    },
-    .drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX] =         /* Drain step configuration */
-    {
-      .drainTime                = (uint16_t)40U,                            /* Drain running time */
-      .drainSpeed               = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3        /* Drain running speed */
-    }
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX]             = (uint16_t)10U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX]           = (uint16_t)30U,                  /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL4_DRAIN_IDX]           = (uint16_t)0U,                   /* Drain running time */
+    .drainOffTime               = (uint16_t)25U                             /* Drain off time */
   }
 };
 
@@ -254,7 +171,6 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_GetData(ProgramManager_ParamCo
   (void)ProgramManager_HeatTempSetup_GetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_WashSetup_GetData        (&(data->washCfg));
   (void)ProgramManager_DrainSetup_GetData       (&(data->drainCfg));
-  (void)ProgramManager_DoorLockSetup_GetData    (&(data->doorLockCfg));
   
   return HAL_OK;
 }
@@ -267,7 +183,6 @@ HAL_StatusTypeDef ProgramManager_ParamConfigSetup_SetData(ProgramManager_ParamCo
   (void)ProgramManager_HeatTempSetup_SetData    (&(data->heatTempCfg), (data->machineFuncCfg).tempUnit);
   (void)ProgramManager_WashSetup_SetData        (&(data->washCfg));
   (void)ProgramManager_DrainSetup_SetData       (&(data->drainCfg));
-  (void)ProgramManager_DoorLockSetup_SetData    (&(data->doorLockCfg));
   
   return HAL_OK;
 }
@@ -752,21 +667,7 @@ HAL_StatusTypeDef ProgramManager_WashSetup_GetData(ProgramManager_WashSetupStruc
   data->stdWashStopTime   = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSTOPTIME_OFFSET]) << 8U;
   data->stdWashStopTime  |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSTOPTIME_OFFSET + 1]);
 
-  data->delWashRunTime    = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_OFFSET]) << 8U;
-  data->delWashRunTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_OFFSET + 1]);
-
-  data->delWashStopTime   = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_OFFSET]) << 8U;
-  data->delWashStopTime  |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_OFFSET + 1]);
-
-  data->hvyWashRunTime    = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_OFFSET]) << 8U;
-  data->hvyWashRunTime   |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_OFFSET + 1]);
-
-  data->hvyWashStopTime   = (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_OFFSET]) << 8U;
-  data->hvyWashStopTime  |= (uint16_t)(recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_OFFSET + 1]);
-
   data->stdWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_OFFSET];
-  data->delWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_OFFSET];
-  data->hvyWashSpeed      = (ProgramManager_MotorSpeedType)recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET];
 
   return HAL_OK;
 }
@@ -781,21 +682,7 @@ HAL_StatusTypeDef ProgramManager_WashSetup_SetData(ProgramManager_WashSetupStruc
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSTOPTIME_OFFSET]      = (uint8_t)(data->stdWashStopTime >> 8U);
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSTOPTIME_OFFSET + 1]  = (uint8_t)(data->stdWashStopTime & (uint16_t)0x00FFU);
 
-  recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_OFFSET]       = (uint8_t)(data->delWashRunTime >> 8U);
-  recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_OFFSET + 1]   = (uint8_t)(data->delWashRunTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_OFFSET]      = (uint8_t)(data->delWashStopTime >> 8U);
-  recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_OFFSET + 1]  = (uint8_t)(data->delWashStopTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_OFFSET]       = (uint8_t)(data->hvyWashRunTime >> 8U);
-  recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_OFFSET + 1]   = (uint8_t)(data->hvyWashRunTime & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_OFFSET]      = (uint8_t)(data->hvyWashStopTime >> 8U);
-  recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_OFFSET + 1]  = (uint8_t)(data->hvyWashStopTime & (uint16_t)0x00FFU);
-
   recvArr[PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_OFFSET]         = (uint8_t)(data->stdWashSpeed);
-  recvArr[PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_OFFSET]         = (uint8_t)(data->delWashSpeed);
-  recvArr[PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_OFFSET]         = (uint8_t)(data->hvyWashSpeed);
 
   extMemIf.writeByteArray(PROGRAMMANAGER_WASHSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
   
@@ -830,62 +717,6 @@ HAL_StatusTypeDef ProgramManager_WashSetup_StdWashStopTime_SetData(uint16_t *dat
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashRunTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashRunTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_WASHSETUP_DELWASHRUNTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashStopTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashStopTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_WASHSETUP_DELWASHSTOPTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashRunTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashRunTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_WASHSETUP_HVYWASHRUNTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashStopTime_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_BASE_ADDR);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashStopTime_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_WASHSETUP_HVYWASHSTOPTIME_BASE_ADDR, *data);
-  
-  return HAL_OK;
-}
-
 HAL_StatusTypeDef ProgramManager_WashSetup_StdWashSpeed_GetData(ProgramManager_MotorSpeedType *data)
 {
   *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_BASE_ADDR));
@@ -896,34 +727,6 @@ HAL_StatusTypeDef ProgramManager_WashSetup_StdWashSpeed_GetData(ProgramManager_M
 HAL_StatusTypeDef ProgramManager_WashSetup_StdWashSpeed_SetData(ProgramManager_MotorSpeedType *data)
 {
   extMemIf.writeByte(PROGRAMMANAGER_WASHSETUP_STDWASHSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_DelWashSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_WASHSETUP_DELWASHSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashSpeed_GetData(ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_BASE_ADDR));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_WashSetup_HvyWashSpeed_SetData(ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_WASHSETUP_HVYWASHSPEED_BASE_ADDR, (uint8_t) *data);
   
   return HAL_OK;
 }
@@ -939,10 +742,8 @@ HAL_StatusTypeDef ProgramManager_DrainSetup_GetData(ProgramManager_DrainSetupStr
 
   for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
   {
-    (data->drainStepCfg)[drainStepIdx].drainTime  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
-    (data->drainStepCfg)[drainStepIdx].drainTime |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
-  
-    (data->drainStepCfg)[drainStepIdx].drainSpeed = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]);
+    (data->drainTime)[drainStepIdx]  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
+    (data->drainTime)[drainStepIdx] |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
   }
 
   data->drainOffTime            = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET]) << 8U;
@@ -964,10 +765,8 @@ HAL_StatusTypeDef ProgramManager_DrainSetup_SetData(ProgramManager_DrainSetupStr
 
   for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
   {
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainTime >> 8U);
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainTime & (uint16_t)0x00FFU);
-
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]              = (uint8_t)((data->drainStepCfg)[drainStepIdx].drainSpeed);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainTime)[drainStepIdx] >> 8U);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainTime)[drainStepIdx] & (uint16_t)0x00FFU);
   }
 
   recvArr[PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_OFFSET]              = (uint8_t)(data->drainOffTime >> 8U);
@@ -987,28 +786,14 @@ HAL_StatusTypeDef ProgramManager_DrainSetup_SetData(ProgramManager_DrainSetupStr
 
 HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_GetData(uint8_t drainStep, uint16_t *data)
 {
-  *data = extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U));
+  *data = extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U));
   
   return HAL_OK;
 }
 
 HAL_StatusTypeDef ProgramManager_DrainSetup_DrainTime_SetData(uint8_t drainStep, uint16_t *data)
 {
-  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U), *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_GetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data)
-{
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_BASE_ADDR + (uint16_t)drainStep));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DrainSetup_DrainSpeed_SetData(uint8_t drainStep, ProgramManager_MotorSpeedType *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_BASE_ADDR + (uint16_t)drainStep, (uint8_t) *data);
+  extMemIf.writeInteger(PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_BASE_ADDR + (uint16_t)(drainStep << 1U), *data);
   
   return HAL_OK;
 }
@@ -1065,122 +850,6 @@ HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_GetData(ProgramMan
 HAL_StatusTypeDef ProgramManager_DrainSetup_MaxDrainExtrSpeed_SetData(ProgramManager_MotorSpeedType *data)
 {
   extMemIf.writeByte(PROGRAMMANAGER_DRAINSETUP_MAXDRAINEXTRSPEED_BASE_ADDR, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_GetData(ProgramManager_DoorLockSetupStruct *data)
-{
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE];
-
-  extMemIf.readByteArray(PROGRAMMANAGER_DOORLOCKSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-
-  data->useLockStopButton     = (bool)recvArr[PROGRAMMANAGER_DOORLOCKSETUP_USELOCKSTOPBUTTON_OFFSET];
-  data->doorLockValveStatus   = (ProgramManager_RelayEnableStatusType)recvArr[PROGRAMMANAGER_DOORLOCKSETUP_DOORLOCKVALVESTATUS_OFFSET];
-
-  data->unlockDoorTemp        = (uint16_t)(recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET]) << 8U;
-  data->unlockDoorTemp       |= (uint16_t)(recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1]);
-
-  data->unlockDoorLevel       = (uint16_t)(recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET]) << 8U;
-  data->unlockDoorLevel      |= (uint16_t)(recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET + 1]);
-
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_SetData(ProgramManager_DoorLockSetupStruct *data)
-{
-  uint8_t recvArr[PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE] = { 0U };
-
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_USELOCKSTOPBUTTON_OFFSET]   = (uint8_t)(data->useLockStopButton);
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_DOORLOCKVALVESTATUS_OFFSET] = (uint8_t)(data->doorLockValveStatus);
-
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET]      = (uint8_t)(data->unlockDoorTemp >> 8U);
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1]  = (uint8_t)(data->unlockDoorTemp & (uint16_t)0x00FFU);
-
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET]     = (uint8_t)(data->unlockDoorLevel >> 8U);
-  recvArr[PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET + 1] = (uint8_t)(data->unlockDoorLevel & (uint16_t)0x00FFU);
-
-  extMemIf.writeByteArray(PROGRAMMANAGER_DOORLOCKSETUP_BASE_ADDR, recvArr, PROGRAMMANAGER_CONFIG_HALF_BLOCK_SIZE);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UseLockStopButton_GetData(bool *data)
-{
-  *data = (bool)(extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_USELOCKSTOPBUTTON_OFFSET));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UseLockStopButton_SetData(bool *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_USELOCKSTOPBUTTON_OFFSET, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_DoorLockValveStatus_GetData(ProgramManager_RelayEnableStatusType *data)
-{
-  *data = (ProgramManager_RelayEnableStatusType)(extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_DOORLOCKVALVESTATUS_OFFSET));
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_DoorLockValveStatus_SetData(ProgramManager_RelayEnableStatusType *data)
-{
-  extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_DOORLOCKVALVESTATUS_OFFSET, (uint8_t) *data);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_GetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET);
-  }
-  else
-  {
-    *data = extMemIf.readByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1);
-  }
-
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorTemp_SetData(uint8_t *data, ProgramManager_TempUnitType tempUnit)
-{
-  uint8_t temp;
-
-  if (tempUnit == PROGRAMMANAGER_TEMP_UNIT_CELSIUS)
-  {
-    ProgramManager_Common_CelsiusToFahrenheitConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET, *data);
-    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1, temp);
-  }
-  else
-  {
-    ProgramManager_Common_FahrenheitToCelsiusConv(data, &temp);
-
-    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET, temp);
-    extMemIf.writeByte(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORTEMP_OFFSET + 1, *data);
-  }
-
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorLevel_GetData(uint16_t *data)
-{
-  *data = extMemIf.readInteger(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET);
-  
-  return HAL_OK;
-}
-
-HAL_StatusTypeDef ProgramManager_DoorLockSetup_UnlockDoorLevel_SetData(uint16_t *data)
-{
-  extMemIf.writeInteger(PROGRAMMANAGER_DOORLOCKSETUP_UNLOCKDOORLEVEL_OFFSET, *data);
   
   return HAL_OK;
 }
@@ -1303,6 +972,9 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
   data->levelThreshold        = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]) << 8U;
   data->levelThreshold       |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]);
 
+  data->drainOffTime          = (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET]) << 8U;
+  data->drainOffTime         |= (uint16_t)(recvArr[PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET + 1]);
+
   memset(recvArr, (uint8_t)0U, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
@@ -1314,10 +986,8 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
 
   for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
   {
-    (data->drainStep)[drainStepIdx].drainTime  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
-    (data->drainStep)[drainStepIdx].drainTime |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
-  
-    (data->drainStep)[drainStepIdx].drainSpeed = (ProgramManager_MotorSpeedType)(recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]);
+    (data->drainTime)[drainStepIdx]  = (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U)]) << 8U;
+    (data->drainTime)[drainStepIdx] |= (uint16_t)(recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]);
   }
 
   return HAL_OK;
@@ -1371,6 +1041,9 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
   recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET]              = (uint8_t)(data->levelThreshold >> 8U);
   recvArr[PROGRAMMANAGER_NORMSTEP_LEVELTHRESHOLD_OFFSET + 1]          = (uint8_t)(data->levelThreshold & (uint16_t)0x00FFU);
 
+  recvArr[PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET]                = (uint8_t)(data->drainOffTime >> 8U);
+  recvArr[PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET + 1]            = (uint8_t)(data->drainOffTime & (uint16_t)0x00FFU);
+
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx);
@@ -1381,10 +1054,8 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_SetData(uint8_t seqIdx, uint8_t 
 
   for (drainStepIdx = (uint8_t)0U; drainStepIdx < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; drainStepIdx++)
   {
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainStep)[drainStepIdx].drainTime >> 8U);
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainStep)[drainStepIdx].drainTime & (uint16_t)0x00FFU);
-
-    recvArr[PROGRAMMANAGER_DRAINSETUP_FIRSTDRAINSPEED_OFFSET + drainStepIdx]              = (uint8_t)((data->drainStep)[drainStepIdx].drainSpeed);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U)]       = (uint8_t)((data->drainTime)[drainStepIdx] >> 8U);
+    recvArr[PROGRAMMANAGER_DRAINSETUP_FORWARDDRAINTIME_OFFSET + (drainStepIdx << 1U) + 1]   = (uint8_t)((data->drainTime)[drainStepIdx] & (uint16_t)0x00FFU);
   }
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
@@ -1782,7 +1453,7 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_LevelThreshold_SetData(uint8_t s
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -1790,15 +1461,14 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetDat
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
-         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINTIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx);
 
   *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t *data)
 {
   uint16_t addr;
 
@@ -1806,42 +1476,37 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_SetDat
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
          +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
-         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINTIME_OFFSET;
+         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx);
 
   extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_GetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainOffTime_GetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
-         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINSPEED_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET;
 
-  *data = (ProgramManager_MotorSpeedType)(extMemIf.readByte(addr));
+  *data = extMemIf.readInteger(addr);
   
   return HAL_OK;
 }
 
-HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainStepConfig_DrainSpeed_SetData(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, ProgramManager_MotorSpeedType *data)
+HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainOffTime_SetData(uint8_t seqIdx, uint8_t stepIdx, uint16_t *data)
 {
   uint16_t addr;
 
   addr =    PROGRAMMANAGER_AUTOSEQUENCE_BASE_ADDR \
          + (PROGRAMMANAGER_AUTOSEQUENCE_BLOCK_SIZE * seqIdx) \
          + (PROGRAMMANAGER_NORMSTEP_BLOCK_SIZE * stepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_OFFSET \
-         + (PROGRAMMANAGER_NORMSTEP_DRAINSTEP_BLOCK_SIZE * drainStepIdx) \
-         +  PROGRAMMANAGER_NORMSTEP_DRAINSTEP_DRAINSPEED_OFFSET;
+         +  PROGRAMMANAGER_NORMSTEP_DRAINOFFTIME_OFFSET;
 
-  extMemIf.writeByte(addr, (uint8_t) *data);
+  extMemIf.writeInteger(addr, *data);
   
   return HAL_OK;
 }

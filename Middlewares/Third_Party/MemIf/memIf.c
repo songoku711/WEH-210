@@ -35,7 +35,7 @@ extern "C" {
 #define EXT_MEM_BYTE_SECT                                 (uint16_t)32U
 
 /** External memory magic number to manage if corrupted */
-#define EXT_MEM_MAGIC_NUMBER_VAL                          (uint32_t)0x01000205
+#define EXT_MEM_MAGIC_NUMBER_VAL                          (uint32_t)0x01000201
 
 /** External memory magic number address */
 #define EXT_MEM_MAGIC_NUMBER_ADDR                         (uint16_t)0x0000

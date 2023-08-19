@@ -42,7 +42,7 @@ extern Fsm_EventEntryStruct MenuManager_SetDefaultParam_StateMachine[5];
 /** State setDefaultProg (6) */
 extern Fsm_EventEntryStruct MenuManager_SetDefaultProg_StateMachine[5];
 /** State machineSetup (7) */
-extern Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[12];
+extern Fsm_EventEntryStruct MenuManager_MachineSetup_StateMachine[11];
 /** State machineFuncSetup (8) */
 extern Fsm_EventEntryStruct MenuManager_MachineFuncSetup_StateMachine[12];
 /** State manOperateWhenAuto (12) */
@@ -91,28 +91,12 @@ extern Fsm_EventEntryStruct MenuManager_WashSetup_StateMachine[14];
 extern Fsm_EventEntryStruct MenuManager_StdWashRunTime_StateMachine[9];
 /** State stdWashStopTime (44) */
 extern Fsm_EventEntryStruct MenuManager_StdWashStopTime_StateMachine[9];
-/** State delWashRunTime (45) */
-extern Fsm_EventEntryStruct MenuManager_DelWashRunTime_StateMachine[9];
-/** State delWashStopTime (46) */
-extern Fsm_EventEntryStruct MenuManager_DelWashStopTime_StateMachine[9];
-/** State hvyWashRunTime (47) */
-extern Fsm_EventEntryStruct MenuManager_HvyWashRunTime_StateMachine[9];
-/** State hvyWashStopTime (48) */
-extern Fsm_EventEntryStruct MenuManager_HvyWashStopTime_StateMachine[9];
 /** State stdWashSpeed (49) */
 extern Fsm_EventEntryStruct MenuManager_StdWashSpeed_StateMachine[7];
-/** State delWashSpeed (50) */
-extern Fsm_EventEntryStruct MenuManager_DelWashSpeed_StateMachine[7];
-/** State hvyWashSpeed (51) */
-extern Fsm_EventEntryStruct MenuManager_HvyWashSpeed_StateMachine[7];
 /** State drainSetup (53) */
 extern Fsm_EventEntryStruct MenuManager_DrainSetup_StateMachine[15];
-/** State drainSetupParam (54) */
-extern Fsm_EventEntryStruct MenuManager_DrainSetupParam_StateMachine[7];
 /** State drainSetupTime (55) */
 extern Fsm_EventEntryStruct MenuManager_DrainSetupTime_StateMachine[9];
-/** State drainSetupSpeed (56) */
-extern Fsm_EventEntryStruct MenuManager_DrainSetupSpeed_StateMachine[7];
 /** State drainOffTime (57) */
 extern Fsm_EventEntryStruct MenuManager_DrainOffTime_StateMachine[9];
 /** State maxDrainExtrTime (58) */
@@ -121,16 +105,6 @@ extern Fsm_EventEntryStruct MenuManager_MaxDrainExtrTime_StateMachine[9];
 extern Fsm_EventEntryStruct MenuManager_ReDrainExtrTime_StateMachine[7];
 /** State maxDrainExtrSpeed (60) */
 extern Fsm_EventEntryStruct MenuManager_MaxDrainExtrSpeed_StateMachine[7];
-/** State doorLockSetup (77) */
-extern Fsm_EventEntryStruct MenuManager_DoorLockSetup_StateMachine[9];
-/** State useLockStopButton (78) */
-extern Fsm_EventEntryStruct MenuManager_UseLockStopButton_StateMachine[7];
-/** State doorLockValveStatus (79) */
-extern Fsm_EventEntryStruct MenuManager_DoorLockValveStatus_StateMachine[7];
-/** State unlockDoorTemp (80) */
-extern Fsm_EventEntryStruct MenuManager_UnlockDoorTemp_StateMachine[9];
-/** State unlockDoorLevel (81) */
-extern Fsm_EventEntryStruct MenuManager_UnlockDoorLevel_StateMachine[9];
 /** State programSetup (82) */
 extern Fsm_EventEntryStruct MenuManager_ProgramSetup_StateMachine[6];
 /** State programStepSetup (83) */
@@ -166,13 +140,11 @@ extern Fsm_EventEntryStruct MenuManager_StepLevelModeCustom_StateMachine[9];
 /** State stepDrainMode (98) */
 extern Fsm_EventEntryStruct MenuManager_StepDrainMode_StateMachine[8];
 /** State stepDrainModeCustom (99) */
-extern Fsm_EventEntryStruct MenuManager_StepDrainModeCustom_StateMachine[11];
-/** State stepDrainModeParam (100) */
-extern Fsm_EventEntryStruct MenuManager_StepDrainModeParam_StateMachine[7];
+extern Fsm_EventEntryStruct MenuManager_StepDrainModeCustom_StateMachine[12];
 /** State stepDrainModeTime (101) */
 extern Fsm_EventEntryStruct MenuManager_StepDrainModeTime_StateMachine[9];
-/** State stepDrainModeSpeed (102) */
-extern Fsm_EventEntryStruct MenuManager_StepDrainModeSpeed_StateMachine[7];
+/** State stepDrainOffTime (102) */
+extern Fsm_EventEntryStruct MenuManager_StepDrainOffTime_StateMachine[9];
 
 
 
@@ -183,7 +155,7 @@ MenuManager_InternalDataStruct MenuManager_InternalData;
 Fsm_ContextStruct MenuManager_FsmContext;
 
 /** List of all states */
-Fsm_StateDefStruct MenuManager_StateMachine[73] =
+Fsm_StateDefStruct MenuManager_StateMachine[59] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_PowerOn_StateMachine)                            },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_Init_StateMachine)                               },
@@ -217,26 +189,13 @@ Fsm_StateDefStruct MenuManager_StateMachine[73] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_WashSetup_StateMachine)                          },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashRunTime_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashStopTime_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashRunTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashStopTime_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HvyWashRunTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HvyWashStopTime_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StdWashSpeed_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DelWashSpeed_StateMachine)                       },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_HvyWashSpeed_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetup_StateMachine)                         },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupParam_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupTime_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainSetupSpeed_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DrainOffTime_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxDrainExtrTime_StateMachine)                   },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ReDrainExtrTime_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_MaxDrainExtrSpeed_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorLockSetup_StateMachine)                      },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UseLockStopButton_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_DoorLockValveStatus_StateMachine)                },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UnlockDoorTemp_StateMachine)                     },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_UnlockDoorLevel_StateMachine)                    },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramSetup_StateMachine)                       },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_ProgramStepSetup_StateMachine)                   },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepNormSetup_StateMachine)                      },
@@ -255,9 +214,8 @@ Fsm_StateDefStruct MenuManager_StateMachine[73] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepLevelModeCustom_StateMachine)                },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainMode_StateMachine)                      },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeCustom_StateMachine)                },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeParam_StateMachine)                 },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeTime_StateMachine)                  },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainModeSpeed_StateMachine)                 }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(MenuManager_StepDrainOffTime_StateMachine)                   }
 };
 
 void (*MenuManager_SubMainFunction)(void);

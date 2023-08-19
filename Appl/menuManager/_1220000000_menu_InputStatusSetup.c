@@ -38,10 +38,10 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_DoorClosed_ChildTitleStr[] =         "DOOR CLOSED STAT";
-static const uint8_t MenuManager_ExtractShock_ChildTitleStr[] =       "EXTRACT SHOCK";
-static const uint8_t MenuManager_EmergencyStop_ChildTitleStr[] =      "EMERGENCY STOP";
-static const uint8_t MenuManager_InverterError_ChildTitleStr[] =      "INVERTER ERROR";
+static const uint8_t MenuManager_DoorClosed_ChildTitleStr[] =         "Door";
+static const uint8_t MenuManager_ExtractShock_ChildTitleStr[] =       "Imbalance";
+static const uint8_t MenuManager_EmergencyStop_ChildTitleStr[] =      "Emergency";
+static const uint8_t MenuManager_InverterError_ChildTitleStr[] =      "Inverter";
 
 static const uint8_t MenuManager_InputStatusSetup_MainTitleStr[] =    "INPUT STATUS";
 

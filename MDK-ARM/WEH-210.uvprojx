@@ -551,39 +551,9 @@
               <FilePath>..\Appl\menuManager\_1252000000_menu_StdWashStopTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1253000000_menu_DelWashRunTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1253000000_menu_DelWashRunTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1254000000_menu_DelWashStopTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1254000000_menu_DelWashStopTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1255000000_menu_HvyWashRunTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1255000000_menu_HvyWashRunTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1256000000_menu_HvyWashStopTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1256000000_menu_HvyWashStopTime.c</FilePath>
-            </File>
-            <File>
               <FileName>_1257000000_menu_StdWashSpeed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1257000000_menu_StdWashSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1258000000_menu_DelWashSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1258000000_menu_DelWashSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1259000000_menu_HvyWashSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1259000000_menu_HvyWashSpeed.c</FilePath>
             </File>
             <File>
               <FileName>_1260000000_menu_DrainSetup.c</FileName>
@@ -591,19 +561,9 @@
               <FilePath>..\Appl\menuManager\_1260000000_menu_DrainSetup.c</FilePath>
             </File>
             <File>
-              <FileName>_1261000000_menu_DrainSetupParam.c</FileName>
+              <FileName>_1261000000_menu_DrainSetupTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1261000000_menu_DrainSetupParam.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1261100000_menu_DrainSetupTime.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1261100000_menu_DrainSetupTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1261200000_menu_DrainSetupSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1261200000_menu_DrainSetupSpeed.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1261000000_menu_DrainSetupTime.c</FilePath>
             </File>
             <File>
               <FileName>_1262000000_menu_DrainOffTime.c</FileName>
@@ -624,31 +584,6 @@
               <FileName>_1265000000_menu_MaxDrainExtrSpeed.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\menuManager\_1265000000_menu_MaxDrainExtrSpeed.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1270000000_menu_DoorLockSetup.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1270000000_menu_DoorLockSetup.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1271000000_menu_UseLockStopButton.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1271000000_menu_UseLockStopButton.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1272000000_menu_DoorLockValveStatus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1272000000_menu_DoorLockValveStatus.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1273000000_menu_UnlockDoorTemp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1273000000_menu_UnlockDoorTemp.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1274000000_menu_UnlockDoorLevel.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1274000000_menu_UnlockDoorLevel.c</FilePath>
             </File>
             <File>
               <FileName>_1300000000_menu_ProgramSetup.c</FileName>
@@ -741,19 +676,14 @@
               <FilePath>..\Appl\menuManager\_1311810000_menu_StepDrainModeCustom.c</FilePath>
             </File>
             <File>
-              <FileName>_1311811000_menu_StepDrainModeParam.c</FileName>
+              <FileName>_1311811000_menu_StepDrainModeTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311811000_menu_StepDrainModeParam.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311811000_menu_StepDrainModeTime.c</FilePath>
             </File>
             <File>
-              <FileName>_1311811100_menu_StepDrainModeTime.c</FileName>
+              <FileName>_1311812000_menu_StepDrainOffTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311811100_menu_StepDrainModeTime.c</FilePath>
-            </File>
-            <File>
-              <FileName>_1311811200_menu_StepDrainModeSpeed.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Appl\menuManager\_1311811200_menu_StepDrainModeSpeed.c</FilePath>
+              <FilePath>..\Appl\menuManager\_1311812000_menu_StepDrainOffTime.c</FilePath>
             </File>
             <File>
               <FileName>menuManager_Common.c</FileName>

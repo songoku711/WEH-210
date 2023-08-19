@@ -38,10 +38,10 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_ManOperateWhenAuto_ChildTitleStr[] = "MAN OP WHEN AUTO";
-static const uint8_t MenuManager_TempUnit_ChildTitleStr[] =           "TEMP UNIT";
-static const uint8_t MenuManager_DrainValveStatus_ChildTitleStr[] =   "DRAIN VALVE STAT";
-static const uint8_t MenuManager_WashMachine_ChildTitleStr[] =        "WASH MACHINE TYPE";
+static const uint8_t MenuManager_ManOperateWhenAuto_ChildTitleStr[] = "Man Op when Auto";
+static const uint8_t MenuManager_TempUnit_ChildTitleStr[] =           "Temperature Unit";
+static const uint8_t MenuManager_DrainValveStatus_ChildTitleStr[] =   "Drain Open State";
+static const uint8_t MenuManager_WashMachine_ChildTitleStr[] =        "Wash Machine Type";
 
 static const uint8_t MenuManager_MachineFuncSetup_MainTitleStr[] =    "MACHINE FUNCTION";
 

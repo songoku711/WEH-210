@@ -79,10 +79,11 @@ extern const uint8_t MenuManager_Common_MinuteStr[];
 extern const uint8_t MenuManager_Common_LevelStr[];
 extern const uint8_t MenuManager_Common_TimeStr[];
 
+extern const uint8_t MenuManager_Common_ProgramTitleStr[];
 extern const uint8_t MenuManager_Common_ProgramStr[];
+extern const uint8_t MenuManager_Common_StepTitleStr[];
 extern const uint8_t MenuManager_Common_StepStr[];
 extern const uint8_t MenuManager_Common_ProgramStepStr[];
-extern const uint8_t MenuManager_Common_ProgramStepExtStr[];
 
 
 
@@ -125,6 +126,8 @@ void MenuManager_Common_LcdShowOkExitChoice(void);
 void MenuManager_Common_LcdShowStopExitChoice(void);
 void MenuManager_Common_LcdShowStartExitChoice(void);
 void MenuManager_Common_LcdShowScrollBar(uint8_t listIndex, uint8_t cursorPosition, uint8_t listItemNumber);
+
+void MenuManager_Common_CheckDrainStepTimeConstraint(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t* data);
 
 
 

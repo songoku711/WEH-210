@@ -208,8 +208,8 @@ static Fsm_GuardType MenuManager_MaxDrainExtrTime_Entry(Fsm_ContextStructPtr con
       MenuManager_MaxDrainExtrTime_Counter = (uint32_t)0U;
       MenuManager_MaxDrainExtrTime_CurPos = (uint32_t)0U;
 
-      MenuManager_MaxDrainExtrTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN;
-      MenuManager_MaxDrainExtrTime_ValueMax = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MAX;
+      MenuManager_MaxDrainExtrTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MIN;
+      MenuManager_MaxDrainExtrTime_ValueMax = (uint32_t)PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MAX;
       MenuManager_MaxDrainExtrTime_Value = (uint32_t)(ProgramManager_gParamConfig.drainCfg.maxDrainExtrTime);
 
       MenuManager_Common_DecToBcdConv

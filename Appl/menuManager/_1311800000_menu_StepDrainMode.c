@@ -257,6 +257,12 @@ static Fsm_GuardType MenuManager_StepDrainMode_Entry(Fsm_ContextStructPtr const 
       MenuManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
     }
+    else if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME)
+    {
+      /* Release previous state data hierachy */
+      MenuManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
+    }
     else
     {
       retVal = HAL_ERROR;

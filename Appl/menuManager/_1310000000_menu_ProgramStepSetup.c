@@ -103,7 +103,7 @@ static void MenuManager_ProgramStepSetup_LcdShowMainTitle(void)
   /* Print main title */
   MenuManager_Common_LcdClearElementMenuStatic();
 
-  sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramStr, MenuManager_ProgramStepSetup_SeqIdx + 1U);
+  sprintf((char *)tempStr, (const char *)MenuManager_Common_ProgramTitleStr, MenuManager_ProgramStepSetup_SeqIdx + 1U);
 
   MenuManager_Common_LcdShowMainTitle(tempStr);
   MenuManager_Common_LcdUpdateElementMenuStatic();

@@ -30,20 +30,20 @@ extern "C" {
 ===============================================================================================*/
 
 /* Maximum number of steps in a sequence */
-#define PROGRAMMANAGER_STEP_NUM_MAX                                   (uint8_t)10U
+#define PROGRAMMANAGER_STEP_NUM_MAX                                   (uint8_t)9U
 
 /* Maximum number of sequences that controller stores */
-#define PROGRAMMANAGER_SEQUENCE_NUM_MAX                               (uint8_t)5U
+#define PROGRAMMANAGER_SEQUENCE_NUM_MAX                               (uint8_t)6U
 
 /* Maximum number of drain steps in a step */
 #define PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX                         (uint8_t)6U
 
-#define PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX                 (0U)
-#define PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX               (1U)
-#define PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX               (2U)
-#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX             (3U)
-#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX             (4U)
-#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX             (5U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX               (0U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX               (1U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX             (2U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX             (3U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX             (4U)
+#define PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL4_DRAIN_IDX             (5U)
 
 
 
@@ -117,8 +117,6 @@ typedef enum _ProgramManager_CommonModeType
 typedef enum _ProgramManager_WashModeType
 {
   PROGRAMMANAGER_WASH_MODE_STANDARD,                                  /* Wash run time and stop time is standard type */
-  PROGRAMMANAGER_WASH_MODE_DELICATE,                                  /* Wash run time and stop time is delicate type */
-  PROGRAMMANAGER_WASH_MODE_HEAVY,                                     /* Wash run time and stop time is heavy type */
   PROGRAMMANAGER_WASH_MODE_CUSTOM,                                    /* Wash run time and stop time is custom type */
   PROGRAMMANAGER_WASH_MODE_NUM                                        /* Number of wash time modes */
 } ProgramManager_WashModeType;
@@ -194,10 +192,10 @@ typedef struct _ProgramManager_FillLevelSetupStruct
 } ProgramManager_FillLevelSetupStruct;
 
 #define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MIN                 (0U)
-#define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX                 (100U)
+#define PROGRAMMANAGER_FILLLEVELSETUP_WATER_LEVEL_MAX                 (91U)
 
 #define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MIN             (0U)
-#define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MAX             (100U)
+#define PROGRAMMANAGER_FILLLEVELSETUP_LEVELDIFFREFILL_MAX             (91U)
 
 /* Program manager heat and temp setup structure */
 typedef struct _ProgramManager_HeatTempSetupStruct
@@ -221,48 +219,50 @@ typedef struct _ProgramManager_WashSetupStruct
 {
   uint16_t                                        stdWashRunTime;                         /* Standard wash run time (seconds) */
   uint16_t                                        stdWashStopTime;                        /* Standard wash stop time (seconds) */
-  uint16_t                                        delWashRunTime;                         /* Delicate wash run time (seconds) */
-  uint16_t                                        delWashStopTime;                        /* Delicate wash stop time (seconds) */
-  uint16_t                                        hvyWashRunTime;                         /* Heavy wash run time (seconds) */
-  uint16_t                                        hvyWashStopTime;                        /* Heavy wash stop time (seconds) */
   ProgramManager_MotorSpeedType                   stdWashSpeed;                           /* Default speed of standard wash */
-  ProgramManager_MotorSpeedType                   delWashSpeed;                           /* Default speed of delicate wash */
-  ProgramManager_MotorSpeedType                   hvyWashSpeed;                           /* Default speed of heavy wash */
 } ProgramManager_WashSetupStruct;
 
 #define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MIN                      (0U)
 #define PROGRAMMANAGER_WASHSETUP_COMMON_TIME_MAX                      (256U)
 
 /* Program manager drain setup structure */
-typedef struct _ProgramManager_DrainStepSetupStruct
-{
-  uint16_t                                        drainTime;                              /* Drain running time */
-  ProgramManager_MotorSpeedType                   drainSpeed;                             /* Drain running speed */
-} ProgramManager_DrainStepSetupStruct;
-
 typedef struct _ProgramManager_DrainSetupStruct
 {
-  ProgramManager_DrainStepSetupStruct             drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX];  /* Drain step configuration */
+  uint16_t                                        drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX];  /* Drain step configuration */
   uint16_t                                        drainOffTime;                           /* Drain off time */
   uint16_t                                        maxDrainExtrTime;                       /* Max time of extract drain */
   uint8_t                                         reDrainExtrTime;                        /* Re-extract times when shock. If the times is larger than the set value, controller will alarm */
   ProgramManager_MotorSpeedType                   maxDrainExtrSpeed;                      /* Max speed of extract drain */
 } ProgramManager_DrainSetupStruct;
 
-#define PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN                     (0U)
-#define PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MAX                     (9999U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_FORWARD_DRAIN_MIN         (10U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_FORWARD_DRAIN_MAX         (40U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_BALANCE_DRAIN_MIN         (10U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_BALANCE_DRAIN_MAX         (40U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL1_DRAIN_MIN       (30U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL1_DRAIN_MAX       (150U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL2_DRAIN_MIN       (0U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL2_DRAIN_MAX       (300U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL3_DRAIN_MIN       (0U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL3_DRAIN_MAX       (300U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL3_DRAIN_AUTO      (20U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MIN       (0U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MAX       (300U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_AUTO      (20U)
+
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_MIN                    (5U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_MAX                    (180U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_EXTR_LVL2_DRAIN_ZERO_AUTO                  (25U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_EXTR_LVL3_DRAIN_NZERO_AUTO                 (60U)
+#define PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_EXTR_LVL4_DRAIN_NZERO_AUTO                 (90U)
 
 #define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_MIN                 (0U)
 #define PROGRAMMANAGER_DRAINSETUP_REDRAINEXTRTIME_MAX                 (9U)
-
-/* Program manager door lock setup structure */
-typedef struct _ProgramManager_DoorLockSetupStruct
-{
-  bool                                            useLockStopButton;                      /* Use door lock controlled by pressing STOP button */
-  ProgramManager_RelayEnableStatusType            doorLockValveStatus;                    /* Door lock valve status when door is closed */
-  uint8_t                                         unlockDoorTemp;                         /* Can't unlock the door when temperature is higher than safety temperature */
-  uint16_t                                        unlockDoorLevel;                        /* Can't unlock the door when level is higher than safety level */
-} ProgramManager_DoorLockSetupStruct;
 
 
 
@@ -275,7 +275,6 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
   ProgramManager_HeatTempSetupStruct              heatTempCfg;                            /* Heat temperature setup configuration */
   ProgramManager_WashSetupStruct                  washCfg;                                /* Wash setup configuration */
   ProgramManager_DrainSetupStruct                 drainCfg;                               /* Drain setup configuration */
-  ProgramManager_DoorLockSetupStruct              doorLockCfg;                            /* Door lock setup configuration */
 } ProgramManager_ParamConfigSetupStruct;
 
 
@@ -286,12 +285,6 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
 
 
 /* Program manager normal step structure */
-typedef struct _ProgramManager_DrainStepConfigStruct
-{
-  uint16_t                                        drainTime;                              /* Drain running time */
-  ProgramManager_MotorSpeedType                   drainSpeed;                             /* Drain running speed */
-} ProgramManager_DrainStepConfigStruct;
-
 typedef struct _ProgramManager_NormStepConfigStruct
 {
   /* For manual only */
@@ -316,7 +309,8 @@ typedef struct _ProgramManager_NormStepConfigStruct
   ProgramManager_MotorSpeedType                   washSpeed;                              /* Wash speed */
   uint8_t                                         tempThreshold;                          /* Water temperature threshold */
   uint16_t                                        levelThreshold;                         /* Water level threshold */
-  ProgramManager_DrainStepConfigStruct            drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX]; /* Drain step configuration */
+  uint16_t                                        drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX]; /* Drain step configuration */
+  uint16_t                                        drainOffTime;                           /* Drain off time */
 } ProgramManager_NormStepConfigStruct;
 
 #define PROGRAMMANAGER_NORMSTEPCONFIG_WASHTIME_MIN                    (0U)

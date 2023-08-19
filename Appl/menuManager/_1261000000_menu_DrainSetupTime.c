@@ -106,9 +106,9 @@ Fsm_EventEntryStruct MenuManager_DrainSetupTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_DrainSetupTime_Entry                                                ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_DrainSetupTime_Exit                                                 ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_DRAIN_SETUP           ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_DrainSetupTime_StartBut                                             ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_DrainSetupTime_StopBut,     MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_DrainSetupTime_StopBut,     MENUMANAGER_STATE_DRAIN_SETUP           ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_DrainSetupTime_UpBut                                                ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_DrainSetupTime_DownBut                                              ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_ADD_BUT,          MenuManager_DrainSetupTime_AddBut                                               ),
@@ -199,7 +199,7 @@ static Fsm_GuardType MenuManager_DrainSetupTime_Entry(Fsm_ContextStructPtr const
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP_PARAM)
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP)
     {
       enterDataHierachy = (MenuManager_Common_DrainSetupStruct *)(pFsmContext->dataHierachy);
 
@@ -211,9 +211,9 @@ static Fsm_GuardType MenuManager_DrainSetupTime_Entry(Fsm_ContextStructPtr const
       MenuManager_DrainSetupTime_Counter = (uint32_t)0U;
       MenuManager_DrainSetupTime_CurPos = (uint32_t)0U;
 
-      MenuManager_DrainSetupTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN;
-      MenuManager_DrainSetupTime_ValueMax = (uint32_t)(ProgramManager_gParamConfig.drainCfg.maxDrainExtrTime);
-      MenuManager_DrainSetupTime_Value = (uint32_t)(ProgramManager_gParamConfig.drainCfg.drainStepCfg[MenuManager_DrainSetupTime_DrainStepIdx].drainTime);
+      MenuManager_DrainSetupTime_ValueMin = (uint32_t)(ProgramManager_DrainStep_DrainTimeMin[MenuManager_DrainSetupTime_DrainStepIdx]);
+      MenuManager_DrainSetupTime_ValueMax = (uint32_t)(ProgramManager_DrainStep_DrainTimeMax[MenuManager_DrainSetupTime_DrainStepIdx]);
+      MenuManager_DrainSetupTime_Value = (uint32_t)(ProgramManager_gParamConfig.drainCfg.drainTime[MenuManager_DrainSetupTime_DrainStepIdx]);
 
       MenuManager_Common_DecToBcdConv
       (
@@ -402,10 +402,8 @@ static void MenuManager_DrainSetupTime_SubMainFunction(void)
 
       tempDrainSetupTime = (uint16_t)MenuManager_DrainSetupTime_Value;
 
-      ProgramManager_DrainSetup_DrainTime_SetData((uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, &tempDrainSetupTime);
-
-      ProgramManager_DrainSetup_DrainTime_GetData((uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, \
-                                                  &(ProgramManager_gParamConfig.drainCfg.drainStepCfg[MenuManager_DrainSetupTime_DrainStepIdx].drainTime));
+      MenuManager_Common_CheckDrainStepTimeConstraint(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, \
+                                                      (uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, &tempDrainSetupTime);
 
       MenuManager_DrainSetupTime_InternalState = MENUMANAGER_DRAINSETUPTIME_INTERNALSTATE_DONE;
       

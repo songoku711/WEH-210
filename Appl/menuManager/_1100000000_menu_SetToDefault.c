@@ -38,8 +38,8 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_SetDefaultParam_ChildTitleStr[] =    "PARAMS TO DEFAULT";
-static const uint8_t MenuManager_SetDefaultProg_ChildTitleStr[] =     "PROGS TO DEFAULT";
+static const uint8_t MenuManager_SetDefaultParam_ChildTitleStr[] =    "Params to Default";
+static const uint8_t MenuManager_SetDefaultProg_ChildTitleStr[] =     "Progs to Default";
 
 static const uint8_t MenuManager_SetToDefault_MainTitleStr[] =        "SET DEFAULT";
 

@@ -61,9 +61,30 @@ static float   ProgramManager_gRealPressure;
 
 
 
+const uint16_t ProgramManager_DrainStep_DrainTimeMin[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX] =
+{
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_FORWARD_DRAIN_MIN,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_BALANCE_DRAIN_MIN,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL1_DRAIN_MIN,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL2_DRAIN_MIN,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL3_DRAIN_MIN,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MIN
+};
+
+const uint16_t ProgramManager_DrainStep_DrainTimeMax[PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX] =
+{
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_FORWARD_DRAIN_MAX,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_BALANCE_DRAIN_MAX,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL1_DRAIN_MAX,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL2_DRAIN_MAX,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL3_DRAIN_MAX,
+  PROGRAMMANAGER_DRAINSETUP_DRAINTIME_EXTR_LVL4_DRAIN_MAX
+};
+
 uint8_t ProgramManager_gSensorInverterErr;
 uint8_t ProgramManager_gSensorImbalanceErr;
 uint8_t ProgramManager_gSensorDoorOpenErr;
+uint8_t ProgramManager_gSensorEmergencyErr;
 
 uint8_t ProgramManager_gCurrentTemperature;
 uint16_t ProgramManager_gCurrentPressure;
@@ -79,18 +100,13 @@ uint16_t ProgramManager_gCurrentWashRunTime;
 uint16_t ProgramManager_gCurrentWashStopTime;
 ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
 
-uint16_t ProgramManager_gCurrentDrainFirstDrainTime;
 uint16_t ProgramManager_gCurrentDrainForwardDrainTime;
 uint16_t ProgramManager_gCurrentDrainBalanceDrainTime;
 uint16_t ProgramManager_gCurrentDrainExtrLvl1DrainTime;
 uint16_t ProgramManager_gCurrentDrainExtrLvl2DrainTime;
 uint16_t ProgramManager_gCurrentDrainExtrLvl3DrainTime;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainFirstDrainSpeed;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainForwardDrainSpeed;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainBalanceDrainSpeed;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl1DrainSpeed;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl2DrainSpeed;
-ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl3DrainSpeed;
+uint16_t ProgramManager_gCurrentDrainExtrLvl4DrainTime;
+uint16_t ProgramManager_gCurrentDrainOffTime;
 
 
 
@@ -179,7 +195,23 @@ void ProgramManager_ControlInternal_AnalyzeSensorInput(void)
     ProgramManager_gSensorDoorOpenErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR;
   }
 
-  ProgramManager_gIsError = ProgramManager_gSensorInverterErr | ProgramManager_gSensorImbalanceErr | ProgramManager_gSensorDoorOpenErr;
+  eMB_Master_GetDiscretesInput
+  (
+    PROGRAMMANAGER_CONTROL_SLAVE_ADDR,
+    PROGRAMMANAGER_CONTROL_INPUT_SENSOR_EMERGENCY_ERR_OFFSET,
+    &tempValue
+  );
+
+  if (tempValue == ProgramManager_gParamConfig.inputStatusCfg.emergencyStop)
+  {
+    ProgramManager_gSensorEmergencyErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_ERROR;
+  }
+  else
+  {
+    ProgramManager_gSensorEmergencyErr = PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR;
+  }
+
+  ProgramManager_gIsError = ProgramManager_gSensorInverterErr | ProgramManager_gSensorImbalanceErr | ProgramManager_gSensorDoorOpenErr | ProgramManager_gSensorEmergencyErr;
 }
 
 /*=============================================================================================*/
@@ -354,22 +386,6 @@ void ProgramManager_ControlInternal_UpdateWashTime(void)
 
         break;
       }
-      case PROGRAMMANAGER_WASH_MODE_DELICATE:
-      {
-        ProgramManager_gCurrentWashRunTime = ProgramManager_gParamConfig.washCfg.delWashRunTime;
-        ProgramManager_gCurrentWashStopTime = ProgramManager_gParamConfig.washCfg.delWashStopTime;
-        ProgramManager_gCurrentWashSpeed = ProgramManager_gParamConfig.washCfg.delWashSpeed;
-
-        break;
-      }
-      case PROGRAMMANAGER_WASH_MODE_HEAVY:
-      {
-        ProgramManager_gCurrentWashRunTime = ProgramManager_gParamConfig.washCfg.hvyWashRunTime;
-        ProgramManager_gCurrentWashStopTime = ProgramManager_gParamConfig.washCfg.hvyWashStopTime;
-        ProgramManager_gCurrentWashSpeed = ProgramManager_gParamConfig.washCfg.hvyWashSpeed;
-
-        break;
-      }
       case PROGRAMMANAGER_WASH_MODE_CUSTOM:
       {
         ProgramManager_gCurrentWashRunTime = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washRunTime;
@@ -405,58 +421,41 @@ void ProgramManager_ControlInternal_UpdateDrainTimeSpeed(void)
     {
       case PROGRAMMANAGER_DRAIN_MODE_CUSTOM:
       {
-        ProgramManager_gCurrentDrainFirstDrainTime      = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX].drainTime;
+        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
+        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
         
-        ProgramManager_gCurrentDrainFirstDrainSpeed     = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainForwardDrainSpeed   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainBalanceDrainSpeed   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl1DrainSpeed  = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl2DrainSpeed  = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl3DrainSpeed  = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainStep[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX].drainSpeed;
-      
+        ProgramManager_gCurrentDrainOffTime             = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainOffTime;
         break;
       }
       case PROGRAMMANAGER_DRAIN_MODE_DEFAULT:
       default:
       {
-        ProgramManager_gCurrentDrainFirstDrainTime      = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX].drainTime;
-        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX].drainTime;
+        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
+        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+        ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
         
-        ProgramManager_gCurrentDrainFirstDrainSpeed     = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FIRST_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainForwardDrainSpeed   = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainBalanceDrainSpeed   = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl1DrainSpeed  = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl2DrainSpeed  = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX].drainSpeed;
-        ProgramManager_gCurrentDrainExtrLvl3DrainSpeed  = ProgramManager_gParamConfig.drainCfg.drainStepCfg[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX].drainSpeed;
-      
+        ProgramManager_gCurrentDrainOffTime             = ProgramManager_gParamConfig.drainCfg.drainOffTime;
         break;
       }
     }
   }
   else
   {
-    ProgramManager_gCurrentDrainFirstDrainTime      = (uint16_t)0U;
     ProgramManager_gCurrentDrainForwardDrainTime    = (uint16_t)0U;
     ProgramManager_gCurrentDrainBalanceDrainTime    = (uint16_t)0U;
     ProgramManager_gCurrentDrainExtrLvl1DrainTime   = (uint16_t)0U;
     ProgramManager_gCurrentDrainExtrLvl2DrainTime   = (uint16_t)0U;
     ProgramManager_gCurrentDrainExtrLvl3DrainTime   = (uint16_t)0U;
-    
-    ProgramManager_gCurrentDrainFirstDrainSpeed     = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-    ProgramManager_gCurrentDrainForwardDrainSpeed   = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-    ProgramManager_gCurrentDrainBalanceDrainSpeed   = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-    ProgramManager_gCurrentDrainExtrLvl1DrainSpeed  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-    ProgramManager_gCurrentDrainExtrLvl2DrainSpeed  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
-    ProgramManager_gCurrentDrainExtrLvl3DrainSpeed  = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
+    ProgramManager_gCurrentDrainExtrLvl4DrainTime   = (uint16_t)0U;
+
+    ProgramManager_gCurrentDrainOffTime             = (uint16_t)0U;
   }
 }
 

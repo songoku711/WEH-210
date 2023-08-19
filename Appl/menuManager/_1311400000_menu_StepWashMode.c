@@ -55,9 +55,7 @@ extern "C" {
 #define MENUMANAGER_STEPWASHMODE_COUNTER_MAX                          (uint32_t)50U
 
 #define MENUMANAGER_STEPWASHMODE_LISTINDEX_STANDARD                   (uint32_t)0U
-#define MENUMANAGER_STEPWASHMODE_LISTINDEX_DELICATE                   (uint32_t)1U
-#define MENUMANAGER_STEPWASHMODE_LISTINDEX_HEAVY                      (uint32_t)2U
-#define MENUMANAGER_STEPWASHMODE_LISTINDEX_CUSTOM                     (uint32_t)3U
+#define MENUMANAGER_STEPWASHMODE_LISTINDEX_CUSTOM                     (uint32_t)1U
 #define MENUMANAGER_STEPWASHMODE_LISTINDEX_UNDEFINED                  (uint32_t)255U
 
 
@@ -69,11 +67,9 @@ typedef struct
   ProgramManager_WashModeType mapValue;
 } MenuManager_StepWashMode_IntValMapStruct;
 
-static MenuManager_StepWashMode_IntValMapStruct MenuManager_StepWashMode_IntValMapConf[4] =
+static MenuManager_StepWashMode_IntValMapStruct MenuManager_StepWashMode_IntValMapConf[2] =
 {
   { MENUMANAGER_STEPWASHMODE_LISTINDEX_STANDARD,                      PROGRAMMANAGER_WASH_MODE_STANDARD       },
-  { MENUMANAGER_STEPWASHMODE_LISTINDEX_DELICATE,                      PROGRAMMANAGER_WASH_MODE_DELICATE       },
-  { MENUMANAGER_STEPWASHMODE_LISTINDEX_HEAVY,                         PROGRAMMANAGER_WASH_MODE_HEAVY          },
   { MENUMANAGER_STEPWASHMODE_LISTINDEX_CUSTOM,                        PROGRAMMANAGER_WASH_MODE_CUSTOM         }
 };
 
@@ -82,25 +78,21 @@ static MenuManager_StepWashMode_IntValMapStruct MenuManager_StepWashMode_IntValM
 
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_StepWashMode_StandardStr[] =         "STANDARD";
-static const uint8_t MenuManager_StepWashMode_DelicateStr[] =         "DELICATE";
-static const uint8_t MenuManager_StepWashMode_HeavyStr[] =            "HEAVY";
 static const uint8_t MenuManager_StepWashMode_CustomStr[] =           "CUSTOM";
 
 static const uint8_t MenuManager_StepWashMode_MainTitleStr[] =        "WASH MODE";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_StepWashMode_ChildMenu[4] =
+static MenuManager_ChildMenuStruct MenuManager_StepWashMode_ChildMenu[2] =
 {
   { &MenuManager_StepWashMode_StandardStr,                            MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_StepWashMode_DelicateStr,                            MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_StepWashMode_HeavyStr,                               MENUMANAGER_EVENT_PREV                  },
   { &MenuManager_StepWashMode_CustomStr,                              MENUMANAGER_EVENT_SUBMENU_1             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_StepWashMode_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)4U,
+  .childMenuNum               = (uint8_t)2U,
   .childMenuCfg               = &MenuManager_StepWashMode_ChildMenu
 };
 

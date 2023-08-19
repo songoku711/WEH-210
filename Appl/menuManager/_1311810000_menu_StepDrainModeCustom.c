@@ -42,30 +42,32 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_StepFirstDrainParam_ChildTitleStr[] =    "FIRST DRAIN";
-static const uint8_t MenuManager_StepForwardDrainParam_ChildTitleStr[] =  "FWD DRAIN";
-static const uint8_t MenuManager_StepBalanceDrainParam_ChildTitleStr[] =  "BAL DRAIN";
-static const uint8_t MenuManager_StepExtrLvl1DrainParam_ChildTitleStr[] = "EXTR LV.1 DRAIN";
-static const uint8_t MenuManager_StepExtrLvl2DrainParam_ChildTitleStr[] = "EXTR LV.2 DRAIN";
-static const uint8_t MenuManager_StepExtrLvl3DrainParam_ChildTitleStr[] = "EXTR LV.3 DRAIN";
+static const uint8_t MenuManager_StepForwardDrainParam_ChildTitleStr[] =  "Forward Drain";
+static const uint8_t MenuManager_StepBalanceDrainParam_ChildTitleStr[] =  "Balance Drain";
+static const uint8_t MenuManager_StepExtrLvl1DrainParam_ChildTitleStr[] = "Extr Lv.1 Drain";
+static const uint8_t MenuManager_StepExtrLvl2DrainParam_ChildTitleStr[] = "Extr Lv.2 Drain";
+static const uint8_t MenuManager_StepExtrLvl3DrainParam_ChildTitleStr[] = "Extr Lv.3 Drain";
+static const uint8_t MenuManager_StepExtrLvl4DrainParam_ChildTitleStr[] = "Extr Lv.4 Drain";
+static const uint8_t MenuManager_StepDrainOffTime_ChildTitleStr[] =       "Drain Off";
 
 static const uint8_t MenuManager_StepDrainModeCustom_MainTitleStr[] = "DRAIN STEP";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_StepDrainModeCustom_ChildMenu[6] =
+static MenuManager_ChildMenuStruct MenuManager_StepDrainModeCustom_ChildMenu[7] =
 {
-  { &MenuManager_StepFirstDrainParam_ChildTitleStr,                   MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_StepForwardDrainParam_ChildTitleStr,                 MENUMANAGER_EVENT_SUBMENU_2             },
-  { &MenuManager_StepBalanceDrainParam_ChildTitleStr,                 MENUMANAGER_EVENT_SUBMENU_3             },
-  { &MenuManager_StepExtrLvl1DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_StepExtrLvl2DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_5             },
-  { &MenuManager_StepExtrLvl3DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_6             }
+  { &MenuManager_StepForwardDrainParam_ChildTitleStr,                 MENUMANAGER_EVENT_SUBMENU_1             },
+  { &MenuManager_StepBalanceDrainParam_ChildTitleStr,                 MENUMANAGER_EVENT_SUBMENU_2             },
+  { &MenuManager_StepExtrLvl1DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_3             },
+  { &MenuManager_StepExtrLvl2DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_4             },
+  { &MenuManager_StepExtrLvl3DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_5             },
+  { &MenuManager_StepExtrLvl4DrainParam_ChildTitleStr,                MENUMANAGER_EVENT_SUBMENU_6             },
+  { &MenuManager_StepDrainOffTime_ChildTitleStr,                      MENUMANAGER_EVENT_SUBMENU_7             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_StepDrainModeCustom_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)6U,
+  .childMenuNum               = (uint8_t)7U,
   .childMenuCfg               = &MenuManager_StepDrainModeCustom_ChildMenu
 };
 
@@ -97,15 +99,16 @@ static Fsm_GuardType MenuManager_StepDrainModeCustom_UpBut            (Fsm_Conte
 static Fsm_GuardType MenuManager_StepDrainModeCustom_DownBut          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_StepDrainModeCustom_StateMachine[11] =
+Fsm_EventEntryStruct MenuManager_StepDrainModeCustom_StateMachine[12] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepDrainModeCustom_Entry                                            ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM  ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME   ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_STEP_DRAIN_OFF_TIME    ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepDrainModeCustom_UpBut                                            ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepDrainModeCustom_DownBut                                          ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepDrainModeCustom_StartBut                                         ),
@@ -181,7 +184,8 @@ static Fsm_GuardType MenuManager_StepDrainModeCustom_Entry(Fsm_ContextStructPtr 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM)
+    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_TIME) || \
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_OFF_TIME))
     {
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);

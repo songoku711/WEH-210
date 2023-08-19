@@ -56,12 +56,12 @@ extern "C" {
 
 #define PROGRAMMANAGER_AUTORUNDRAIN_EVENT_POST_RUN                    PROGRAMMANAGER_EVENT_SUBMENU_1
 
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FIRSTDRAIN             0U
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FORWARDDRAIN           1U
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_BALANCEDRAIN           2U
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL1DRAIN          3U
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL2DRAIN          4U
-#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL3DRAIN          5U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FORWARDDRAIN           0U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_BALANCEDRAIN           1U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL1DRAIN          2U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL2DRAIN          3U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL3DRAIN          4U
+#define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL4DRAIN          5U
 #define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_OFFDRAIN               6U
 #define PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_MAX                    7U
 
@@ -188,29 +188,16 @@ static void ProgramManager_AutoRunDrain_InternalCheckMotorCondition(void)
 
     switch (ProgramManager_AutoRunDrain_DrainLevel)
     {
-      case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FIRSTDRAIN:
-        ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
-        ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainFirstDrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainFirstDrainSpeed;
-        ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
-        break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FORWARDDRAIN:
         ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
         ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainForwardDrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainForwardDrainSpeed;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_CLOSE;
         break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_BALANCEDRAIN:
-        if (ProgramManager_gParamConfig.machineFuncCfg.washMachine == PROGRAMMANAGER_WASHING_MACHINE_MOTOR)
-        {
-          ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_STOP;
-        }
-        else
-        {
-          ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
-        }
+        ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
         ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainBalanceDrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainBalanceDrainSpeed;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_CLOSE;
         break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL1DRAIN:
@@ -223,7 +210,7 @@ static void ProgramManager_AutoRunDrain_InternalCheckMotorCondition(void)
           ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
         }
         ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainExtrLvl1DrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainExtrLvl1DrainSpeed;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_1;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
         break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL2DRAIN:
@@ -236,7 +223,7 @@ static void ProgramManager_AutoRunDrain_InternalCheckMotorCondition(void)
           ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
         }
         ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainExtrLvl2DrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainExtrLvl2DrainSpeed;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_2;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
         break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL3DRAIN:
@@ -249,12 +236,25 @@ static void ProgramManager_AutoRunDrain_InternalCheckMotorCondition(void)
           ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
         }
         ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainExtrLvl3DrainTime;
-        ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainExtrLvl3DrainSpeed;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_3;
+        ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
+        break;
+      case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_EXTRLVL4DRAIN:
+        if (ProgramManager_gParamConfig.machineFuncCfg.washMachine == PROGRAMMANAGER_WASHING_MACHINE_MOTOR)
+        {
+          ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_STOP;
+        }
+        else
+        {
+          ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
+        }
+        ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainExtrLvl4DrainTime;
+        ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_4;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
         break;
       case PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_OFFDRAIN:
         ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_STOP;
-        ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gParamConfig.drainCfg.drainOffTime;
+        ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainOffTime;
         ProgramManager_AutoRunDrain_MotorSpeed = (uint32_t)PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
         ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
         break;
@@ -341,25 +341,11 @@ static void ProgramManager_AutoRunDrain_InternalControlOutput(void)
   /* Control drain valve */
   if (ProgramManager_AutoRunDrain_DrainValveState == PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN)
   {
-    if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
-    {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-    }
-    else
-    {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-    }
+    ProgramManager_Control_DrainOpenHandler();
   }
   else
   {
-    if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
-    {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-    }
-    else
-    {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-    }
+    ProgramManager_Control_DrainCloseHandler();
   }
 }
 
@@ -395,13 +381,13 @@ static Fsm_GuardType ProgramManager_AutoRunDrain_Entry(Fsm_ContextStructPtr cons
 
     ProgramManager_AutoRunDrain_OneSecondElapsed = (uint32_t)0U;
 
-    ProgramManager_AutoRunDrain_DrainLevel = PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FIRSTDRAIN;
+    ProgramManager_AutoRunDrain_DrainLevel = PROGRAMMANAGER_AUTORUNDRAIN_DRAINLEVEL_FORWARDDRAIN;
 
     ProgramManager_AutoRunDrain_MotorCounter = (uint32_t)0U;
 
     ProgramManager_AutoRunDrain_MotorState = PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD;
-    ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainFirstDrainTime;
-    ProgramManager_AutoRunDrain_MotorSpeed = ProgramManager_gCurrentDrainFirstDrainSpeed;
+    ProgramManager_AutoRunDrain_MotorCounterMax = ProgramManager_gCurrentDrainForwardDrainTime;
+    ProgramManager_AutoRunDrain_MotorSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
 
     ProgramManager_AutoRunDrain_DrainValveState = PROGRAMMANAGER_AUTORUNDRAIN_DRAINVALVESTATE_OPEN;
 

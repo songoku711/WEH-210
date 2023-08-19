@@ -38,9 +38,9 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_TempThreshold_ChildTitleStr[] =      "TEMP THRESHOLD";
-static const uint8_t MenuManager_TempDiffReheat_ChildTitleStr[] =     "TEMP DIFF REHEAT";
-static const uint8_t MenuManager_MaxTimeHeat_ChildTitleStr[] =        "MAX TIME HEAT";
+static const uint8_t MenuManager_TempThreshold_ChildTitleStr[] =      "Temp Threshold";
+static const uint8_t MenuManager_TempDiffReheat_ChildTitleStr[] =     "Temp Diff Reheat";
+static const uint8_t MenuManager_MaxTimeHeat_ChildTitleStr[] =        "Max Time Heat";
 
 static const uint8_t MenuManager_HeatTempSetup_MainTitleStr[] =       "HEAT AND TEMP";
 

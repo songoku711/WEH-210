@@ -38,18 +38,18 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_SetToDefault_ChildTitleStr[] =       "SET TO DEFAULT";
-static const uint8_t MenuManager_MachineSetup_ChildTitleStr[] =       "MACHINE SETUP";
-static const uint8_t MenuManager_ProgramSetup_ChildTitleStr[] =       "PROGRAM SETUP";
+static const uint8_t MenuManager_ProgramSetup_ChildTitleStr[] =       "Program Setup";
+static const uint8_t MenuManager_SetToDefault_ChildTitleStr[] =       "Set to Default";
+static const uint8_t MenuManager_MachineSetup_ChildTitleStr[] =       "Machine Setup";
 
 static const uint8_t MenuManager_MainSetting_MainTitleStr[] =         "SETTING";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_MainSetting_ChildMenu[3] =
 {
-  { &MenuManager_SetToDefault_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_1             },
+  { &MenuManager_ProgramSetup_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_MachineSetup_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_2             },
-  { &MenuManager_ProgramSetup_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_3             }
+  { &MenuManager_SetToDefault_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_3             }
 };
 
 /** Menu manager child menu configuration */
@@ -90,9 +90,9 @@ static Fsm_GuardType MenuManager_MainSetting_DownBut                  (Fsm_Conte
 Fsm_EventEntryStruct MenuManager_MainSetting_StateMachine[8] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_MainSetting_Entry                                                   ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_SET_TO_DEFAULT        ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_PROGRAM_SETUP         ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_MACHINE_SETUP         ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_PROGRAM_SETUP         ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_SET_TO_DEFAULT        ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_MainSetting_UpBut                                                   ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_MainSetting_DownBut                                                 ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_MainSetting_StartBut                                                ),

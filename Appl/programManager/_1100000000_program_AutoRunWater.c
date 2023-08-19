@@ -420,15 +420,8 @@ static void ProgramManager_AutoRunWater_InternalControlOutput(void)
   ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
                                       ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
 
-  /* Control drain valve - always close */
-  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
-  {
-    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK);
-  }
+  /* Control drain valve - always CLOSE */
+  ProgramManager_Control_DrainCloseHandler();
 }
 
 /*=============================================================================================*/

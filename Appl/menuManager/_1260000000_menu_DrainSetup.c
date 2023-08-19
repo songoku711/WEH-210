@@ -38,28 +38,28 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_FirstDrainParam_ChildTitleStr[] =    "FIRST DRAIN";
-static const uint8_t MenuManager_ForwardDrainParam_ChildTitleStr[] =  "FWD DRAIN";
-static const uint8_t MenuManager_BalanceDrainParam_ChildTitleStr[] =  "BAL DRAIN";
-static const uint8_t MenuManager_ExtrLvl1DrainParam_ChildTitleStr[] = "EXTR LV.1 DRAIN";
-static const uint8_t MenuManager_ExtrLvl2DrainParam_ChildTitleStr[] = "EXTR LV.2 DRAIN";
-static const uint8_t MenuManager_ExtrLvl3DrainParam_ChildTitleStr[] = "EXTR LV.3 DRAIN";
-static const uint8_t MenuManager_DrainOffTime_ChildTitleStr[] =       "DRAIN OFF TIME";
-static const uint8_t MenuManager_MaxDrainExtrTime_ChildTitleStr[] =   "MAX DRAIN EX.TIME";
-static const uint8_t MenuManager_ReDrainExtrTime_ChildTitleStr[] =    "REDRAIN EX.TIME";
-static const uint8_t MenuManager_MaxDrainExtrSpeed_ChildTitleStr[] =  "MAX DRAIN EX.SPEED";
+static const uint8_t MenuManager_ForwardDrainParam_ChildTitleStr[] =  "Forward Drain";
+static const uint8_t MenuManager_BalanceDrainParam_ChildTitleStr[] =  "Balance Drain";
+static const uint8_t MenuManager_ExtrLvl1DrainParam_ChildTitleStr[] = "Extr Lv.1 Drain";
+static const uint8_t MenuManager_ExtrLvl2DrainParam_ChildTitleStr[] = "Extr Lv.2 Drain";
+static const uint8_t MenuManager_ExtrLvl3DrainParam_ChildTitleStr[] = "Extr Lv.3 Drain";
+static const uint8_t MenuManager_ExtrLvl4DrainParam_ChildTitleStr[] = "Extr Lv.4 Drain";
+static const uint8_t MenuManager_DrainOffTime_ChildTitleStr[] =       "Drain Off Time";
+static const uint8_t MenuManager_MaxDrainExtrTime_ChildTitleStr[] =   "Max Drain Ex.time";
+static const uint8_t MenuManager_ReDrainExtrTime_ChildTitleStr[] =    "Redrain Ex.time";
+static const uint8_t MenuManager_MaxDrainExtrSpeed_ChildTitleStr[] =  "Max Drain Ex.speed";
 
-static const uint8_t MenuManager_DrainSetup_MainTitleStr[] =          "DRAIN SETUP";
+static const uint8_t MenuManager_DrainSetup_MainTitleStr[] =          "DRAIN";
 
 /** Menu manager child menu array */
 static MenuManager_ChildMenuStruct MenuManager_DrainSetup_ChildMenu[10] =
 {
-  { &MenuManager_FirstDrainParam_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_1             },
-  { &MenuManager_ForwardDrainParam_ChildTitleStr,                     MENUMANAGER_EVENT_SUBMENU_2             },
-  { &MenuManager_BalanceDrainParam_ChildTitleStr,                     MENUMANAGER_EVENT_SUBMENU_3             },
-  { &MenuManager_ExtrLvl1DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_ExtrLvl2DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_5             },
-  { &MenuManager_ExtrLvl3DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_6             },
+  { &MenuManager_ForwardDrainParam_ChildTitleStr,                     MENUMANAGER_EVENT_SUBMENU_1             },
+  { &MenuManager_BalanceDrainParam_ChildTitleStr,                     MENUMANAGER_EVENT_SUBMENU_2             },
+  { &MenuManager_ExtrLvl1DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_3             },
+  { &MenuManager_ExtrLvl2DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_4             },
+  { &MenuManager_ExtrLvl3DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_5             },
+  { &MenuManager_ExtrLvl4DrainParam_ChildTitleStr,                    MENUMANAGER_EVENT_SUBMENU_6             },
   { &MenuManager_DrainOffTime_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_7             },
   { &MenuManager_MaxDrainExtrTime_ChildTitleStr,                      MENUMANAGER_EVENT_SUBMENU_8             },
   { &MenuManager_ReDrainExtrTime_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_9             },
@@ -94,22 +94,22 @@ static MenuManager_ButEventMapConfStruct MenuManager_DrainSetup_ButEventMapConf 
 
 
 /** Menu manager event handlers */
-static Fsm_GuardType MenuManager_DrainSetup_Entry                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainSetup_StartBut                (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainSetup_StopBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainSetup_UpBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_DrainSetup_DownBut                 (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainSetup_Entry                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainSetup_StartBut                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainSetup_StopBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainSetup_UpBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_DrainSetup_DownBut                   (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
 Fsm_EventEntryStruct MenuManager_DrainSetup_StateMachine[15] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_DrainSetup_Entry                                                    ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_DRAIN_SETUP_PARAM     ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_DRAIN_SETUP_TIME      ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_DRAIN_OFF_TIME        ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_MAX_DRAIN_EXTRACT_TIME),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_9,                                                MENUMANAGER_STATE_REDRAIN_EXTRACT_TIME  ),
@@ -188,7 +188,7 @@ static Fsm_GuardType MenuManager_DrainSetup_Entry(Fsm_ContextStructPtr const pFs
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP_PARAM       )  || \
+    if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_SETUP_TIME        )  || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DRAIN_OFF_TIME          )  || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_MAX_DRAIN_EXTRACT_TIME  )  || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_REDRAIN_EXTRACT_TIME    )  || \
@@ -242,7 +242,7 @@ static Fsm_GuardType MenuManager_DrainSetup_StartBut(Fsm_ContextStructPtr const 
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  if ((*(MenuManager_DrainSetup_ChildMenuConf.childMenuCfg))[MenuManager_DrainSetup_ListIndex].childMenuEvent != MENUMANAGER_STATE_DRAIN_SETUP_PARAM)
+  if ((*(MenuManager_DrainSetup_ChildMenuConf.childMenuCfg))[MenuManager_DrainSetup_ListIndex].childMenuEvent != MENUMANAGER_STATE_DRAIN_SETUP_TIME)
   {
     defaultDataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
     defaultDataHierachy->dataId = MENUMANAGER_STATE_DRAIN_SETUP;

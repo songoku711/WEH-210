@@ -38,36 +38,24 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_StdWashRunTime_ChildTitleStr[] =     "STD WASH RUN TIME";
-static const uint8_t MenuManager_StdWashStopTime_ChildTitleStr[] =    "STD WASH STOP TIME";
-static const uint8_t MenuManager_DelWashRunTime_ChildTitleStr[] =     "DEL WASH RUN TIME";
-static const uint8_t MenuManager_DelWashStopTime_ChildTitleStr[] =    "DEL WASH STOP TIME";
-static const uint8_t MenuManager_HvyWashRunTime_ChildTitleStr[] =     "HVY WASH RUN TIME";
-static const uint8_t MenuManager_HvyWashStopTime_ChildTitleStr[] =    "HVY WASH STOP TIME";
-static const uint8_t MenuManager_StdWashSpeed_ChildTitleStr[] =       "STD WASH SPEED";
-static const uint8_t MenuManager_DelWashSpeed_ChildTitleStr[] =       "DEL WASH SPEED";
-static const uint8_t MenuManager_HvyWashSpeed_ChildTitleStr[] =       "HVY WASH SPEED";
+static const uint8_t MenuManager_StdWashRunTime_ChildTitleStr[] =     "Spin Time";
+static const uint8_t MenuManager_StdWashStopTime_ChildTitleStr[] =    "Stop Time";
+static const uint8_t MenuManager_StdWashSpeed_ChildTitleStr[] =       "Speed";
 
 static const uint8_t MenuManager_WashSetup_MainTitleStr[] =           "WASH SETUP";
 
 /** Menu manager child menu array */
-static MenuManager_ChildMenuStruct MenuManager_WashSetup_ChildMenu[9] =
+static MenuManager_ChildMenuStruct MenuManager_WashSetup_ChildMenu[3] =
 {
   { &MenuManager_StdWashRunTime_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_1             },
   { &MenuManager_StdWashStopTime_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_2             },
-  { &MenuManager_DelWashRunTime_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_3             },
-  { &MenuManager_DelWashStopTime_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_4             },
-  { &MenuManager_HvyWashRunTime_ChildTitleStr,                        MENUMANAGER_EVENT_SUBMENU_5             },
-  { &MenuManager_HvyWashStopTime_ChildTitleStr,                       MENUMANAGER_EVENT_SUBMENU_6             },
-  { &MenuManager_StdWashSpeed_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_7             },
-  { &MenuManager_DelWashSpeed_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_8             },
-  { &MenuManager_HvyWashSpeed_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_9             }
+  { &MenuManager_StdWashSpeed_ChildTitleStr,                          MENUMANAGER_EVENT_SUBMENU_3             }
 };
 
 /** Menu manager child menu configuration */
 static MenuManager_ChildMenuConfStruct MenuManager_WashSetup_ChildMenuConf =
 {
-  .childMenuNum               = (uint8_t)9U,
+  .childMenuNum               = (uint8_t)3U,
   .childMenuCfg               = &MenuManager_WashSetup_ChildMenu
 };
 
@@ -99,18 +87,12 @@ static Fsm_GuardType MenuManager_WashSetup_UpBut                      (Fsm_Conte
 static Fsm_GuardType MenuManager_WashSetup_DownBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_WashSetup_StateMachine[14] =
+Fsm_EventEntryStruct MenuManager_WashSetup_StateMachine[8] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_WashSetup_Entry                                                     ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_1,                                                MENUMANAGER_STATE_STD_WASH_RUN_TIME     ),
   FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_2,                                                MENUMANAGER_STATE_STD_WASH_STOP_TIME    ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_DEL_WASH_RUN_TIME     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_4,                                                MENUMANAGER_STATE_DEL_WASH_STOP_TIME    ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_5,                                                MENUMANAGER_STATE_HVY_WASH_RUN_TIME     ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_6,                                                MENUMANAGER_STATE_HVY_WASH_STOP_TIME    ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_7,                                                MENUMANAGER_STATE_STD_WASH_SPEED        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_8,                                                MENUMANAGER_STATE_DEL_WASH_SPEED        ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_9,                                                MENUMANAGER_STATE_HVY_WASH_SPEED        ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_SUBMENU_3,                                                MENUMANAGER_STATE_STD_WASH_SPEED        ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_WashSetup_UpBut                                                     ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_WashSetup_DownBut                                                   ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_WashSetup_StartBut                                                  ),
@@ -187,13 +169,7 @@ static Fsm_GuardType MenuManager_WashSetup_Entry(Fsm_ContextStructPtr const pFsm
   {
     if ((pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STD_WASH_RUN_TIME)  || \
         (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STD_WASH_STOP_TIME) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DEL_WASH_RUN_TIME)  || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DEL_WASH_STOP_TIME) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_HVY_WASH_RUN_TIME)  || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_HVY_WASH_STOP_TIME) || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STD_WASH_SPEED)     || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_DEL_WASH_SPEED)     || \
-        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_HVY_WASH_SPEED))
+        (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STD_WASH_SPEED))
     {
       /* Release previous state data hierachy */
       MenuManager_free(pFsmContext->dataHierachy);

@@ -75,7 +75,7 @@ static const uint8_t MenuManager_DoorClosed_MainTitleStr[] =          "DOOR CLOS
 static MenuManager_ChildMenuStruct MenuManager_DoorClosed_ChildMenu[2] =
 {
   { &MenuManager_Common_NormalOffStr,                                 MENUMANAGER_EVENT_PREV                  },
-  { &MenuManager_Common_NormalOnStr,                                MENUMANAGER_EVENT_PREV                  }
+  { &MenuManager_Common_NormalOnStr,                                  MENUMANAGER_EVENT_PREV                  }
 };
 
 /** Menu manager child menu configuration */

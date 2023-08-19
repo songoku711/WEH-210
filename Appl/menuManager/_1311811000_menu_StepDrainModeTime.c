@@ -1,5 +1,5 @@
 /* 
- * File:   _1311811100_menu_StepDrainModeTime.c
+ * File:   _1311811000_menu_StepDrainModeTime.c
  * Author: Long
  *
  * Created on September 15, 2019, 11:06 AM
@@ -110,9 +110,9 @@ Fsm_EventEntryStruct MenuManager_StepDrainModeTime_StateMachine[9] =
 {
   FSM_TRIGGER_ENTRY             (                                     MenuManager_StepDrainModeTime_Entry                                             ),
   FSM_TRIGGER_EXIT              (                                     MenuManager_StepDrainModeTime_Exit                                              ),
-  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM ),
+  FSM_TRIGGER_TRANSITION        ( MENUMANAGER_EVENT_PREV,                                                     MENUMANAGER_STATE_STEP_DRAIN_MODE_CUSTOM),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_START_BUT,        MenuManager_StepDrainModeTime_StartBut                                          ),
-  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepDrainModeTime_StopBut,  MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM ),
+  FSM_TRIGGER_TRANSITION_ACTION ( MENUMANAGER_EVENT_STOP_BUT,         MenuManager_StepDrainModeTime_StopBut,  MENUMANAGER_STATE_STEP_DRAIN_MODE_CUSTOM),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_UP_BUT,           MenuManager_StepDrainModeTime_UpBut                                             ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_DOWN_BUT,         MenuManager_StepDrainModeTime_DownBut                                           ),
   FSM_TRIGGER_INTERNAL          ( MENUMANAGER_EVENT_ADD_BUT,          MenuManager_StepDrainModeTime_AddBut                                            ),
@@ -198,13 +198,13 @@ static void MenuManager_StepDrainModeTime_LcdShowDone(void)
 static Fsm_GuardType MenuManager_StepDrainModeTime_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
   MenuManager_Common_ProgramSetupStruct* enterDataHierachy;
-  uint16_t tempDrainTime;
+  uint16_t tempStepDrainTime;
   HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_PARAM)
+    if (pFsmContext->dataHierachy->dataId == MENUMANAGER_STATE_STEP_DRAIN_MODE_CUSTOM)
     {
       enterDataHierachy = (MenuManager_Common_ProgramSetupStruct *)(pFsmContext->dataHierachy);
 
@@ -218,17 +218,17 @@ static Fsm_GuardType MenuManager_StepDrainModeTime_Entry(Fsm_ContextStructPtr co
       MenuManager_StepDrainModeTime_Counter = (uint32_t)0U;
       MenuManager_StepDrainModeTime_CurPos = (uint32_t)0U;
 
-      ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetData \
+      ProgramManager_NormStepConfig_DrainTime_GetData \
       ( \
         (uint8_t)MenuManager_StepDrainModeTime_SeqIdx,   \
         (uint8_t)MenuManager_StepDrainModeTime_StepIdx,  \
         (uint8_t)MenuManager_StepDrainModeTime_DrainIdx, \
-        &tempDrainTime \
+        &tempStepDrainTime \
       );
 
-      MenuManager_StepDrainModeTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN;
-      MenuManager_StepDrainModeTime_ValueMax = (uint32_t)(ProgramManager_gParamConfig.drainCfg.maxDrainExtrTime);
-      MenuManager_StepDrainModeTime_Value = (uint32_t)(tempDrainTime);
+      MenuManager_StepDrainModeTime_ValueMin = (uint32_t)ProgramManager_DrainStep_DrainTimeMin[MenuManager_StepDrainModeTime_DrainIdx];
+      MenuManager_StepDrainModeTime_ValueMax = (uint32_t)ProgramManager_DrainStep_DrainTimeMax[MenuManager_StepDrainModeTime_DrainIdx];
+      MenuManager_StepDrainModeTime_Value = (uint32_t)(tempStepDrainTime);
 
       MenuManager_Common_DecToBcdConv
       (
@@ -411,30 +411,19 @@ static void MenuManager_StepDrainModeTime_SubMainFunction(void)
       break;
     case MENUMANAGER_STEPDRAINMODETIME_INTERNALSTATE_RUNNING:
     {
-      uint16_t tempDrainTime;
+      uint16_t tempStepDrainTime;
 
       MenuManager_Common_BcdToDecConv(&(MenuManager_StepDrainModeTime_Value), &(MenuManager_StepDrainModeTime_UnitVal(0)), (uint8_t)MENUMANAGER_STEPDRAINMODETIME_UNITVAL_LENGTH);
 
-      tempDrainTime = (uint16_t)MenuManager_StepDrainModeTime_Value;
+      tempStepDrainTime = (uint16_t)MenuManager_StepDrainModeTime_Value;
 
-      ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_SetData \
+      MenuManager_Common_CheckDrainStepTimeConstraint \
       ( \
         (uint8_t)MenuManager_StepDrainModeTime_SeqIdx,   \
         (uint8_t)MenuManager_StepDrainModeTime_StepIdx,  \
         (uint8_t)MenuManager_StepDrainModeTime_DrainIdx, \
-        &tempDrainTime \
+        &tempStepDrainTime \
       );
-
-      if ((uint8_t)MenuManager_StepDrainModeTime_SeqIdx == ProgramManager_gAutoSeqConfig.sequenceIndex)
-      {
-        ProgramManager_NormStepConfig_DrainStepConfig_DrainTime_GetData \
-        ( \
-          (uint8_t)MenuManager_StepDrainModeTime_SeqIdx,   \
-          (uint8_t)MenuManager_StepDrainModeTime_StepIdx,  \
-          (uint8_t)MenuManager_StepDrainModeTime_DrainIdx, \
-          &(ProgramManager_gAutoSeqConfig.normStep[MenuManager_StepDrainModeTime_StepIdx].drainStep[MenuManager_StepDrainModeTime_DrainIdx].drainTime) \
-        );
-      }
 
       MenuManager_StepDrainModeTime_InternalState = MENUMANAGER_STEPDRAINMODETIME_INTERNALSTATE_DONE;
       

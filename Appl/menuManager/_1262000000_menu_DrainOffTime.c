@@ -208,8 +208,8 @@ static Fsm_GuardType MenuManager_DrainOffTime_Entry(Fsm_ContextStructPtr const p
       MenuManager_DrainOffTime_Counter = (uint32_t)0U;
       MenuManager_DrainOffTime_CurPos = (uint32_t)0U;
 
-      MenuManager_DrainOffTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MIN;
-      MenuManager_DrainOffTime_ValueMax = (uint32_t)PROGRAMMANAGER_DRAINSETUP_COMMON_TIME_MAX;
+      MenuManager_DrainOffTime_ValueMin = (uint32_t)PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_MIN;
+      MenuManager_DrainOffTime_ValueMax = (uint32_t)PROGRAMMANAGER_DRAINSETUP_DRAINOFFTIME_MAX;
       MenuManager_DrainOffTime_Value = (uint32_t)(ProgramManager_gParamConfig.drainCfg.drainOffTime);
 
       MenuManager_Common_DecToBcdConv

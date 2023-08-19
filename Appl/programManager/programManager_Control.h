@@ -39,6 +39,7 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_INVERTER_ERR_OFFSET       0U
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_IMBALANCE_ERR_OFFSET      1U
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_DOOROPEN_ERR_OFFSET       2U
+#define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_EMERGENCY_ERR_OFFSET      3U
 
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR                  (uint8_t)0U
 #define PROGRAMMANAGER_CONTROL_INPUT_SENSOR_ERROR                     (uint8_t)1U
@@ -97,6 +98,30 @@ extern "C" {
 
 
 
+/* Drain valve open definition */
+#define ProgramManager_Control_DrainOpenHandler() \
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO) \
+  { \
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK); \
+  } \
+  else \
+  { \
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK); \
+  }
+
+/* Drain valve close definition */
+#define ProgramManager_Control_DrainCloseHandler() \
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO) \
+  { \
+    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK); \
+  } \
+  else \
+  { \
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK); \
+  }
+
+
+
 typedef struct 
 {
   uint32_t dataId;
@@ -127,9 +152,12 @@ typedef struct
 *                                       GLOBAL VARIABLES
 ===============================================================================================*/
 
+extern const uint16_t ProgramManager_DrainStep_DrainTimeMin[];
+extern const uint16_t ProgramManager_DrainStep_DrainTimeMax[];
 extern uint8_t ProgramManager_gSensorInverterErr;
 extern uint8_t ProgramManager_gSensorImbalanceErr;
 extern uint8_t ProgramManager_gSensorDoorOpenErr;
+extern uint8_t ProgramManager_gSensorEmergencyErr;
 
 extern uint8_t ProgramManager_gCurrentTemperature;
 extern uint16_t ProgramManager_gCurrentPressure;
@@ -145,18 +173,13 @@ extern uint16_t ProgramManager_gCurrentWashRunTime;
 extern uint16_t ProgramManager_gCurrentWashStopTime;
 extern ProgramManager_MotorSpeedType ProgramManager_gCurrentWashSpeed;
 
-extern uint16_t ProgramManager_gCurrentDrainFirstDrainTime;
 extern uint16_t ProgramManager_gCurrentDrainForwardDrainTime;
 extern uint16_t ProgramManager_gCurrentDrainBalanceDrainTime;
 extern uint16_t ProgramManager_gCurrentDrainExtrLvl1DrainTime;
 extern uint16_t ProgramManager_gCurrentDrainExtrLvl2DrainTime;
 extern uint16_t ProgramManager_gCurrentDrainExtrLvl3DrainTime;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainFirstDrainSpeed;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainForwardDrainSpeed;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainBalanceDrainSpeed;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl1DrainSpeed;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl2DrainSpeed;
-extern ProgramManager_MotorSpeedType ProgramManager_gCurrentDrainExtrLvl3DrainSpeed;
+extern uint16_t ProgramManager_gCurrentDrainExtrLvl4DrainTime;
+extern uint16_t ProgramManager_gCurrentDrainOffTime;
 
 extern uint8_t ProgramManager_gTimeCountMin;
 extern uint8_t ProgramManager_gTimeCountSec;

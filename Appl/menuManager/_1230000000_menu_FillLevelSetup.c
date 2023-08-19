@@ -38,12 +38,12 @@ extern "C" {
 
 
 /** Menu manager main titles and child menu titles */
-static const uint8_t MenuManager_ZeroLevel_ChildTitleStr[] =          "ZERO LEVEL";
-static const uint8_t MenuManager_LowLevel_ChildTitleStr[] =           "LOW LEVEL";
-static const uint8_t MenuManager_MidLevel_ChildTitleStr[] =           "MIDDLE LEVEL";
-static const uint8_t MenuManager_HighLevel_ChildTitleStr[] =          "HIGH LEVEL";
-static const uint8_t MenuManager_LevelDiffRefill_ChildTitleStr[] =    "LEVEL DIFF REFILL";
-static const uint8_t MenuManager_SoapStartLevel_ChildTitleStr[] =     "SOAP START LEVEL";
+static const uint8_t MenuManager_ZeroLevel_ChildTitleStr[] =          "Zero Level";
+static const uint8_t MenuManager_LowLevel_ChildTitleStr[] =           "Low Level";
+static const uint8_t MenuManager_MidLevel_ChildTitleStr[] =           "Middle Level";
+static const uint8_t MenuManager_HighLevel_ChildTitleStr[] =          "High Level";
+static const uint8_t MenuManager_LevelDiffRefill_ChildTitleStr[] =    "Level Diff Refill";
+static const uint8_t MenuManager_SoapStartLevel_ChildTitleStr[] =     "Soap Start Level";
 
 static const uint8_t MenuManager_FillLevelSetup_MainTitleStr[] =      "FILL AND LEVEL";
 
