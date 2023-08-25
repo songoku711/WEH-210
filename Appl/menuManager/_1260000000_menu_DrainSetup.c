@@ -242,7 +242,7 @@ static Fsm_GuardType MenuManager_DrainSetup_StartBut(Fsm_ContextStructPtr const 
   MenuManager_SubMainFunction = NULL;
   MenuManager_SubTickHandler = NULL;
 
-  if ((*(MenuManager_DrainSetup_ChildMenuConf.childMenuCfg))[MenuManager_DrainSetup_ListIndex].childMenuEvent != MENUMANAGER_STATE_DRAIN_SETUP_TIME)
+  if ((*(MenuManager_DrainSetup_ChildMenuConf.childMenuCfg))[MenuManager_DrainSetup_ListIndex].childMenuEvent > MENUMANAGER_EVENT_SUBMENU_6)
   {
     defaultDataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
     defaultDataHierachy->dataId = MENUMANAGER_STATE_DRAIN_SETUP;

@@ -270,7 +270,7 @@ static Fsm_GuardType MenuManager_StepDrainOffTime_Exit(Fsm_ContextStructPtr cons
   MenuManager_SubTickHandler = NULL;
 
   dataHierachy = (Fsm_DataHierachyStruct *)MenuManager_malloc(sizeof(Fsm_DataHierachyStruct));
-  dataHierachy->dataId = MENUMANAGER_STATE_DRAIN_OFF_TIME;
+  dataHierachy->dataId = MENUMANAGER_STATE_STEP_DRAIN_OFF_TIME;
 
   pFsmContext->dataHierachy = dataHierachy;
 

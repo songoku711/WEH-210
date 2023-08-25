@@ -369,9 +369,11 @@ static void ProgramManager_AutoRunWash_InternalControlOutput(void)
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
   }
 
-  /* Turn off all soaps */
-  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK | PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK | PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-
+  /* Control soap - always off */
+  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+  
   /* Control motor */
   if (ProgramManager_AutoRunWash_MotorState == PROGRAMMANAGER_AUTORUNWASH_MOTORSTATE_FWD)
   {
