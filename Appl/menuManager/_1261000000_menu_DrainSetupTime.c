@@ -310,7 +310,7 @@ static Fsm_GuardType MenuManager_DrainSetupTime_UpBut(Fsm_ContextStructPtr const
 
     MenuManager_Common_BcdToDecConv(&tempVal, &(MenuManager_DrainSetupTime_UnitVal(0)), (uint8_t)MENUMANAGER_DRAINSETUPTIME_UNITVAL_LENGTH);
 
-    if ((tempVal <= MenuManager_DrainSetupTime_ValueMin) || (tempVal >= MenuManager_DrainSetupTime_ValueMax))
+    if ((tempVal < MenuManager_DrainSetupTime_ValueMin) || (tempVal > MenuManager_DrainSetupTime_ValueMax))
     {
       MenuManager_DrainSetupTime_UnitVal(MenuManager_DrainSetupTime_CurPos) = tempUnitVal;
     }
@@ -340,7 +340,7 @@ static Fsm_GuardType MenuManager_DrainSetupTime_DownBut(Fsm_ContextStructPtr con
 
     MenuManager_Common_BcdToDecConv(&tempVal, &(MenuManager_DrainSetupTime_UnitVal(0)), (uint8_t)MENUMANAGER_DRAINSETUPTIME_UNITVAL_LENGTH);
 
-    if ((tempVal <= MenuManager_DrainSetupTime_ValueMin) || (tempVal >= MenuManager_DrainSetupTime_ValueMax))
+    if ((tempVal < MenuManager_DrainSetupTime_ValueMin) || (tempVal > MenuManager_DrainSetupTime_ValueMax))
     {
       MenuManager_DrainSetupTime_UnitVal(MenuManager_DrainSetupTime_CurPos) = tempUnitVal;
     }

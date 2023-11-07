@@ -325,7 +325,7 @@ static Fsm_GuardType MenuManager_StepDrainModeTime_UpBut(Fsm_ContextStructPtr co
 
     MenuManager_Common_BcdToDecConv(&tempVal, &(MenuManager_StepDrainModeTime_UnitVal(0)), (uint8_t)MENUMANAGER_STEPDRAINMODETIME_UNITVAL_LENGTH);
 
-    if ((tempVal <= MenuManager_StepDrainModeTime_ValueMin) || (tempVal >= MenuManager_StepDrainModeTime_ValueMax))
+    if ((tempVal < MenuManager_StepDrainModeTime_ValueMin) || (tempVal > MenuManager_StepDrainModeTime_ValueMax))
     {
       MenuManager_StepDrainModeTime_UnitVal(MenuManager_StepDrainModeTime_CurPos) = tempUnitVal;
     }
@@ -355,7 +355,7 @@ static Fsm_GuardType MenuManager_StepDrainModeTime_DownBut(Fsm_ContextStructPtr 
 
     MenuManager_Common_BcdToDecConv(&tempVal, &(MenuManager_StepDrainModeTime_UnitVal(0)), (uint8_t)MENUMANAGER_STEPDRAINMODETIME_UNITVAL_LENGTH);
 
-    if ((tempVal <= MenuManager_StepDrainModeTime_ValueMin) || (tempVal >= MenuManager_StepDrainModeTime_ValueMax))
+    if ((tempVal < MenuManager_StepDrainModeTime_ValueMin) || (tempVal > MenuManager_StepDrainModeTime_ValueMax))
     {
       MenuManager_StepDrainModeTime_UnitVal(MenuManager_StepDrainModeTime_CurPos) = tempUnitVal;
     }
