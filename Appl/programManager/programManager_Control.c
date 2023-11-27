@@ -112,6 +112,7 @@ uint16_t ProgramManager_gCurrentDrainOffTime;
 
 uint8_t ProgramManager_gTimeCountMin;
 uint8_t ProgramManager_gTimeCountSec;
+uint8_t ProgramManager_gDrainLevel;
 uint8_t ProgramManager_gMotorState;
 
 uint8_t ProgramManager_gIsPaused;
@@ -492,6 +493,7 @@ void ProgramManager_Control_Init(void)
 
   ProgramManager_gTimeCountMin = (uint8_t)0U;
   ProgramManager_gTimeCountSec = (uint8_t)0U;
+  ProgramManager_gDrainLevel = (uint8_t)0U;
   ProgramManager_gMotorState = (uint8_t)0U;
 
   ProgramManager_gIsPaused = (uint8_t)0U;

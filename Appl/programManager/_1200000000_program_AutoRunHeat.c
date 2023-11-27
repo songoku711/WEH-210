@@ -48,8 +48,9 @@ extern "C" {
 
 #define PROGRAMMANAGER_AUTORUNHEAT_ONESECONDELAPSED_MAX               (uint32_t)50U /* 50 x 20ms = 1s */
 
-#define PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WASH                     PROGRAMMANAGER_EVENT_SUBMENU_1
-#define PROGRAMMANAGER_AUTORUNHEAT_EVENT_POST_RUN                     PROGRAMMANAGER_EVENT_SUBMENU_2
+#define PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WATER                    PROGRAMMANAGER_EVENT_SUBMENU_1
+#define PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WASH                     PROGRAMMANAGER_EVENT_SUBMENU_2
+#define PROGRAMMANAGER_AUTORUNHEAT_EVENT_POST_RUN                     PROGRAMMANAGER_EVENT_SUBMENU_3
 
 #define PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_FWD                     0U
 #define PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_STOP1                   1U
@@ -62,10 +63,11 @@ static Fsm_GuardType ProgramManager_AutoRunHeat_Entry                 (Fsm_Conte
 static Fsm_GuardType ProgramManager_AutoRunHeat_Exit                  (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Program manager state machine */
-Fsm_EventEntryStruct ProgramManager_AutoRunHeat_StateMachine[4] =
+Fsm_EventEntryStruct ProgramManager_AutoRunHeat_StateMachine[5] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_AutoRunHeat_Entry                                           ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_AutoRunHeat_Exit                                            ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WATER,                              PROGRAMMANAGER_STATE_AUTO_RUN_WATER     ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WASH,                               PROGRAMMANAGER_STATE_AUTO_RUN_WASH      ),
   FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_AUTORUNHEAT_EVENT_POST_RUN,                               PROGRAMMANAGER_STATE_AUTO_POST_RUN      )
 };
@@ -100,6 +102,7 @@ static bool ProgramManager_AutoRunHeat_InternalCommandHandler(void)
 {
   uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
   ProgramManager_Control_PostRunStruct *dataHierachy;
+  ProgramManager_Control_RunStruct *runDataHierachy;
   bool stateTransit = false;
 
   ProgramManager_Control_RetrieveCommand(&command);
@@ -157,6 +160,49 @@ static bool ProgramManager_AutoRunHeat_InternalCommandHandler(void)
         ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
         Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNHEAT_EVENT_POST_RUN);
+      }
+
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP:
+    {
+      runDataHierachy = (ProgramManager_Control_RunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_RunStruct));
+      runDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_RUN_HEAT;
+
+      runDataHierachy->oneSecondElapsed  = ProgramManager_AutoRunHeat_OneSecondElapsed;
+      runDataHierachy->tempCounter       = ProgramManager_AutoRunHeat_TempCounter;
+      runDataHierachy->presCounter       = ProgramManager_AutoRunHeat_PresCounter;
+      runDataHierachy->motorState        = ProgramManager_AutoRunHeat_MotorState;
+      runDataHierachy->motorCounter      = ProgramManager_AutoRunHeat_MotorCounter;
+      runDataHierachy->motorCounterMax   = ProgramManager_AutoRunHeat_MotorCounterMax;
+
+      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)runDataHierachy;
+
+      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WASH);
+
+      stateTransit = true;
+
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_PREV_SUBSTEP:
+    {
+      if (ProgramManager_gPresThresExceeded == (bool)false)
+      {
+        runDataHierachy = (ProgramManager_Control_RunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_RunStruct));
+        runDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_RUN_HEAT;
+
+        runDataHierachy->oneSecondElapsed  = ProgramManager_AutoRunHeat_OneSecondElapsed;
+        runDataHierachy->tempCounter       = ProgramManager_AutoRunHeat_TempCounter;
+        runDataHierachy->presCounter       = ProgramManager_AutoRunHeat_PresCounter;
+        runDataHierachy->motorState        = ProgramManager_AutoRunHeat_MotorState;
+        runDataHierachy->motorCounter      = ProgramManager_AutoRunHeat_MotorCounter;
+        runDataHierachy->motorCounterMax   = ProgramManager_AutoRunHeat_MotorCounterMax;
+
+        ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)runDataHierachy;
+
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNHEAT_EVENT_RUN_WATER);
+
+        stateTransit = true;
       }
 
       break;
@@ -311,7 +357,7 @@ static void ProgramManager_AutoRunHeat_InternalCheckStateTransit(void)
   bool conditionOk = (bool)true;
   ProgramManager_Control_RunStruct *dataHierachy;
 
-  if (ProgramManager_Control_NotPauseAndError())
+  if (ProgramManager_Control_NotPaused())
   {
     /* Temperature threshold not reach, and timeout not elapse if configured */
     if (ProgramManager_gTempThresExceeded == (bool)false)
@@ -350,48 +396,55 @@ static void ProgramManager_AutoRunHeat_InternalCheckStateTransit(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunHeat_InternalControlOutput(void)
 {
-  /* Control heat generator through temperature */
-  if (ProgramManager_gTempThresExceeded == (bool)false)
+  if (ProgramManager_Control_NotPaused())
   {
-    ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+    /* Control heat generator through temperature */
+    if (ProgramManager_gTempThresExceeded == (bool)false)
+    {
+      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+    }
+
+    /* Control water through pressure */
+    if (ProgramManager_gPresThresExceeded == (bool)false)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
+                                          (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
+    }
+
+    /* Control soap - always off */
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+
+    /* Control motor */
+    if (ProgramManager_AutoRunHeat_MotorState == PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_FWD)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
+    }
+    else if (ProgramManager_AutoRunHeat_MotorState == PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_REV)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
+    }
+
+    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
+                                        ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
   }
   else
   {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+    ProgramManager_Control_ClearAllOutput();
   }
-
-  /* Control water through pressure */
-  if (ProgramManager_gPresThresExceeded == (bool)false)
-  {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
-                                        (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
-  }
-
-  /* Control soap - always off */
-  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-
-  /* Control motor */
-  if (ProgramManager_AutoRunHeat_MotorState == PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_FWD)
-  {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
-  }
-  else if (ProgramManager_AutoRunHeat_MotorState == PROGRAMMANAGER_AUTORUNHEAT_MOTORSTATE_REV)
-  {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
-  }
-
-  ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
-                                      ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
 
   /* Control drain valve - always CLOSE */
   ProgramManager_Control_DrainCloseHandler();
@@ -520,13 +573,20 @@ static void ProgramManager_AutoRunHeat_SubMainFunction(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunHeat_SubTickHandler(void)
 {
-  ProgramManager_AutoRunHeat_OneSecondElapsed += (uint32_t)1U;
+  if (ProgramManager_Control_NotPaused())
+  {
+    ProgramManager_AutoRunHeat_OneSecondElapsed += (uint32_t)1U;
 
-  if (ProgramManager_AutoRunHeat_OneSecondElapsed >= PROGRAMMANAGER_AUTORUNHEAT_ONESECONDELAPSED_MAX)
+    if (ProgramManager_AutoRunHeat_OneSecondElapsed >= PROGRAMMANAGER_AUTORUNHEAT_ONESECONDELAPSED_MAX)
+    {
+      ProgramManager_AutoRunHeat_OneSecondElapsed = (uint32_t)0U;
+
+      ProgramManager_AutoRunHeat_MotorCounter += (uint32_t)1U;
+    }
+  }
+  else
   {
     ProgramManager_AutoRunHeat_OneSecondElapsed = (uint32_t)0U;
-
-    ProgramManager_AutoRunHeat_MotorCounter += (uint32_t)1U;
   }
 }
 

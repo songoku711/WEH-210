@@ -187,6 +187,8 @@ static void ProgramManager_AutoPostRun_InternalCommandHandler(void)
     ProgramManager_gTimeCountMin = (uint32_t)0U;
     ProgramManager_gTimeCountSec = (uint32_t)0U;
 
+    ProgramManager_gDrainLevel = (uint8_t)0U;
+
     ProgramManager_AutoPostRun_PostExec = (uint32_t)1U;
   }
 }

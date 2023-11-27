@@ -65,6 +65,8 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_COMMAND_STOP                           (uint8_t)3U
 #define PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP                      (uint8_t)4U
 #define PROGRAMMANAGER_CONTROL_COMMAND_PREV_STEP                      (uint8_t)5U
+#define PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP                   (uint8_t)6U
+#define PROGRAMMANAGER_CONTROL_COMMAND_PREV_SUBSTEP                   (uint8_t)7U
 
 
 
@@ -183,6 +185,7 @@ extern uint16_t ProgramManager_gCurrentDrainOffTime;
 
 extern uint8_t ProgramManager_gTimeCountMin;
 extern uint8_t ProgramManager_gTimeCountSec;
+extern uint8_t ProgramManager_gDrainLevel;
 extern uint8_t ProgramManager_gMotorState;
 
 extern uint8_t ProgramManager_gIsPaused;
@@ -196,7 +199,7 @@ extern uint16_t ProgramManager_gCurrentOutput;
 *                                     FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-#define ProgramManager_Control_NotPauseAndError()                     ((ProgramManager_gIsPaused == (uint8_t)0U) /* && (ProgramManager_gIsError == (uint8_t)0U) */)
+#define ProgramManager_Control_NotPaused()                            (ProgramManager_gIsPaused == (uint8_t)0U)
 
 void ProgramManager_Control_Init(void);
 

@@ -102,6 +102,7 @@ static bool ProgramManager_AutoRunWater_InternalCommandHandler(void)
 {
   uint8_t command = PROGRAMMANAGER_CONTROL_COMMAND_NONE;
   ProgramManager_Control_PostRunStruct *dataHierachy;
+  ProgramManager_Control_RunStruct *runDataHierachy;
   bool stateTransit = false;
 
   ProgramManager_Control_RetrieveCommand(&command);
@@ -160,6 +161,26 @@ static bool ProgramManager_AutoRunWater_InternalCommandHandler(void)
 
         Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNWATER_EVENT_POST_RUN);
       }
+
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP:
+    {
+      runDataHierachy = (ProgramManager_Control_RunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_RunStruct));
+      runDataHierachy->dataId = PROGRAMMANAGER_STATE_AUTO_RUN_WATER;
+
+      runDataHierachy->oneSecondElapsed  = ProgramManager_AutoRunWater_OneSecondElapsed;
+      runDataHierachy->tempCounter       = ProgramManager_AutoRunWater_TempCounter;
+      runDataHierachy->presCounter       = ProgramManager_AutoRunWater_PresCounter;
+      runDataHierachy->motorState        = ProgramManager_AutoRunWater_MotorState;
+      runDataHierachy->motorCounter      = ProgramManager_AutoRunWater_MotorCounter;
+      runDataHierachy->motorCounterMax   = ProgramManager_AutoRunWater_MotorCounterMax;
+
+      ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)runDataHierachy;
+
+      Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_AUTORUNWATER_EVENT_RUN_WASH);
+
+      stateTransit = true;
 
       break;
     }
@@ -321,7 +342,7 @@ static void ProgramManager_AutoRunWater_InternalCheckStateTransit(void)
   bool conditionOk = (bool)true;
   ProgramManager_Control_RunStruct *dataHierachy;
 
-  if (ProgramManager_Control_NotPauseAndError())
+  if (ProgramManager_Control_NotPaused())
   {
     /* Pressure threshold not reach */
     if (ProgramManager_gPresThresExceeded == (bool)false)
@@ -358,67 +379,74 @@ static void ProgramManager_AutoRunWater_InternalCheckStateTransit(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunWater_InternalControlOutput(void)
 {
-  /* Control heat generator - always off */
-  ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
-
-  /* Control water through pressure */
-  if (ProgramManager_gPresThresExceeded == (bool)false)
+  if (ProgramManager_Control_NotPaused())
   {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
-                                        (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
+    /* Control heat generator - always off */
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+
+    /* Control water through pressure */
+    if (ProgramManager_gPresThresExceeded == (bool)false)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
+                                          (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
+    }
+
+    /* Control soap */
+    if (ProgramManager_AutoRunWater_PresCounterSoap >= PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
+    {
+      if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x01)
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+      }
+
+      if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x02)
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+      }
+
+      if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x04)
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+      }
+    }
+
+    /* Control motor */
+    if (ProgramManager_AutoRunWater_MotorState == PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_FWD)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
+    }
+    else if (ProgramManager_AutoRunWater_MotorState == PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_REV)
+    {
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
+    }
+
+    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
+                                        ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
   }
   else
   {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
+    ProgramManager_Control_ClearAllOutput();
   }
-
-  /* Control soap */
-  if (ProgramManager_AutoRunWater_PresCounterSoap >= PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
-  {
-    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x01)
-    {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-    }
-    else
-    {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-    }
-
-    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x02)
-    {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-    }
-    else
-    {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-    }
-
-    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].soapMode & (uint8_t)0x04)
-    {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-    }
-    else
-    {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-    }
-  }
-
-  /* Control motor */
-  if (ProgramManager_AutoRunWater_MotorState == PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_FWD)
-  {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
-  }
-  else if (ProgramManager_AutoRunWater_MotorState == PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_REV)
-  {
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
-  }
-  else
-  {
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
-  }
-
-  ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
-                                      ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
 
   /* Control drain valve - always CLOSE */
   ProgramManager_Control_DrainCloseHandler();
@@ -436,6 +464,7 @@ static void ProgramManager_AutoRunWater_InternalUpdateLcdParams(void)
 /*=============================================================================================*/
 static Fsm_GuardType ProgramManager_AutoRunWater_Entry(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
+  ProgramManager_Control_RunStruct* enterDataHierachy;
   HAL_StatusTypeDef retVal = HAL_OK;
 
   /* Check if previous state data hierachy is not empty */
@@ -443,6 +472,37 @@ static Fsm_GuardType ProgramManager_AutoRunWater_Entry(Fsm_ContextStructPtr cons
   {
     if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_PRE_RUN)
     {
+      ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWATER_INTERNALDATALENGTH);
+
+      ProgramManager_AutoRunWater_OneSecondElapsed = (uint32_t)0U;
+
+      ProgramManager_AutoRunWater_TempCounter = (uint32_t)0U;
+      ProgramManager_AutoRunWater_PresCounter = (uint32_t)0U;
+
+      ProgramManager_AutoRunWater_MotorState = PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_FWD;
+      ProgramManager_AutoRunWater_MotorCounter = (uint32_t)0U;
+      ProgramManager_AutoRunWater_MotorCounterMax = ProgramManager_gCurrentWashRunTime;
+
+      /* Release previous state data hierachy */
+      ProgramManager_free(pFsmContext->dataHierachy);
+      pFsmContext->dataHierachy = NULL;
+    }
+    else if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_HEAT) || \
+             (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_RUN_WASH))
+    {
+      enterDataHierachy = (ProgramManager_Control_RunStruct *)(pFsmContext->dataHierachy);
+
+      ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWATER_INTERNALDATALENGTH);
+
+      ProgramManager_AutoRunWater_OneSecondElapsed = enterDataHierachy->oneSecondElapsed;
+
+      ProgramManager_AutoRunWater_TempCounter = enterDataHierachy->tempCounter;
+      ProgramManager_AutoRunWater_PresCounter = enterDataHierachy->presCounter;
+
+      ProgramManager_AutoRunWater_MotorState = enterDataHierachy->motorState;
+      ProgramManager_AutoRunWater_MotorCounter = enterDataHierachy->motorCounter;
+      ProgramManager_AutoRunWater_MotorCounterMax = enterDataHierachy->motorCounterMax;
+
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);
       pFsmContext->dataHierachy = NULL;
@@ -459,17 +519,7 @@ static Fsm_GuardType ProgramManager_AutoRunWater_Entry(Fsm_ContextStructPtr cons
 
   if (retVal == HAL_OK)
   {
-    ProgramManager_InternalDataPush(PROGRAMMANAGER_AUTORUNWATER_INTERNALDATALENGTH);
-
-    ProgramManager_AutoRunWater_OneSecondElapsed = (uint32_t)0U;
-
-    ProgramManager_AutoRunWater_TempCounter = (uint32_t)0U;
-    ProgramManager_AutoRunWater_PresCounter = (uint32_t)0U;
     ProgramManager_AutoRunWater_PresCounterSoap = (uint32_t)0U;
-
-    ProgramManager_AutoRunWater_MotorState = PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_FWD;
-    ProgramManager_AutoRunWater_MotorCounter = (uint32_t)0U;
-    ProgramManager_AutoRunWater_MotorCounterMax = ProgramManager_gCurrentWashRunTime;
 
     ProgramManager_SubMainFunctionPush(ProgramManager_AutoRunWater_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_AutoRunWater_SubTickHandler;
@@ -518,13 +568,20 @@ static void ProgramManager_AutoRunWater_SubMainFunction(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoRunWater_SubTickHandler(void)
 {
-  ProgramManager_AutoRunWater_OneSecondElapsed += (uint32_t)1U;
+  if (ProgramManager_Control_NotPaused())
+  {
+    ProgramManager_AutoRunWater_OneSecondElapsed += (uint32_t)1U;
 
-  if (ProgramManager_AutoRunWater_OneSecondElapsed >= PROGRAMMANAGER_AUTORUNWATER_ONESECONDELAPSED_MAX)
+    if (ProgramManager_AutoRunWater_OneSecondElapsed >= PROGRAMMANAGER_AUTORUNWATER_ONESECONDELAPSED_MAX)
+    {
+      ProgramManager_AutoRunWater_OneSecondElapsed = (uint32_t)0U;
+
+      ProgramManager_AutoRunWater_MotorCounter += (uint32_t)1U;
+    }
+  }
+  else
   {
     ProgramManager_AutoRunWater_OneSecondElapsed = (uint32_t)0U;
-
-    ProgramManager_AutoRunWater_MotorCounter += (uint32_t)1U;
   }
 }
 

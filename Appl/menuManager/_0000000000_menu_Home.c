@@ -40,6 +40,15 @@ extern "C" {
 #define MENUMANAGER_HOME_SUBMAINFUNCCOUNTER_UPDATE_3                  (uint32_t)30U
 #define MENUMANAGER_HOME_SUBMAINFUNCCOUNTER_MAX                       (uint32_t)40U
 
+#define MENUMANAGER_HOME_DRAINLEVEL_FORWARDDRAIN                      0U
+#define MENUMANAGER_HOME_DRAINLEVEL_BALANCEDRAIN                      1U
+#define MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL1DRAIN                     2U
+#define MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL2DRAIN                     3U
+#define MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL3DRAIN                     4U
+#define MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL4DRAIN                     5U
+#define MENUMANAGER_HOME_DRAINLEVEL_OFFDRAIN                          6U
+#define MENUMANAGER_HOME_DRAINLEVEL_MAX                               7U
+
 #define MENUMANAGER_HOME_SEQUENCE_INDEX_XPOS                          (uint32_t)0U
 #define MENUMANAGER_HOME_SEQUENCE_INDEX_YPOS                          (uint32_t)0U
 
@@ -60,6 +69,9 @@ extern "C" {
 
 #define MENUMANAGER_HOME_DOP_XPOS                                     (uint32_t)16U
 #define MENUMANAGER_HOME_DOP_YPOS                                     (uint32_t)2U
+
+#define MENUMANAGER_HOME_PAUSED_XPOS                                  (uint32_t)1U
+#define MENUMANAGER_HOME_PAUSED_YPOS                                  (uint32_t)4U
 
 #define MENUMANAGER_HOME_COUNTDOWN_XPOS                               (uint32_t)16U
 #define MENUMANAGER_HOME_COUNTDOWN_YPOS                               (uint32_t)5U
@@ -97,10 +109,13 @@ static const uint8_t MenuManager_Home_StateErrorStr[] =               "ERROR    
 
 static const uint8_t MenuManager_Home_StateDrainFwdStr[] =            "FORWARD";
 static const uint8_t MenuManager_Home_StateDrainBalStr[] =            "BALANCE";
-static const uint8_t MenuManager_Home_StateDrainExtrLv1Str[] =        "EXTR LV 1";
-static const uint8_t MenuManager_Home_StateDrainExtrLv2Str[] =        "EXTR LV 2";
-static const uint8_t MenuManager_Home_StateDrainExtrLv3Str[] =        "EXTR LV 3";
-static const uint8_t MenuManager_Home_StateDrainExtrLv4Str[] =        "EXTR LV 4";
+static const uint8_t MenuManager_Home_StateDrainExtrLv1Str[] =        "EXTR LVL1";
+static const uint8_t MenuManager_Home_StateDrainExtrLv2Str[] =        "EXTR LVL2";
+static const uint8_t MenuManager_Home_StateDrainExtrLv3Str[] =        "EXTR LVL3";
+static const uint8_t MenuManager_Home_StateDrainExtrLv4Str[] =        "EXTR LVL4";
+
+static const uint8_t MenuManager_Home_PausedStr[] =                   "PAUSED";
+static const uint8_t MenuManager_Home_NotPausedStr[] =                "      ";
 
 
 
@@ -110,7 +125,7 @@ static const uint8_t MenuManager_Home_InputStateDopStr[] =            "DOP";
 static const uint8_t MenuManager_Home_InputStateNoneStr[] =           "   ";
 
 static const uint8_t MenuManager_Home_TempStr[] =                     "TEMP";
-static const uint8_t MenuManager_Home_PresStr[] =                     "PRES";
+static const uint8_t MenuManager_Home_PresStr[] =                     "LVL";
 
 static const uint8_t MenuManager_Home_CountdownEnableStr[] =          "%02d:%02d";
 static const uint8_t MenuManager_Home_CountdownDisableStr[] =         "--:--";
@@ -247,8 +262,37 @@ static void MenuManager_Home_LcdShowNotifyState(void)
         LCD_PutString((uint8_t *)MenuManager_Home_StateWashStr);
         break;
       case PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN:
+      {
         LCD_PutString((uint8_t *)MenuManager_Home_StateDrainStr);
+
+        LCD_SetCursorPos(MENUMANAGER_HOME_STATE_XPOS, MENUMANAGER_HOME_STATE_YPOS, LCD_CURSOR_BY_FONT);
+
+        switch (ProgramManager_gDrainLevel)
+        {
+          case MENUMANAGER_HOME_DRAINLEVEL_FORWARDDRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainFwdStr);
+            break;
+          case MENUMANAGER_HOME_DRAINLEVEL_BALANCEDRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainBalStr);
+            break;
+          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL1DRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv1Str);
+            break;
+          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL2DRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv2Str);
+            break;
+          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL3DRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv3Str);
+            break;
+          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL4DRAIN:
+            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv4Str);
+            break;
+          default:
+            break;
+        }
+
         break;
+      }
       default:
         break;
     }
@@ -300,6 +344,24 @@ static void MenuManager_Home_LcdShowNotifyState(void)
 static void MenuManager_Home_LcdShowCountDown(void)
 {
   uint8_t tempStr[20];
+
+  LCD_SetCursorPos(MENUMANAGER_HOME_PAUSED_XPOS, MENUMANAGER_HOME_PAUSED_YPOS, LCD_CURSOR_BY_FONT);
+
+  if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    if (ProgramManager_Control_NotPaused())
+    {
+      LCD_PutString((uint8_t *)MenuManager_Home_NotPausedStr);
+    }
+    else
+    {
+      LCD_PutString((uint8_t *)MenuManager_Home_PausedStr);
+    }
+  }
+  else
+  {
+    LCD_PutString((uint8_t *)MenuManager_Home_NotPausedStr);
+  }
 
   LCD_SetCursorPos(MENUMANAGER_HOME_COUNTDOWN_XPOS, MENUMANAGER_HOME_COUNTDOWN_YPOS, LCD_CURSOR_BY_FONT);
 
@@ -511,6 +573,10 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP);
+  }
   else
   {
     /* Should never executed here */
@@ -535,6 +601,10 @@ static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmCon
 
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
+  }
+  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PREV_SUBSTEP);
   }
   else
   {

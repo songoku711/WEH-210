@@ -67,11 +67,11 @@ extern Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[6];
 /** State auto run water (4) */
 extern Fsm_EventEntryStruct ProgramManager_AutoRunWater_StateMachine[5];
 /** State auto run heat (5) */
-extern Fsm_EventEntryStruct ProgramManager_AutoRunHeat_StateMachine[4];
+extern Fsm_EventEntryStruct ProgramManager_AutoRunHeat_StateMachine[5];
 /** State auto run wash (6) */
-extern Fsm_EventEntryStruct ProgramManager_AutoRunWash_StateMachine[4];
+extern Fsm_EventEntryStruct ProgramManager_AutoRunWash_StateMachine[5];
 /** State auto run drain (7) */
-extern Fsm_EventEntryStruct ProgramManager_AutoRunDrain_StateMachine[3];
+extern Fsm_EventEntryStruct ProgramManager_AutoRunDrain_StateMachine[4];
 /** State auto post-run (8) */
 extern Fsm_EventEntryStruct ProgramManager_AutoPostRun_StateMachine[4];
 

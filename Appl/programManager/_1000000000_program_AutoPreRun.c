@@ -215,7 +215,7 @@ static void ProgramManager_AutoPreRun_InternalCheckStateTransit(void)
 {
   Fsm_DataHierachyStruct *dataHierachy;
 
-  if (ProgramManager_Control_NotPauseAndError())
+  if (ProgramManager_Control_NotPaused())
   {
     if (ProgramManager_AutoPreRun_GlobalCounter >= PROGRAMMANAGER_AUTOPRERUN_GLOBALCOUNTER_MAX)
     {
@@ -344,7 +344,7 @@ static void ProgramManager_AutoPreRun_SubMainFunction(void)
 /*=============================================================================================*/
 static void ProgramManager_AutoPreRun_SubTickHandler(void)
 {
-  if (ProgramManager_Control_NotPauseAndError())
+  if (ProgramManager_Control_NotPaused())
   {
     ProgramManager_AutoPreRun_GlobalCounter += (uint32_t)1U;
   }
