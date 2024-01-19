@@ -402,8 +402,9 @@ static void MenuManager_DrainSetupTime_SubMainFunction(void)
 
       tempDrainSetupTime = (uint16_t)MenuManager_DrainSetupTime_Value;
 
-      MenuManager_Common_CheckDrainStepTimeConstraint(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, \
-                                                      (uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, &tempDrainSetupTime);
+      ProgramManager_DrainSetup_DrainTime_SetData((uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, &tempDrainSetupTime);
+
+      ProgramManager_DrainSetup_DrainTime_GetData((uint8_t)MenuManager_DrainSetupTime_DrainStepIdx, &(ProgramManager_gParamConfig.drainCfg.drainTime[MenuManager_DrainSetupTime_DrainStepIdx]));
 
       MenuManager_DrainSetupTime_InternalState = MENUMANAGER_DRAINSETUPTIME_INTERNALSTATE_DONE;
       

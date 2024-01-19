@@ -417,13 +417,24 @@ static void MenuManager_StepDrainModeTime_SubMainFunction(void)
 
       tempStepDrainTime = (uint16_t)MenuManager_StepDrainModeTime_Value;
 
-      MenuManager_Common_CheckDrainStepTimeConstraint \
+      ProgramManager_NormStepConfig_DrainTime_SetData \
       ( \
         (uint8_t)MenuManager_StepDrainModeTime_SeqIdx,   \
         (uint8_t)MenuManager_StepDrainModeTime_StepIdx,  \
         (uint8_t)MenuManager_StepDrainModeTime_DrainIdx, \
         &tempStepDrainTime \
       );
+
+      if (ProgramManager_gAutoSeqConfig.sequenceIndex == (uint8_t)MenuManager_StepDrainModeTime_SeqIdx)
+      {
+        ProgramManager_NormStepConfig_DrainTime_GetData \
+        ( \
+          (uint8_t)MenuManager_StepDrainModeTime_SeqIdx,   \
+          (uint8_t)MenuManager_StepDrainModeTime_StepIdx,  \
+          (uint8_t)MenuManager_StepDrainModeTime_DrainIdx, \
+          &(ProgramManager_gAutoSeqConfig.normStep[MenuManager_StepDrainModeTime_StepIdx].drainTime)[MenuManager_StepDrainModeTime_DrainIdx] \
+        );
+      }
 
       MenuManager_StepDrainModeTime_InternalState = MENUMANAGER_STEPDRAINMODETIME_INTERNALSTATE_DONE;
       

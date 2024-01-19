@@ -127,8 +127,6 @@ void MenuManager_Common_LcdShowStopExitChoice(void);
 void MenuManager_Common_LcdShowStartExitChoice(void);
 void MenuManager_Common_LcdShowScrollBar(uint8_t listIndex, uint8_t cursorPosition, uint8_t listItemNumber);
 
-void MenuManager_Common_CheckDrainStepTimeConstraint(uint8_t seqIdx, uint8_t stepIdx, uint8_t drainStepIdx, uint16_t* data);
-
 
 
 #ifdef  __cplusplus

@@ -70,8 +70,20 @@ extern "C" {
 #define MENUMANAGER_HOME_DOP_XPOS                                     (uint32_t)16U
 #define MENUMANAGER_HOME_DOP_YPOS                                     (uint32_t)2U
 
-#define MENUMANAGER_HOME_PAUSED_XPOS                                  (uint32_t)1U
-#define MENUMANAGER_HOME_PAUSED_YPOS                                  (uint32_t)4U
+#define MENUMANAGER_HOME_COLDWATER_XPOS                               (uint32_t)1U
+#define MENUMANAGER_HOME_COLDWATER_YPOS                               (uint32_t)4U
+
+#define MENUMANAGER_HOME_HOTWATER_XPOS                                (uint32_t)5U
+#define MENUMANAGER_HOME_HOTWATER_YPOS                                (uint32_t)4U
+
+#define MENUMANAGER_HOME_SOAP1_XPOS                                   (uint32_t)9U
+#define MENUMANAGER_HOME_SOAP1_YPOS                                   (uint32_t)4U
+
+#define MENUMANAGER_HOME_SOAP2_XPOS                                   (uint32_t)13U
+#define MENUMANAGER_HOME_SOAP2_YPOS                                   (uint32_t)4U
+
+#define MENUMANAGER_HOME_SOAP3_XPOS                                   (uint32_t)17U
+#define MENUMANAGER_HOME_SOAP3_YPOS                                   (uint32_t)4U
 
 #define MENUMANAGER_HOME_COUNTDOWN_XPOS                               (uint32_t)16U
 #define MENUMANAGER_HOME_COUNTDOWN_YPOS                               (uint32_t)5U
@@ -114,8 +126,13 @@ static const uint8_t MenuManager_Home_StateDrainExtrLv2Str[] =        "EXTR LVL2
 static const uint8_t MenuManager_Home_StateDrainExtrLv3Str[] =        "EXTR LVL3";
 static const uint8_t MenuManager_Home_StateDrainExtrLv4Str[] =        "EXTR LVL4";
 
-static const uint8_t MenuManager_Home_PausedStr[] =                   "PAUSED";
-static const uint8_t MenuManager_Home_NotPausedStr[] =                "      ";
+static const uint8_t MenuManager_Home_PausedStr[] =                   "PAUSED             ";
+
+static const uint8_t MenuManager_Home_ColdWaterStr[] =                "CLD";
+static const uint8_t MenuManager_Home_HotWaterStr[] =                 "HOT";
+static const uint8_t MenuManager_Home_Soap1Str[] =                    "SP1";
+static const uint8_t MenuManager_Home_Soap2Str[] =                    "SP2";
+static const uint8_t MenuManager_Home_Soap3Str[] =                    "SP3";
 
 
 
@@ -134,6 +151,8 @@ static const uint8_t MenuManager_Home_TemperatureEnableStr[] =        "%3d/%3d";
 static const uint8_t MenuManager_Home_TemperatureDisableStr[] =       "%3d/---";
 static const uint8_t MenuManager_Home_PressureEnableStr[] =           "%3d/%3d";
 static const uint8_t MenuManager_Home_PressureDisableStr[] =          "%3d/---";
+
+static const uint8_t MenuManager_Home_BlankStr[] =                    "                   ";
 
 
 
@@ -231,6 +250,7 @@ static void MenuManager_Home_LcdShowNotifyState(void)
 {
   LCD_SetCursorPos(MENUMANAGER_HOME_NOTIFY_XPOS, MENUMANAGER_HOME_NOTIFY_YPOS, LCD_CURSOR_BY_FONT);
 
+  /* IDLE state */
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
     if (ProgramManager_gSensorDoorOpenErr != PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR)
@@ -247,54 +267,62 @@ static void MenuManager_Home_LcdShowNotifyState(void)
       LCD_PutString((uint8_t *)MenuManager_Home_NotifyReadyStr);
     }
   }
+  /* RUNNING state but no error */
   else if ((ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE) && \
            (ProgramManager_GetCurrentState() != PROGRAMMANAGER_STATE_FAIL))
   {
-    switch (ProgramManager_GetCurrentState())
+    if (ProgramManager_Control_NotPaused())
     {
-      case PROGRAMMANAGER_STATE_AUTO_RUN_WATER:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateWaterStr);
-        break;
-      case PROGRAMMANAGER_STATE_AUTO_RUN_HEAT:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateHeatStr);
-        break;
-      case PROGRAMMANAGER_STATE_AUTO_RUN_WASH:
-        LCD_PutString((uint8_t *)MenuManager_Home_StateWashStr);
-        break;
-      case PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN:
+      switch (ProgramManager_GetCurrentState())
       {
-        LCD_PutString((uint8_t *)MenuManager_Home_StateDrainStr);
-
-        LCD_SetCursorPos(MENUMANAGER_HOME_STATE_XPOS, MENUMANAGER_HOME_STATE_YPOS, LCD_CURSOR_BY_FONT);
-
-        switch (ProgramManager_gDrainLevel)
+        case PROGRAMMANAGER_STATE_AUTO_RUN_WATER:
+          LCD_PutString((uint8_t *)MenuManager_Home_StateWaterStr);
+          break;
+        case PROGRAMMANAGER_STATE_AUTO_RUN_HEAT:
+          LCD_PutString((uint8_t *)MenuManager_Home_StateHeatStr);
+          break;
+        case PROGRAMMANAGER_STATE_AUTO_RUN_WASH:
+          LCD_PutString((uint8_t *)MenuManager_Home_StateWashStr);
+          break;
+        case PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN:
         {
-          case MENUMANAGER_HOME_DRAINLEVEL_FORWARDDRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainFwdStr);
-            break;
-          case MENUMANAGER_HOME_DRAINLEVEL_BALANCEDRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainBalStr);
-            break;
-          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL1DRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv1Str);
-            break;
-          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL2DRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv2Str);
-            break;
-          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL3DRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv3Str);
-            break;
-          case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL4DRAIN:
-            LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv4Str);
-            break;
-          default:
-            break;
-        }
+          LCD_PutString((uint8_t *)MenuManager_Home_StateDrainStr);
 
-        break;
+          LCD_SetCursorPos(MENUMANAGER_HOME_STATE_XPOS, MENUMANAGER_HOME_STATE_YPOS, LCD_CURSOR_BY_FONT);
+
+          switch (ProgramManager_gDrainLevel)
+          {
+            case MENUMANAGER_HOME_DRAINLEVEL_FORWARDDRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainFwdStr);
+              break;
+            case MENUMANAGER_HOME_DRAINLEVEL_BALANCEDRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainBalStr);
+              break;
+            case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL1DRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv1Str);
+              break;
+            case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL2DRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv2Str);
+              break;
+            case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL3DRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv3Str);
+              break;
+            case MENUMANAGER_HOME_DRAINLEVEL_EXTRLVL4DRAIN:
+              LCD_PutString((uint8_t *)MenuManager_Home_StateDrainExtrLv4Str);
+              break;
+            default:
+              break;
+          }
+
+          break;
+        }
+        default:
+          break;
       }
-      default:
-        break;
+    }
+    else
+    {
+      LCD_PutString((uint8_t *)MenuManager_Home_PausedStr);
     }
   }
   else if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_FAIL)
@@ -344,23 +372,47 @@ static void MenuManager_Home_LcdShowNotifyState(void)
 static void MenuManager_Home_LcdShowCountDown(void)
 {
   uint8_t tempStr[20];
+  uint16_t curOutput;
 
-  LCD_SetCursorPos(MENUMANAGER_HOME_PAUSED_XPOS, MENUMANAGER_HOME_PAUSED_YPOS, LCD_CURSOR_BY_FONT);
+  LCD_SetCursorPos(MENUMANAGER_HOME_COLDWATER_XPOS, MENUMANAGER_HOME_COLDWATER_YPOS, LCD_CURSOR_BY_FONT);
 
-  if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  LCD_PutString((uint8_t *)MenuManager_Home_BlankStr);
+
+  /* RUNNING state but no error */
+  if ((ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE) && \
+      (ProgramManager_GetCurrentState() != PROGRAMMANAGER_STATE_FAIL))
   {
-    if (ProgramManager_Control_NotPaused())
+    curOutput = ProgramManager_Control_GetOutput();
+
+    if ((uint16_t)0u != (curOutput & PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK))
     {
-      LCD_PutString((uint8_t *)MenuManager_Home_NotPausedStr);
+      LCD_SetCursorPos(MENUMANAGER_HOME_COLDWATER_XPOS, MENUMANAGER_HOME_COLDWATER_YPOS, LCD_CURSOR_BY_FONT);
+      LCD_PutString((uint8_t *)MenuManager_Home_ColdWaterStr);
     }
-    else
+
+    if ((uint16_t)0u != (curOutput & PROGRAMMANAGER_CONTROL_OUTPUT_HOT_WATER_MASK))
     {
-      LCD_PutString((uint8_t *)MenuManager_Home_PausedStr);
+      LCD_SetCursorPos(MENUMANAGER_HOME_HOTWATER_XPOS, MENUMANAGER_HOME_HOTWATER_YPOS, LCD_CURSOR_BY_FONT);
+      LCD_PutString((uint8_t *)MenuManager_Home_HotWaterStr);
     }
-  }
-  else
-  {
-    LCD_PutString((uint8_t *)MenuManager_Home_NotPausedStr);
+
+    if ((uint16_t)0u != (curOutput & PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK))
+    {
+      LCD_SetCursorPos(MENUMANAGER_HOME_SOAP1_XPOS, MENUMANAGER_HOME_SOAP1_YPOS, LCD_CURSOR_BY_FONT);
+      LCD_PutString((uint8_t *)MenuManager_Home_Soap1Str);
+    }
+
+    if ((uint16_t)0u != (curOutput & PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK))
+    {
+      LCD_SetCursorPos(MENUMANAGER_HOME_SOAP2_XPOS, MENUMANAGER_HOME_SOAP2_YPOS, LCD_CURSOR_BY_FONT);
+      LCD_PutString((uint8_t *)MenuManager_Home_Soap2Str);
+    }
+
+    if ((uint16_t)0u != (curOutput & PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK))
+    {
+      LCD_SetCursorPos(MENUMANAGER_HOME_SOAP3_XPOS, MENUMANAGER_HOME_SOAP3_YPOS, LCD_CURSOR_BY_FONT);
+      LCD_PutString((uint8_t *)MenuManager_Home_Soap3Str);
+    }
   }
 
   LCD_SetCursorPos(MENUMANAGER_HOME_COUNTDOWN_XPOS, MENUMANAGER_HOME_COUNTDOWN_YPOS, LCD_CURSOR_BY_FONT);
@@ -627,7 +679,7 @@ static Fsm_GuardType MenuManager_Home_AddBut(Fsm_ContextStructPtr const pFsmCont
 {
   if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
   {
-    if (ProgramManager_gAutoSeqConfig.currentStep < ((uint8_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint8_t)2U))
+    if (ProgramManager_gAutoSeqConfig.currentStep < ((uint8_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint8_t)1U))
     {
       (ProgramManager_gAutoSeqConfig.currentStep)++;
     }

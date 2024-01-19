@@ -368,11 +368,14 @@ static void ProgramManager_AutoRunHeat_InternalCheckStateTransit(void)
       }
     }
 
+    /* Disable temporarily check pressure threshold to jump into next state */
+#if 0
     /* Pressure threshold not reach */
     if (ProgramManager_gPresThresExceeded == (bool)false)
     {
       conditionOk = (bool)false;
     }
+#endif
 
     if (conditionOk == (bool)true)
     {

@@ -77,6 +77,8 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK                (uint16_t)0x001CU
 #define PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET              (2U)
 
+#define PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK                 (uint16_t)0x0020U
+#define PROGRAMMANAGER_CONTROL_OUTPUT_HOT_WATER_MASK                  (uint16_t)0x0040U
 #define PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK                      (uint16_t)0x0060U
 #define PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET                    (5U)
 
@@ -93,6 +95,7 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK                (uint16_t)0x0800U
 #define PROGRAMMANAGER_CONTROL_OUTPUT_DOOR_MASK                       (uint16_t)0x1000U
 
+#define ProgramManager_Control_GetOutput()                            ProgramManager_gCurrentOutput
 #define ProgramManager_Control_SetOutput(mask)                        { ProgramManager_gCurrentOutput |= mask; }
 #define ProgramManager_Control_ClearOutput(mask)                      { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); }
 #define ProgramManager_Control_ModifyOutput(mask, value)              { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); ProgramManager_gCurrentOutput |= value; }
