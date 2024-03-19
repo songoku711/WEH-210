@@ -299,24 +299,31 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
 {
   if (ProgramManager_Control_NotPaused())
   {
-#if 0
+
     /* Control heat generator through temperature */
     if (ProgramManager_gTempThresExceeded == (bool)false)
     {
-      ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+      if (ProgramManager_Control_IsManualOptionHeat() && (ProgramManager_ManualRun_PresCounterSoap >= PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY))
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
+      }
     }
     else
     {
       ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
     }
-#endif
 
     /* Control water through pressure */
     if (ProgramManager_gPresThresExceeded == (bool)false)
     {
-      if (
+      if ( \
           ( ProgramManager_Control_IsManualOptionColdWater() ) || \
-          ( ( ProgramManager_Control_IsManualOptionSupply1() || ProgramManager_Control_IsManualOptionSupply2() || ProgramManager_Control_IsManualOptionSupply3()) && (ProgramManager_ManualRun_PresCounterSoap < PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY) )
+          ( ( ProgramManager_Control_IsManualOptionSupply1() || ProgramManager_Control_IsManualOptionSupply2() || ProgramManager_Control_IsManualOptionSupply3() ) && (ProgramManager_ManualRun_PresCounterSoap < PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY) ) || \
+          ( ( ProgramManager_Control_IsManualOptionHeat() ) && (ProgramManager_ManualRun_PresCounterSoap < PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY) ) \
          )
       {
         ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK);
@@ -415,7 +422,8 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
         ProgramManager_Control_IsManualOptionHotWater()  || \
         ProgramManager_Control_IsManualOptionSupply1()   || \
         ProgramManager_Control_IsManualOptionSupply2()   || \
-        ProgramManager_Control_IsManualOptionSupply3()      \
+        ProgramManager_Control_IsManualOptionSupply3()   || \
+        ProgramManager_Control_IsManualOptionHeat()         \
        )
     {
       ProgramManager_Control_DrainCloseHandler();
