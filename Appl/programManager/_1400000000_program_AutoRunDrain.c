@@ -381,9 +381,7 @@ static void ProgramManager_AutoRunDrain_InternalControlOutput(void)
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
 
     /* Control soap - always off */
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_MASK);
 
     /* Control motor */
     if (ProgramManager_AutoRunDrain_MotorState == PROGRAMMANAGER_AUTORUNDRAIN_MOTORSTATE_FWD)

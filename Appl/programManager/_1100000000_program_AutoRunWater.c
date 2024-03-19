@@ -249,6 +249,8 @@ static void ProgramManager_AutoRunWater_InternalCheckLevelCondition(void)
     {
       ProgramManager_AutoRunWater_PresCounter = (uint32_t)0U;
     }
+
+    ProgramManager_AutoRunWater_PresCounterSoap = PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY;
   }
 }
 
@@ -425,6 +427,10 @@ static void ProgramManager_AutoRunWater_InternalControlOutput(void)
         ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
       }
     }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_MASK);
+    }
 
     /* Control motor */
     if (ProgramManager_AutoRunWater_MotorState == PROGRAMMANAGER_AUTORUNWATER_MOTORSTATE_FWD)
@@ -519,7 +525,14 @@ static Fsm_GuardType ProgramManager_AutoRunWater_Entry(Fsm_ContextStructPtr cons
 
   if (retVal == HAL_OK)
   {
-    ProgramManager_AutoRunWater_PresCounterSoap = (uint32_t)0U;
+    if (ProgramManager_gCurrentPressure >= ProgramManager_gParamConfig.fillLevelCfg.soapStartLevel)
+    {
+      ProgramManager_AutoRunWater_PresCounterSoap = PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY;
+    }
+    else
+    {
+      ProgramManager_AutoRunWater_PresCounterSoap = (uint32_t)0U;
+    }
 
     ProgramManager_SubMainFunctionPush(ProgramManager_AutoRunWater_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_AutoRunWater_SubTickHandler;

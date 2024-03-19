@@ -28,18 +28,20 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define PROGRAMMANAGER_MANUALRUN_INTERNALDATALENGTH                   (uint8_t)6U
+#define PROGRAMMANAGER_MANUALRUN_INTERNALDATALENGTH                   (uint8_t)7U
 
 #define PROGRAMMANAGER_MANUALRUN_ONESECONDELAPSED_IDX                 0U
 #define PROGRAMMANAGER_MANUALRUN_TEMPCOUNTER_IDX                      1U
 #define PROGRAMMANAGER_MANUALRUN_PRESCOUNTER_IDX                      2U
-#define PROGRAMMANAGER_MANUALRUN_MOTORSTATE_IDX                       3U
-#define PROGRAMMANAGER_MANUALRUN_MOTORCOUNTER_IDX                     4U
-#define PROGRAMMANAGER_MANUALRUN_MOTORCOUNTERMAX_IDX                  5U
+#define PROGRAMMANAGER_MANUALRUN_PRESCOUNTERSOAP_IDX                  3U
+#define PROGRAMMANAGER_MANUALRUN_MOTORSTATE_IDX                       4U
+#define PROGRAMMANAGER_MANUALRUN_MOTORCOUNTER_IDX                     5U
+#define PROGRAMMANAGER_MANUALRUN_MOTORCOUNTERMAX_IDX                  6U
 
 #define ProgramManager_ManualRun_OneSecondElapsed                     ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_ONESECONDELAPSED_IDX)
 #define ProgramManager_ManualRun_TempCounter                          ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_TEMPCOUNTER_IDX)
 #define ProgramManager_ManualRun_PresCounter                          ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_PRESCOUNTER_IDX)
+#define ProgramManager_ManualRun_PresCounterSoap                      ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_PRESCOUNTERSOAP_IDX)
 #define ProgramManager_ManualRun_MotorState                           ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_MOTORSTATE_IDX)
 #define ProgramManager_ManualRun_MotorCounter                         ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_MOTORCOUNTER_IDX)
 #define ProgramManager_ManualRun_MotorCounterMax                      ProgramManager_GetInternalDataPtr(PROGRAMMANAGER_MANUALRUN_MOTORCOUNTERMAX_IDX)
@@ -168,6 +170,19 @@ static void ProgramManager_ManualRun_InternalCheckLevelCondition(void)
     {
       ProgramManager_ManualRun_PresCounter = (uint32_t)0U;
     }
+
+    /* Check pressure to pour soap */
+    if (ProgramManager_gCurrentPressure >= ProgramManager_gParamConfig.fillLevelCfg.soapStartLevel)
+    {
+      if (ProgramManager_ManualRun_PresCounterSoap < PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
+      {
+        ProgramManager_ManualRun_PresCounterSoap += (uint32_t)1U;
+      }
+    }
+    else
+    {
+      ProgramManager_ManualRun_PresCounterSoap = (uint32_t)0U;
+    }
   }
   else
   {
@@ -190,6 +205,8 @@ static void ProgramManager_ManualRun_InternalCheckLevelCondition(void)
     {
       ProgramManager_ManualRun_PresCounter = (uint32_t)0U;
     }
+
+    ProgramManager_ManualRun_PresCounterSoap = PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY;
   }
 }
 
@@ -297,7 +314,10 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
     /* Control water through pressure */
     if (ProgramManager_gPresThresExceeded == (bool)false)
     {
-      if (ProgramManager_Control_IsManualOptionColdWater())
+      if (
+          ( ProgramManager_Control_IsManualOptionColdWater() ) || \
+          ( ( ProgramManager_Control_IsManualOptionSupply1() || ProgramManager_Control_IsManualOptionSupply2() || ProgramManager_Control_IsManualOptionSupply3()) && (ProgramManager_ManualRun_PresCounterSoap < PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY) )
+         )
       {
         ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK);
       }
@@ -320,12 +340,47 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
       ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
     }
 
-#if 0
-    /* Control soap - always off */
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
-    ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
-#endif
+    /* Control soap */
+    if (ProgramManager_gPresThresExceeded == (bool)false)
+    {
+      if (ProgramManager_ManualRun_PresCounterSoap >= PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY)
+      {
+        if (ProgramManager_Control_IsManualOptionSupply1())
+        {
+          ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+        }
+        else
+        {
+          ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
+        }
+
+        if (ProgramManager_Control_IsManualOptionSupply2())
+        {
+          ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+        }
+        else
+        {
+          ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
+        }
+
+        if (ProgramManager_Control_IsManualOptionSupply3())
+        {
+          ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+        }
+        else
+        {
+          ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+        }
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_MASK);
+      }
+    }
+    else
+    {
+      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_MASK);
+    }
     
     /* Control motor */
     if (ProgramManager_Control_IsManualOptionWash())
@@ -356,7 +411,11 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
 
     /* Control drain valve */
     if ( \
-        ( (ProgramManager_gPresThresExceeded == (bool)false) && (ProgramManager_Control_IsManualOptionColdWater() || ProgramManager_Control_IsManualOptionHotWater()) ) \
+        ProgramManager_Control_IsManualOptionColdWater() || \
+        ProgramManager_Control_IsManualOptionHotWater()  || \
+        ProgramManager_Control_IsManualOptionSupply1()   || \
+        ProgramManager_Control_IsManualOptionSupply2()   || \
+        ProgramManager_Control_IsManualOptionSupply3()      \
        )
     {
       ProgramManager_Control_DrainCloseHandler();
@@ -401,6 +460,15 @@ static Fsm_GuardType ProgramManager_ManualRun_Entry(Fsm_ContextStructPtr const p
 
       ProgramManager_ManualRun_TempCounter = (uint32_t)0U;
       ProgramManager_ManualRun_PresCounter = (uint32_t)0U;
+
+      if (ProgramManager_gCurrentPressure >= ProgramManager_gParamConfig.fillLevelCfg.soapStartLevel)
+      {
+        ProgramManager_ManualRun_PresCounterSoap = PROGRAMMANAGER_CONTROL_PRES_THRES_DELAY;
+      }
+      else
+      {
+        ProgramManager_ManualRun_PresCounterSoap = (uint32_t)0U;
+      }
 
       ProgramManager_ManualRun_MotorState = PROGRAMMANAGER_MANUALRUN_MOTORSTATE_FWD;
       ProgramManager_ManualRun_MotorCounter = (uint32_t)0U;
