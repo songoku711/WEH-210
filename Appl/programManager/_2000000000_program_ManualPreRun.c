@@ -258,7 +258,8 @@ static Fsm_GuardType ProgramManager_ManualPreRun_Entry(Fsm_ContextStructPtr cons
     ProgramManager_ManualPreRun_TempCounter = (uint32_t)0U;
     ProgramManager_ManualPreRun_PresCounter = (uint32_t)0U;
 
-    /* @TODO: Get default manual sequence parameters */
+    /* Get default manual sequence parameters */
+    ProgramManager_ManualSeqConfig_GetData(&ProgramManager_gManualSeqConfig);
 
     ProgramManager_SubMainFunctionPush(ProgramManager_ManualPreRun_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_ManualPreRun_SubTickHandler;

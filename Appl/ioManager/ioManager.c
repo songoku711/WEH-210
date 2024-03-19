@@ -46,6 +46,9 @@ extern "C" {
 /* Delay for long-pressed buttons - 2.5 seconds = 250 x 10ms */
 #define IOMANAGER_BUTTON_LONG_PRESS_DELAY_MAX             (uint16_t)250U
 
+/* Offset for button led indication position */
+#define IOMANAGER_CONTROL_COMMAND_MANUAL_OFFSET           (8U)
+
 typedef enum
 {
   IOMANAGER_BUTTON_DELAY_STATE_COUNTING,
@@ -166,6 +169,28 @@ void IoManager_Init(void)
   IoManager_gLedIndication[1] = (uint8_t)0xFFU;
 
   IoManager_gState = IOMANAGER_STATE_READY;
+}
+
+
+
+/*=============================================================================================*/
+void IoManager_SetButtonLedIndication(uint8_t pos)
+{
+  uint8_t byteWrite;
+  
+  byteWrite = (pos - IOMANAGER_CONTROL_COMMAND_MANUAL_OFFSET) / (uint8_t)8U;
+
+  IoManager_gLedIndication[byteWrite] &= (uint8_t)(~((uint8_t)1U << pos));
+}
+
+/*=============================================================================================*/
+void IoManager_ClearButtonLedIndication(uint8_t pos)
+{
+  uint8_t byteWrite;
+  
+  byteWrite = (pos - IOMANAGER_CONTROL_COMMAND_MANUAL_OFFSET) / (uint8_t)8U;
+
+  IoManager_gLedIndication[byteWrite] |= ((uint8_t)1U << pos);
 }
 
 

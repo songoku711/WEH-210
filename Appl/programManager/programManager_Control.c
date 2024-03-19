@@ -18,6 +18,7 @@ extern "C" {
 * 3) internal and external interfaces from this unit
 ===============================================================================================*/
 
+#include "ioManager.h"
 #include "programManager.h"
 
 #include "eMB.h"
@@ -586,52 +587,122 @@ void ProgramManager_Control_ToggleManualOption(uint8_t command)
   {
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH:
     {
-      ProgramManager_Control_IsManualOptionWash() ? ProgramManager_Control_ClearManualOptionWash() : ProgramManager_Control_SetManualOptionWash();
+      if (ProgramManager_Control_IsManualOptionWash())
+      {
+        ProgramManager_Control_ClearManualOptionWash();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionWash();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH);
+      }
+
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER:
     {
-      ProgramManager_Control_IsManualOptionColdWater() ? ProgramManager_Control_ClearManualOptionColdWater() : ProgramManager_Control_SetManualOptionColdWater();
+      if (ProgramManager_Control_IsManualOptionColdWater())
+      {
+        ProgramManager_Control_ClearManualOptionColdWater();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionColdWater();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER);
+      }
+
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER:
     {
-      ProgramManager_Control_IsManualOptionHotWater() ? ProgramManager_Control_ClearManualOptionHotWater() : ProgramManager_Control_SetManualOptionHotWater();
+      if (ProgramManager_Control_IsManualOptionHotWater())
+      {
+        ProgramManager_Control_ClearManualOptionHotWater();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionHotWater();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER);
+      }
+      
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT:
     {
-      ProgramManager_Control_IsManualOptionHeat() ? ProgramManager_Control_ClearManualOptionHeat() : ProgramManager_Control_SetManualOptionHeat();
+      if (ProgramManager_Control_IsManualOptionHeat())
+      {
+        ProgramManager_Control_ClearManualOptionHeat();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionHeat();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT);
+      }
+      
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
     {
-      ProgramManager_Control_IsManualOptionLevel() ? ProgramManager_Control_ClearManualOptionLevel() : ProgramManager_Control_SetManualOptionLevel();
+      // ProgramManager_Control_IsManualOptionLevel() ? ProgramManager_Control_ClearManualOptionLevel() : ProgramManager_Control_SetManualOptionLevel();
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1:
     {
-      ProgramManager_Control_IsManualOptionSupply1() ? ProgramManager_Control_ClearManualOptionSupply1() : ProgramManager_Control_SetManualOptionSupply1();
+      if (ProgramManager_Control_IsManualOptionSupply1())
+      {
+        ProgramManager_Control_ClearManualOptionSupply1();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionSupply1();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1);
+      }
+      
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2:
     {
-      ProgramManager_Control_IsManualOptionSupply2() ? ProgramManager_Control_ClearManualOptionSupply2() : ProgramManager_Control_SetManualOptionSupply2();
+      if (ProgramManager_Control_IsManualOptionSupply2())
+      {
+        ProgramManager_Control_ClearManualOptionSupply2();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionSupply2();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2);
+      }
+      
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3:
     {
-      ProgramManager_Control_IsManualOptionSupply3() ? ProgramManager_Control_ClearManualOptionSupply3() : ProgramManager_Control_SetManualOptionSupply3();
+      if (ProgramManager_Control_IsManualOptionSupply3())
+      {
+        ProgramManager_Control_ClearManualOptionSupply3();
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3);
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionSupply3();
+        IoManager_SetButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3);
+      }
+      
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
     {
-      ProgramManager_Control_IsManualOptionDrain() ? ProgramManager_Control_ClearManualOptionDrain() : ProgramManager_Control_SetManualOptionDrain();
+      // ProgramManager_Control_IsManualOptionDrain() ? ProgramManager_Control_ClearManualOptionDrain() : ProgramManager_Control_SetManualOptionDrain();
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
     {
-      ProgramManager_Control_IsManualOptionExtract() ? ProgramManager_Control_ClearManualOptionExtract() : ProgramManager_Control_SetManualOptionExtract();
+      // ProgramManager_Control_IsManualOptionExtract() ? ProgramManager_Control_ClearManualOptionExtract() : ProgramManager_Control_SetManualOptionExtract();
       break;
     }
     default:

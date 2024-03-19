@@ -89,6 +89,9 @@ static void ProgramManager_ManualPostRun_InternalCommandHandler(void)
       {
         if (ProgramManager_ManualPostRun_DataCmd == PROGRAMMANAGER_CONTROL_COMMAND_STOP)
         {
+          /* Clear all manual option */
+          ProgramManager_Control_ClearAllManualOption();
+
           idleDataHierachy = (Fsm_DataHierachyStruct *)ProgramManager_malloc(sizeof(Fsm_DataHierachyStruct));
           idleDataHierachy->dataId = PROGRAMMANAGER_STATE_MANUAL_POST_RUN;
 

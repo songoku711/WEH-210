@@ -86,6 +86,9 @@ extern uint8_t IoManager_gLedIndication[];
 
 void IoManager_Init(void);
 
+void IoManager_SetButtonLedIndication(uint8_t pos);
+void IoManager_ClearButtonLedIndication(uint8_t pos);
+
 IoManager_StateType IoManager_GetCurrentState(void);
 
 void IoManager_MainFunction(void);

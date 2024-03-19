@@ -280,9 +280,9 @@ static void ProgramManager_ManualRun_InternalCheckMotorCondition(void)
 /*=============================================================================================*/
 static void ProgramManager_ManualRun_InternalControlOutput(void)
 {
-#if 0
   if (ProgramManager_Control_NotPaused())
   {
+#if 0
     /* Control heat generator through temperature */
     if (ProgramManager_gTempThresExceeded == (bool)false)
     {
@@ -308,29 +308,39 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
+#endif
     
-    /* Control motor */
-    if (ProgramManager_ManualRun_MotorState == PROGRAMMANAGER_MANUALRUN_MOTORSTATE_FWD)
+    if (ProgramManager_Control_IsManualOptionWash())
     {
-      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
-    }
-    else if (ProgramManager_ManualRun_MotorState == PROGRAMMANAGER_MANUALRUN_MOTORSTATE_REV)
-    {
-      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
+      /* Control motor */
+      if (ProgramManager_ManualRun_MotorState == PROGRAMMANAGER_MANUALRUN_MOTORSTATE_FWD)
+      {
+        ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
+      }
+      else if (ProgramManager_ManualRun_MotorState == PROGRAMMANAGER_MANUALRUN_MOTORSTATE_REV)
+      {
+        ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_REV_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
+      }
+
+      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
+                                          ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
     }
     else
     {
-      ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK);
-    }
+      /* Reset counter when no washing */
+      ProgramManager_ManualRun_MotorCounter = (uint32_t)0U;
 
-    ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK, \
-                                        ProgramManager_gCurrentWashSpeed << PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_OFFSET);
+      ProgramManager_Control_ClearOutput((PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK | PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK));
+    }
   }
   else
   {
     ProgramManager_Control_ClearAllOutput();
   }
-#endif
 
   /* Control drain valve - always CLOSE */
   ProgramManager_Control_DrainCloseHandler();
@@ -443,7 +453,10 @@ static void ProgramManager_ManualRun_SubTickHandler(void)
     {
       ProgramManager_ManualRun_OneSecondElapsed = (uint32_t)0U;
 
-      ProgramManager_ManualRun_MotorCounter += (uint32_t)1U;
+      if (ProgramManager_Control_IsManualOptionWash())
+      {
+        ProgramManager_ManualRun_MotorCounter += (uint32_t)1U;
+      }
     }
   }
   else
