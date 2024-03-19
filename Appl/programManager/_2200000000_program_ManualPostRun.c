@@ -125,9 +125,8 @@ static void ProgramManager_ManualPostRun_InternalCommandHandler(void)
 /*=============================================================================================*/
 static void ProgramManager_ManualPostRun_InternalControlOutput(void)
 {
-  ProgramManager_Control_ClearAllOutput();
-
   /* Control drain valve - no control, just left as it was from previous state */
+  ProgramManager_Control_ClearAllOutputExceptDrain();
 }
 
 

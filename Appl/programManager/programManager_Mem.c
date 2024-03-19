@@ -1495,11 +1495,10 @@ HAL_StatusTypeDef ProgramManager_ManualSeqConfig_GetData(ProgramManager_ManualSe
 {
   uint8_t i;
 
-  /* First data will be none */
+  /* Not used for manual */
   (data->normStep).waterMode = (uint8_t)0U;
   (data->normStep).soapMode = (uint8_t)0U;
 
-  /* Not used for manual */
   (data->normStep).washMode = (ProgramManager_WashModeType)0U;
   (data->normStep).drainMode = (ProgramManager_DrainModeType)0U;
   (data->normStep).tempMode = (ProgramManager_TempModeType)0U;

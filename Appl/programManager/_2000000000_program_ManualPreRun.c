@@ -218,10 +218,7 @@ static void ProgramManager_ManualPreRun_InternalCheckStateTransit(void)
 /*=============================================================================================*/
 static void ProgramManager_ManualPreRun_InternalControlOutput(void)
 {
-  ProgramManager_Control_ClearAllOutput();
-
-  /* Control drain valve - always CLOSE */
-  ProgramManager_Control_DrainCloseHandler();
+  ProgramManager_Control_ClearAllOutputExceptDrain();
 }
 
 

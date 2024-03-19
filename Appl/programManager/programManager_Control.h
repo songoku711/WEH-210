@@ -110,6 +110,7 @@ extern "C" {
 #define ProgramManager_Control_ClearOutput(mask)                      { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); }
 #define ProgramManager_Control_ModifyOutput(mask, value)              { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); ProgramManager_gCurrentOutput |= value; }
 #define ProgramManager_Control_ClearAllOutput()                       { ProgramManager_gCurrentOutput = (uint16_t)0U; }
+#define ProgramManager_Control_ClearAllOutputExceptDrain()            { ProgramManager_gCurrentOutput &= PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK; }
 
 #define PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_COUNTDOWN               (uint8_t)0x01U
 #define PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_WATER_LEVEL             (uint8_t)0x02U

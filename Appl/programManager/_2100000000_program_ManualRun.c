@@ -292,27 +292,44 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
     {
       ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HEAT_MASK);
     }
+#endif
 
     /* Control water through pressure */
     if (ProgramManager_gPresThresExceeded == (bool)false)
     {
-      ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK, \
-                                          (uint16_t)((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].waterMode) << PROGRAMMANAGER_CONTROL_OUTPUT_WATER_OFFSET);
+      if (ProgramManager_Control_IsManualOptionColdWater())
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_COLD_WATER_MASK);
+      }
+
+      if (ProgramManager_Control_IsManualOptionHotWater())
+      {
+        ProgramManager_Control_SetOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HOT_WATER_MASK);
+      }
+      else
+      {
+        ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_HOT_WATER_MASK);
+      }
     }
     else
     {
       ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_WATER_MASK);
     }
 
+#if 0
     /* Control soap - always off */
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_1_MASK);
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_2_MASK);
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_SOAP_3_MASK);
 #endif
     
+    /* Control motor */
     if (ProgramManager_Control_IsManualOptionWash())
     {
-      /* Control motor */
       if (ProgramManager_ManualRun_MotorState == PROGRAMMANAGER_MANUALRUN_MOTORSTATE_FWD)
       {
         ProgramManager_Control_ModifyOutput(PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK, PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_FWD_MASK);
@@ -336,14 +353,19 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
 
       ProgramManager_Control_ClearOutput((PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_DIR_MASK | PROGRAMMANAGER_CONTROL_OUTPUT_MOTOR_SPEED_MASK));
     }
+
+    /* Control drain valve */
+    if ( \
+        ( (ProgramManager_gPresThresExceeded == (bool)false) && (ProgramManager_Control_IsManualOptionColdWater() || ProgramManager_Control_IsManualOptionHotWater()) ) \
+       )
+    {
+      ProgramManager_Control_DrainCloseHandler();
+    }
   }
   else
   {
-    ProgramManager_Control_ClearAllOutput();
+    ProgramManager_Control_ClearAllOutputExceptDrain();
   }
-
-  /* Control drain valve - always CLOSE */
-  ProgramManager_Control_DrainCloseHandler();
 }
 
 /*=============================================================================================*/
