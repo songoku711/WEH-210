@@ -26,18 +26,20 @@ extern "C" {
 *                                       DEFINES AND MACROS
 ===============================================================================================*/
 
-#define PROGRAMMANAGER_IDLE_EVENT_PRE_RUN                             PROGRAMMANAGER_EVENT_SUBMENU_1
+#define PROGRAMMANAGER_IDLE_EVENT_AUTO_PRE_RUN                        PROGRAMMANAGER_EVENT_SUBMENU_1
+#define PROGRAMMANAGER_IDLE_EVENT_MANUAL_PRE_RUN                      PROGRAMMANAGER_EVENT_SUBMENU_2
 
 /** Program manager event handlers */
 static Fsm_GuardType ProgramManager_Idle_Entry                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType ProgramManager_Idle_Exit                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Program manager state machine */
-Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3] =
+Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4] =
 {
   FSM_TRIGGER_ENTRY           (                                       ProgramManager_Idle_Entry                                                       ),
   FSM_TRIGGER_EXIT            (                                       ProgramManager_Idle_Exit                                                        ),
-  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_IDLE_EVENT_PRE_RUN,                                            PROGRAMMANAGER_STATE_AUTO_PRE_RUN       )
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_IDLE_EVENT_AUTO_PRE_RUN,                                       PROGRAMMANAGER_STATE_AUTO_PRE_RUN       ),
+  FSM_TRIGGER_TRANSITION      ( PROGRAMMANAGER_IDLE_EVENT_MANUAL_PRE_RUN,                                     PROGRAMMANAGER_STATE_MANUAL_PRE_RUN     )
 };
 
 
@@ -71,6 +73,7 @@ static bool ProgramManager_Idle_InternalCommandHandler(void)
   {
     case PROGRAMMANAGER_CONTROL_COMMAND_START:
     {
+      /* Check if current step is active (has proper parameter) and door is closed */
       if (((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true) && \
           (ProgramManager_gSensorDoorOpenErr == PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR))
       {
@@ -82,7 +85,36 @@ static bool ProgramManager_Idle_InternalCommandHandler(void)
 
         ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
 
-        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_PRE_RUN);
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_AUTO_PRE_RUN);
+
+        stateTransit = (bool)true;
+      }
+
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
+    {
+      /* Check if door is closed */
+      if (ProgramManager_gSensorDoorOpenErr == PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR)
+      {
+        dataHierachy = (ProgramManager_Control_PreRunStruct *)ProgramManager_malloc(sizeof(ProgramManager_Control_PreRunStruct));
+        dataHierachy->dataId = PROGRAMMANAGER_STATE_IDLE;
+
+        /* Store which button is pressed when change to manual run state */
+        ProgramManager_Control_ToggleManualOption(command);
+
+        ProgramManager_FsmContext.dataHierachy = (Fsm_DataHierachyStruct *)dataHierachy;
+
+        Fsm_TriggerEvent(&ProgramManager_FsmContext, (Fsm_EventType)PROGRAMMANAGER_IDLE_EVENT_MANUAL_PRE_RUN);
 
         stateTransit = (bool)true;
       }
@@ -115,7 +147,8 @@ static Fsm_GuardType ProgramManager_Idle_Entry(Fsm_ContextStructPtr const pFsmCo
   /* Check if previous state data hierachy is not empty */
   if (pFsmContext->dataHierachy != NULL)
   {
-    if (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_POST_RUN)
+    if ((pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_AUTO_POST_RUN) || \
+        (pFsmContext->dataHierachy->dataId == PROGRAMMANAGER_STATE_MANUAL_POST_RUN))
     {
       /* Release previous state data hierachy */
       ProgramManager_free(pFsmContext->dataHierachy);

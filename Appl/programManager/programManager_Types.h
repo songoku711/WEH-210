@@ -282,15 +282,6 @@ typedef struct _ProgramManager_ParamConfigSetupStruct
 /* Program manager normal step structure */
 typedef struct _ProgramManager_NormStepConfigStruct
 {
-  /* For manual only */
-  ProgramManager_CommonModeType                   coldWaterMode;                          /* Cold water control mode */
-  ProgramManager_CommonModeType                   hotWaterMode;                           /* Hot water control mode */
-  ProgramManager_CommonModeType                   heatMode;                               /* Heat control mode */
-  ProgramManager_CommonModeType                   soap1Mode;                              /* Soap 1 control mode */
-  ProgramManager_CommonModeType                   soap2Mode;                              /* Soap 2 control mode */
-  ProgramManager_CommonModeType                   soap3Mode;                              /* Soap 3 control mode */
-  ProgramManager_CommonModeType                   drainComMode;                           /* Drain control mode */
-  /* Common parameters */
   bool                                            isActive;                               /* This step is active during AUTO mode */
   uint8_t                                         waterMode;                              /* Water mode: bit 0 - uses cold water, bit 1 - uses hot water */
   uint8_t                                         soapMode;                               /* Soap mode: bit 0 - uses soap 1, bit 1 - uses soap 2, bit 2 - uses soap 3 */

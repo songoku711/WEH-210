@@ -358,7 +358,6 @@ static void MenuManager_TempUnit_SubMainFunction(void)
       /* Read program parameters and current sequence */
       ProgramManager_ParamConfigSetup_GetData(&ProgramManager_gParamConfig);
       ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
-      ProgramManager_ManualSeqConfig_GetData(&ProgramManager_gManualSeqConfig);
 
       MenuManager_TempUnit_InternalState = MENUMANAGER_TEMPUNIT_INTERNALSTATE_DONE;
       

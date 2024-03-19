@@ -67,6 +67,16 @@ extern "C" {
 #define PROGRAMMANAGER_CONTROL_COMMAND_PREV_STEP                      (uint8_t)5U
 #define PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP                   (uint8_t)6U
 #define PROGRAMMANAGER_CONTROL_COMMAND_PREV_SUBSTEP                   (uint8_t)7U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH                    (uint8_t)8U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER               (uint8_t)9U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER                (uint8_t)10U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT                    (uint8_t)11U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL                   (uint8_t)12U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1                 (uint8_t)13U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2                 (uint8_t)14U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3                 (uint8_t)15U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN                   (uint8_t)16U
+#define PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT                 (uint8_t)17U
 
 
 
@@ -101,6 +111,67 @@ extern "C" {
 #define ProgramManager_Control_ModifyOutput(mask, value)              { ProgramManager_gCurrentOutput &= (uint16_t)(~mask); ProgramManager_gCurrentOutput |= value; }
 #define ProgramManager_Control_ClearAllOutput()                       { ProgramManager_gCurrentOutput = (uint16_t)0U; }
 
+#define PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_COUNTDOWN               (uint8_t)0x01U
+#define PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_WATER_LEVEL             (uint8_t)0x02U
+#define PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_TEMP                    (uint8_t)0x04U
+
+#define ProgramManager_Control_IsModifiedParamCountdown()             ((ProgramManager_gManualModifiedParam & PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_COUNTDOWN) != (uint8_t)0U)
+#define ProgramManager_Control_IsModifiedParamWaterLevel()            ((ProgramManager_gManualModifiedParam & PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_WATER_LEVEL) != (uint8_t)0U)
+#define ProgramManager_Control_IsModifiedParamTemp()                  ((ProgramManager_gManualModifiedParam & PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_TEMP) != (uint8_t)0U)
+
+#define ProgramManager_Control_SetModifiedParamCountdown()            (ProgramManager_gManualModifiedParam |= PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_COUNTDOWN)
+#define ProgramManager_Control_SetModifiedParamWaterLevel()           (ProgramManager_gManualModifiedParam |= PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_WATER_LEVEL)
+#define ProgramManager_Control_SetModifiedParamTemp()                 (ProgramManager_gManualModifiedParam |= PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_TEMP)
+
+#define ProgramManager_Control_ClearModifiedParamCountdown()          (ProgramManager_gManualModifiedParam &= (uint8_t)(~(PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_COUNTDOWN)))
+#define ProgramManager_Control_ClearModifiedParamWaterLevel()         (ProgramManager_gManualModifiedParam &= (uint8_t)(~(PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_WATER_LEVEL)))
+#define ProgramManager_Control_ClearModifiedParamTemp()               (ProgramManager_gManualModifiedParam &= (uint8_t)(~(PROGRAMMANAGER_CONTROL_MODIFIED_PARAM_TEMP)))
+
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_WASH                     (uint16_t)0x0001U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_COLDWATER                (uint16_t)0x0002U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HOTWATER                 (uint16_t)0x0004U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HEAT                     (uint16_t)0x0008U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_LEVEL                    (uint16_t)0x0010U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1                  (uint16_t)0x0020U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2                  (uint16_t)0x0040U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3                  (uint16_t)0x0080U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN                    (uint16_t)0x0100U
+#define PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT                  (uint16_t)0x0200U
+
+#define ProgramManager_Control_IsManualOptionWash()                   ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_WASH) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionColdWater()              ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_COLDWATER) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionHotWater()               ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HOTWATER) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionHeat()                   ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HEAT) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionLevel()                  ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_LEVEL) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionSupply1()                ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionSupply2()                ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionSupply3()                ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionDrain()                  ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN) != (uint8_t)0U)
+#define ProgramManager_Control_IsManualOptionExtract()                ((ProgramManager_gManualOption & PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT) != (uint8_t)0U)
+
+#define ProgramManager_Control_SetManualOptionWash()                  (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_WASH)
+#define ProgramManager_Control_SetManualOptionColdWater()             (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_COLDWATER)
+#define ProgramManager_Control_SetManualOptionHotWater()              (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HOTWATER)
+#define ProgramManager_Control_SetManualOptionHeat()                  (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HEAT)
+#define ProgramManager_Control_SetManualOptionLevel()                 (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_LEVEL)
+#define ProgramManager_Control_SetManualOptionSupply1()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1)
+#define ProgramManager_Control_SetManualOptionSupply2()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2)
+#define ProgramManager_Control_SetManualOptionSupply3()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3)
+#define ProgramManager_Control_SetManualOptionDrain()                 (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN)
+#define ProgramManager_Control_SetManualOptionExtract()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT)
+
+#define ProgramManager_Control_ClearManualOptionWash()                (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_WASH)))
+#define ProgramManager_Control_ClearManualOptionColdWater()           (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_COLDWATER)))
+#define ProgramManager_Control_ClearManualOptionHotWater()            (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HOTWATER)))
+#define ProgramManager_Control_ClearManualOptionHeat()                (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_HEAT)))
+#define ProgramManager_Control_ClearManualOptionLevel()               (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_LEVEL)))
+#define ProgramManager_Control_ClearManualOptionSupply1()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1)))
+#define ProgramManager_Control_ClearManualOptionSupply2()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2)))
+#define ProgramManager_Control_ClearManualOptionSupply3()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3)))
+#define ProgramManager_Control_ClearManualOptionDrain()               (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN)))
+#define ProgramManager_Control_ClearManualOptionExtract()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT)))
+
+#define ProgramManager_Control_ClearAllManualOption()                 (ProgramManager_gManualOption = (uint16_t)0u)
 
 
 /* Drain valve open definition */
@@ -124,6 +195,8 @@ extern "C" {
   { \
     ProgramManager_Control_ClearOutput(PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK); \
   }
+
+#define ProgramManager_Control_NotPaused()                            (ProgramManager_gIsPaused == (uint8_t)0U)
 
 
 
@@ -186,6 +259,9 @@ extern uint16_t ProgramManager_gCurrentDrainExtrLvl3DrainTime;
 extern uint16_t ProgramManager_gCurrentDrainExtrLvl4DrainTime;
 extern uint16_t ProgramManager_gCurrentDrainOffTime;
 
+extern uint8_t ProgramManager_gManualModifiedParam;
+extern uint16_t ProgramManager_gManualOption;
+
 extern uint8_t ProgramManager_gTimeCountMin;
 extern uint8_t ProgramManager_gTimeCountSec;
 extern uint8_t ProgramManager_gDrainLevel;
@@ -202,12 +278,12 @@ extern uint16_t ProgramManager_gCurrentOutput;
 *                                     FUNCTION PROTOTYPES
 ===============================================================================================*/
 
-#define ProgramManager_Control_NotPaused()                            (ProgramManager_gIsPaused == (uint8_t)0U)
-
 void ProgramManager_Control_Init(void);
 
 void ProgramManager_Control_SetCommand(uint8_t command);
 void ProgramManager_Control_RetrieveCommand(uint8_t *command);
+
+void ProgramManager_Control_ToggleManualOption(uint8_t command);
 
 void ProgramManager_Control_TogglePauseResumeHandler(void);
 

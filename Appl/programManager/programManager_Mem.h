@@ -348,7 +348,6 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainOffTime_SetData(uint8_t seq
 
 
 HAL_StatusTypeDef ProgramManager_ManualSeqConfig_GetData(ProgramManager_ManualSeqConfigStruct *data);
-HAL_StatusTypeDef ProgramManager_ManualSeqConfig_SetData(ProgramManager_ManualSeqConfigStruct *data);
 
 
 

@@ -242,11 +242,9 @@ static void MenuManager_SetDefaultProg_SubMainFunction(void)
     {
       /* Initialize program database by setting default factory value */
       ProgramManager_AutoSeqConfig_SetData((ProgramManager_AutoSeqConfigStruct *)&ProgramManager_gAutoSeqDefConfig);
-      ProgramManager_ManualSeqConfig_SetData((ProgramManager_ManualSeqConfigStruct *)&ProgramManager_gManualSeqDefConfig);
 
       /* Read program parameters and current sequence */
       ProgramManager_AutoSeqConfig_GetData(&ProgramManager_gAutoSeqConfig);
-      ProgramManager_ManualSeqConfig_GetData(&ProgramManager_gManualSeqConfig);
 
       MenuManager_SetDefaultProg_InternalState = MENUMANAGER_SETDEFAULTPROG_INTERNALSTATE_DONE;
       

@@ -61,7 +61,7 @@ extern Fsm_EventEntryStruct ProgramManager_PowerOn_StateMachine[2];
 /** State init (1) */
 extern Fsm_EventEntryStruct ProgramManager_Init_StateMachine[3];
 /** State idle (2) */
-extern Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[3];
+extern Fsm_EventEntryStruct ProgramManager_Idle_StateMachine[4];
 /** State auto pre-run (3) */
 extern Fsm_EventEntryStruct ProgramManager_AutoPreRun_StateMachine[6];
 /** State auto run water (4) */
@@ -74,9 +74,15 @@ extern Fsm_EventEntryStruct ProgramManager_AutoRunWash_StateMachine[5];
 extern Fsm_EventEntryStruct ProgramManager_AutoRunDrain_StateMachine[4];
 /** State auto post-run (8) */
 extern Fsm_EventEntryStruct ProgramManager_AutoPostRun_StateMachine[4];
+/** State manual pre-run (9) */
+extern Fsm_EventEntryStruct ProgramManager_ManualPreRun_StateMachine[4];
+/** State manual run (10) */
+extern Fsm_EventEntryStruct ProgramManager_ManualRun_StateMachine[3];
+/** State manual post-run (11) */
+extern Fsm_EventEntryStruct ProgramManager_ManualPostRun_StateMachine[3];
 
 /** List of all states */
-Fsm_StateDefStruct ProgramManager_ApplFsmStates[9] =
+Fsm_StateDefStruct ProgramManager_ApplFsmStates[12] =
 {
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_PowerOn_StateMachine)                         },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_Init_StateMachine)                            },
@@ -86,7 +92,10 @@ Fsm_StateDefStruct ProgramManager_ApplFsmStates[9] =
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoRunHeat_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoRunWash_StateMachine)                     },
   { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoRunDrain_StateMachine)                    },
-  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoPostRun_StateMachine)                     }
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_AutoPostRun_StateMachine)                     },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_ManualPreRun_StateMachine)                    },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_ManualRun_StateMachine)                       },
+  { FSM_DEFAULT_STATE,        FSM_SIZE_AND_ARRAY(ProgramManager_ManualPostRun_StateMachine)                   }
 };
 
 

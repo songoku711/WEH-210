@@ -61,6 +61,9 @@ typedef enum
   PROGRAMMANAGER_STATE_AUTO_RUN_WASH,
   PROGRAMMANAGER_STATE_AUTO_RUN_DRAIN,
   PROGRAMMANAGER_STATE_AUTO_POST_RUN,
+  PROGRAMMANAGER_STATE_MANUAL_PRE_RUN,
+  PROGRAMMANAGER_STATE_MANUAL_RUN,
+  PROGRAMMANAGER_STATE_MANUAL_POST_RUN,
   PROGRAMMANAGER_STATE_FAIL
 } ProgramManager_StateType;
 
@@ -77,6 +80,11 @@ typedef enum
   PROGRAMMANAGER_EVENT_SUBMENU_6,
   PROGRAMMANAGER_EVENT_SUBMENU_7,
 } ProgramManager_EventType;
+
+#define ProgramManager_IsCurrentStateIdle()                           (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+#define ProgramManager_IsCurrentStateAuto()                           ((ProgramManager_GetCurrentState() >= PROGRAMMANAGER_STATE_AUTO_PRE_RUN) && (ProgramManager_GetCurrentState() <= PROGRAMMANAGER_STATE_AUTO_POST_RUN))
+#define ProgramManager_IsCurrentStateManual()                         ((ProgramManager_GetCurrentState() >= PROGRAMMANAGER_STATE_MANUAL_PRE_RUN) && (ProgramManager_GetCurrentState() <= PROGRAMMANAGER_STATE_MANUAL_POST_RUN))
+#define ProgramManager_IsCurrentStateFail()                           (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_FAIL)
 
 
 

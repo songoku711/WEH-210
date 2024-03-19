@@ -10,15 +10,15 @@
       <TargetName>WEH-210</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
+      <pArmCC>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\Arm_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407VETx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.16.0</PackID>
-          <PackURL>http://www.keil.com/pack/</PackURL>
+          <PackID>Keil.STM32F4xx_DFP.2.17.1</PackID>
+          <PackURL>https://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000-0x2001BFFF) IRAM2(0x2001C000-0x2001FFFF) IROM(0x8000000-0x807FFFF) CLOCK(25000000) FPU2 CPUTYPE("Cortex-M4") TZ</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
@@ -744,6 +744,21 @@
               <FileName>_1500000000_program_AutoPostRun.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Appl\programManager\_1500000000_program_AutoPostRun.c</FilePath>
+            </File>
+            <File>
+              <FileName>_2000000000_program_ManualPreRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_2000000000_program_ManualPreRun.c</FilePath>
+            </File>
+            <File>
+              <FileName>_2100000000_program_ManualRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_2100000000_program_ManualRun.c</FilePath>
+            </File>
+            <File>
+              <FileName>_2200000000_program_ManualPostRun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Appl\programManager\_2200000000_program_ManualPostRun.c</FilePath>
             </File>
             <File>
               <FileName>programManager_Mem.c</FileName>

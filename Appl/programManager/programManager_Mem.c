@@ -918,28 +918,6 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_GetData(uint8_t seqIdx, uint8_t 
 
   extMemIf.readByteArray(addr, recvArr, PROGRAMMANAGER_CONFIG_BLOCK_SIZE);
 
-  /* Check if sequence index is from AUTO or MANUAL mode configuration */
-  if (seqIdx < PROGRAMMANAGER_SEQUENCE_NUM_MAX)
-  {
-    data->coldWaterMode       = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->hotWaterMode        = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->heatMode            = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->soap1Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->soap2Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->soap3Mode           = PROGRAMMANAGER_COMMON_MODE_AUTO;
-    data->drainComMode        = PROGRAMMANAGER_COMMON_MODE_AUTO;
-  }
-  else
-  {
-    data->coldWaterMode       = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->hotWaterMode        = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->heatMode            = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->soap1Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->soap2Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->soap3Mode           = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-    data->drainComMode        = PROGRAMMANAGER_COMMON_MODE_MANUAL;
-  }
-
   data->isActive              = (bool)(recvArr[PROGRAMMANAGER_NORMSTEP_ISACTIVE_OFFSET]);
 
   data->waterMode             = (uint8_t)(recvArr[PROGRAMMANAGER_NORMSTEP_WATERMODE_OFFSET]);
@@ -1515,15 +1493,34 @@ HAL_StatusTypeDef ProgramManager_NormStepConfig_DrainOffTime_SetData(uint8_t seq
 
 HAL_StatusTypeDef ProgramManager_ManualSeqConfig_GetData(ProgramManager_ManualSeqConfigStruct *data)
 {
-  ProgramManager_NormStepConfig_GetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
-  
-  return HAL_OK;
-}
+  uint8_t i;
 
-HAL_StatusTypeDef ProgramManager_ManualSeqConfig_SetData(ProgramManager_ManualSeqConfigStruct *data)
-{
-  ProgramManager_NormStepConfig_SetData(PROGRAMMANAGER_SEQUENCE_NUM_MAX, (uint8_t)0U, &(data->normStep), ProgramManager_gParamConfig.machineFuncCfg.tempUnit);
-  
+  /* First data will be none */
+  (data->normStep).waterMode = (uint8_t)0U;
+  (data->normStep).soapMode = (uint8_t)0U;
+
+  /* Not used for manual */
+  (data->normStep).washMode = (ProgramManager_WashModeType)0U;
+  (data->normStep).drainMode = (ProgramManager_DrainModeType)0U;
+  (data->normStep).tempMode = (ProgramManager_TempModeType)0U;
+  (data->normStep).levelMode = (ProgramManager_LevelModeType)0U;
+
+  (data->normStep).washTime = (uint8_t)0U;
+
+  /* Get default data */
+  (data->normStep).washRunTime = ProgramManager_gParamConfig.washCfg.stdWashRunTime;
+  (data->normStep).washStopTime = ProgramManager_gParamConfig.washCfg.stdWashStopTime;
+  (data->normStep).washSpeed = ProgramManager_gParamConfig.washCfg.stdWashSpeed;
+
+  (data->normStep).tempThreshold = ProgramManager_gParamConfig.heatTempCfg.tempThreshold;
+  (data->normStep).levelThreshold = ProgramManager_gParamConfig.fillLevelCfg.highLevel;
+  (data->normStep).drainOffTime = ProgramManager_gParamConfig.drainCfg.drainOffTime;
+
+  for (i = 0; i < PROGRAMMANAGER_STEP_DRAINSTEP_NUM_MAX; i++)
+  {
+    ((data->normStep).drainTime)[i] = (ProgramManager_gParamConfig.drainCfg.drainTime)[i];
+  }
+
   return HAL_OK;
 }
 

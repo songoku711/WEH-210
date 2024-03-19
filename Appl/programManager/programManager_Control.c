@@ -108,6 +108,9 @@ uint16_t ProgramManager_gCurrentDrainExtrLvl3DrainTime;
 uint16_t ProgramManager_gCurrentDrainExtrLvl4DrainTime;
 uint16_t ProgramManager_gCurrentDrainOffTime;
 
+uint8_t ProgramManager_gManualModifiedParam;
+uint16_t ProgramManager_gManualOption;
+
 
 
 uint8_t ProgramManager_gTimeCountMin;
@@ -321,142 +324,195 @@ void ProgramManager_ControlInternal_VerifyOutput(void)
 /*=============================================================================================*/
 void ProgramManager_ControlInternal_UpdateTempThreshold(void)
 {
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateAuto())
   {
-    switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].tempMode)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
     {
-      case PROGRAMMANAGER_TEMP_MODE_DEFAULT:
-        ProgramManager_gCurrentTempThreshold = ProgramManager_gParamConfig.heatTempCfg.tempThreshold;
-        break;
-      case PROGRAMMANAGER_TEMP_MODE_CUSTOM:
-        ProgramManager_gCurrentTempThreshold = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].tempThreshold;
-        break;
-      default:
-        ProgramManager_gCurrentTempThreshold = PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE;
-        break;
+      switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].tempMode)
+      {
+        case PROGRAMMANAGER_TEMP_MODE_DEFAULT:
+          ProgramManager_gCurrentTempThreshold = ProgramManager_gParamConfig.heatTempCfg.tempThreshold;
+          break;
+        case PROGRAMMANAGER_TEMP_MODE_CUSTOM:
+          ProgramManager_gCurrentTempThreshold = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].tempThreshold;
+          break;
+        default:
+          ProgramManager_gCurrentTempThreshold = PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE;
+          break;
+      }
     }
+    else
+    {
+      ProgramManager_gCurrentTempThreshold = PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE;
+    }
+  }
+  else if (ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_gCurrentTempThreshold = ProgramManager_gManualSeqConfig.normStep.tempThreshold;
   }
   else
   {
-    ProgramManager_gCurrentTempThreshold = PROGRAMMANAGER_CONTROL_TEMP_INVALID_VALUE;
+    /* Nothing here */
   }
 }
 
 /*=============================================================================================*/
 void ProgramManager_ControlInternal_UpdatePresThreshold(void)
 {
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateAuto())
   {
-    switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].levelMode)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
     {
-      case PROGRAMMANAGER_LEVEL_MODE_LOW:
-        ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.lowLevel;
-        break;
-      case PROGRAMMANAGER_LEVEL_MODE_MID:
-        ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.midLevel;
-        break;
-      case PROGRAMMANAGER_LEVEL_MODE_HIGH:
-        ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.highLevel;
-        break;
-      case PROGRAMMANAGER_LEVEL_MODE_CUSTOM:
-        ProgramManager_gCurrentPresThreshold = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].levelThreshold;
-        break;
-      default:
-        ProgramManager_gCurrentPresThreshold = PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE;
-        break;
+      switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].levelMode)
+      {
+        case PROGRAMMANAGER_LEVEL_MODE_LOW:
+          ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.lowLevel;
+          break;
+        case PROGRAMMANAGER_LEVEL_MODE_MID:
+          ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.midLevel;
+          break;
+        case PROGRAMMANAGER_LEVEL_MODE_HIGH:
+          ProgramManager_gCurrentPresThreshold = ProgramManager_gParamConfig.fillLevelCfg.highLevel;
+          break;
+        case PROGRAMMANAGER_LEVEL_MODE_CUSTOM:
+          ProgramManager_gCurrentPresThreshold = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].levelThreshold;
+          break;
+        default:
+          ProgramManager_gCurrentPresThreshold = PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE;
+          break;
+      }
     }
+    else
+    {
+      ProgramManager_gCurrentPresThreshold = PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE;
+    }
+  }
+  else if (ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_gCurrentPresThreshold = ProgramManager_gManualSeqConfig.normStep.levelThreshold;
   }
   else
   {
-    ProgramManager_gCurrentPresThreshold = PROGRAMMANAGER_CONTROL_PRES_INVALID_VALUE;
+    /* Nothing here */
   }
 }
 
 /*=============================================================================================*/
 void ProgramManager_ControlInternal_UpdateWashTime(void)
 {
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateAuto())
   {
-    switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washMode)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
     {
-      case PROGRAMMANAGER_WASH_MODE_STANDARD:
+      switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washMode)
       {
-        ProgramManager_gCurrentWashRunTime = ProgramManager_gParamConfig.washCfg.stdWashRunTime;
-        ProgramManager_gCurrentWashStopTime = ProgramManager_gParamConfig.washCfg.stdWashStopTime;
-        ProgramManager_gCurrentWashSpeed = ProgramManager_gParamConfig.washCfg.stdWashSpeed;
+        case PROGRAMMANAGER_WASH_MODE_STANDARD:
+        {
+          ProgramManager_gCurrentWashRunTime = ProgramManager_gParamConfig.washCfg.stdWashRunTime;
+          ProgramManager_gCurrentWashStopTime = ProgramManager_gParamConfig.washCfg.stdWashStopTime;
+          ProgramManager_gCurrentWashSpeed = ProgramManager_gParamConfig.washCfg.stdWashSpeed;
 
-        break;
-      }
-      case PROGRAMMANAGER_WASH_MODE_CUSTOM:
-      {
-        ProgramManager_gCurrentWashRunTime = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washRunTime;
-        ProgramManager_gCurrentWashStopTime = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washStopTime;
-        ProgramManager_gCurrentWashSpeed = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washSpeed;
+          break;
+        }
+        case PROGRAMMANAGER_WASH_MODE_CUSTOM:
+        {
+          ProgramManager_gCurrentWashRunTime = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washRunTime;
+          ProgramManager_gCurrentWashStopTime = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washStopTime;
+          ProgramManager_gCurrentWashSpeed = (ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].washSpeed;
 
-        break;
-      }
-      default:
-      {
-        ProgramManager_gCurrentWashRunTime = (uint32_t)0U;
-        ProgramManager_gCurrentWashStopTime = (uint32_t)0U;
-        ProgramManager_gCurrentWashSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
+          break;
+        }
+        default:
+        {
+          ProgramManager_gCurrentWashRunTime = (uint32_t)0U;
+          ProgramManager_gCurrentWashStopTime = (uint32_t)0U;
+          ProgramManager_gCurrentWashSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
 
-        break;
+          break;
+        }
       }
     }
+    else
+    {
+      ProgramManager_gCurrentWashRunTime = (uint32_t)0U;
+      ProgramManager_gCurrentWashStopTime = (uint32_t)0U;
+      ProgramManager_gCurrentWashSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
+    }
+  }
+  else if (ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_gCurrentWashRunTime = ProgramManager_gManualSeqConfig.normStep.washRunTime;
+    ProgramManager_gCurrentWashStopTime = ProgramManager_gManualSeqConfig.normStep.washStopTime;
+    ProgramManager_gCurrentWashSpeed = ProgramManager_gManualSeqConfig.normStep.washSpeed;
   }
   else
   {
-    ProgramManager_gCurrentWashRunTime = (uint32_t)0U;
-    ProgramManager_gCurrentWashStopTime = (uint32_t)0U;
-    ProgramManager_gCurrentWashSpeed = PROGRAMMANAGER_MOTOR_SPEED_LEVEL_0;
+    /* Nothing here */
   }
 }
 
 /*=============================================================================================*/
 void ProgramManager_ControlInternal_UpdateDrainTimeSpeed(void)
 {
-  if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateAuto())
   {
-    switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].drainMode)
+    if ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].isActive == true)
     {
-      case PROGRAMMANAGER_DRAIN_MODE_CUSTOM:
+      switch ((ProgramManager_gAutoSeqConfig.normStep)[ProgramManager_gAutoSeqConfig.currentStep].drainMode)
       {
-        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
-        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
-        
-        ProgramManager_gCurrentDrainOffTime             = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainOffTime;
-        break;
-      }
-      case PROGRAMMANAGER_DRAIN_MODE_DEFAULT:
-      default:
-      {
-        ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
-        ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
-        ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
-        
-        ProgramManager_gCurrentDrainOffTime             = ProgramManager_gParamConfig.drainCfg.drainOffTime;
-        break;
+        case PROGRAMMANAGER_DRAIN_MODE_CUSTOM:
+        {
+          ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
+          ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+          
+          ProgramManager_gCurrentDrainOffTime             = ProgramManager_gAutoSeqConfig.normStep[ProgramManager_gAutoSeqConfig.currentStep].drainOffTime;
+          break;
+        }
+        case PROGRAMMANAGER_DRAIN_MODE_DEFAULT:
+        default:
+        {
+          ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
+          ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+          ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gParamConfig.drainCfg.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+          
+          ProgramManager_gCurrentDrainOffTime             = ProgramManager_gParamConfig.drainCfg.drainOffTime;
+          break;
+        }
       }
     }
+    else
+    {
+      ProgramManager_gCurrentDrainForwardDrainTime    = (uint16_t)0U;
+      ProgramManager_gCurrentDrainBalanceDrainTime    = (uint16_t)0U;
+      ProgramManager_gCurrentDrainExtrLvl1DrainTime   = (uint16_t)0U;
+      ProgramManager_gCurrentDrainExtrLvl2DrainTime   = (uint16_t)0U;
+      ProgramManager_gCurrentDrainExtrLvl3DrainTime   = (uint16_t)0U;
+      ProgramManager_gCurrentDrainExtrLvl4DrainTime   = (uint16_t)0U;
+
+      ProgramManager_gCurrentDrainOffTime             = (uint16_t)0U;
+    }
+  }
+  else if (ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_gCurrentDrainForwardDrainTime    = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_FORWARD_DRAIN_IDX];
+    ProgramManager_gCurrentDrainBalanceDrainTime    = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_BALANCE_DRAIN_IDX];
+    ProgramManager_gCurrentDrainExtrLvl1DrainTime   = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL1_DRAIN_IDX];
+    ProgramManager_gCurrentDrainExtrLvl2DrainTime   = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL2_DRAIN_IDX];
+    ProgramManager_gCurrentDrainExtrLvl3DrainTime   = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+    ProgramManager_gCurrentDrainExtrLvl4DrainTime   = ProgramManager_gManualSeqConfig.normStep.drainTime[PROGRAMMANAGER_STEP_DRAINSTEP_EXTR_LVL3_DRAIN_IDX];
+    
+    ProgramManager_gCurrentDrainOffTime             = ProgramManager_gManualSeqConfig.normStep.drainOffTime;
   }
   else
   {
-    ProgramManager_gCurrentDrainForwardDrainTime    = (uint16_t)0U;
-    ProgramManager_gCurrentDrainBalanceDrainTime    = (uint16_t)0U;
-    ProgramManager_gCurrentDrainExtrLvl1DrainTime   = (uint16_t)0U;
-    ProgramManager_gCurrentDrainExtrLvl2DrainTime   = (uint16_t)0U;
-    ProgramManager_gCurrentDrainExtrLvl3DrainTime   = (uint16_t)0U;
-    ProgramManager_gCurrentDrainExtrLvl4DrainTime   = (uint16_t)0U;
-
-    ProgramManager_gCurrentDrainOffTime             = (uint16_t)0U;
+    /* Nothing here */
   }
 }
 
@@ -500,6 +556,9 @@ void ProgramManager_Control_Init(void)
   ProgramManager_gIsError = (uint8_t)0U;
 
   ProgramManager_gCurrentOutput = (uint16_t)0U;
+
+  ProgramManager_gManualModifiedParam = (uint8_t)0U;
+  ProgramManager_gManualOption = (uint16_t)0U;
 }
 
 
@@ -521,21 +580,74 @@ void ProgramManager_Control_RetrieveCommand(uint8_t *command)
 
 
 /*=============================================================================================*/
+void ProgramManager_Control_ToggleManualOption(uint8_t command)
+{
+  switch (command)
+  {
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH:
+    {
+      ProgramManager_Control_IsManualOptionWash() ? ProgramManager_Control_ClearManualOptionWash() : ProgramManager_Control_SetManualOptionWash();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER:
+    {
+      ProgramManager_Control_IsManualOptionColdWater() ? ProgramManager_Control_ClearManualOptionColdWater() : ProgramManager_Control_SetManualOptionColdWater();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER:
+    {
+      ProgramManager_Control_IsManualOptionHotWater() ? ProgramManager_Control_ClearManualOptionHotWater() : ProgramManager_Control_SetManualOptionHotWater();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT:
+    {
+      ProgramManager_Control_IsManualOptionHeat() ? ProgramManager_Control_ClearManualOptionHeat() : ProgramManager_Control_SetManualOptionHeat();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
+    {
+      ProgramManager_Control_IsManualOptionLevel() ? ProgramManager_Control_ClearManualOptionLevel() : ProgramManager_Control_SetManualOptionLevel();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1:
+    {
+      ProgramManager_Control_IsManualOptionSupply1() ? ProgramManager_Control_ClearManualOptionSupply1() : ProgramManager_Control_SetManualOptionSupply1();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2:
+    {
+      ProgramManager_Control_IsManualOptionSupply2() ? ProgramManager_Control_ClearManualOptionSupply2() : ProgramManager_Control_SetManualOptionSupply2();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3:
+    {
+      ProgramManager_Control_IsManualOptionSupply3() ? ProgramManager_Control_ClearManualOptionSupply3() : ProgramManager_Control_SetManualOptionSupply3();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
+    {
+      ProgramManager_Control_IsManualOptionDrain() ? ProgramManager_Control_ClearManualOptionDrain() : ProgramManager_Control_SetManualOptionDrain();
+      break;
+    }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
+    {
+      ProgramManager_Control_IsManualOptionExtract() ? ProgramManager_Control_ClearManualOptionExtract() : ProgramManager_Control_SetManualOptionExtract();
+      break;
+    }
+    default:
+    {
+      ProgramManager_Control_ClearAllManualOption();
+      break;
+    }
+  }
+}
+
+
+
+/*=============================================================================================*/
 void ProgramManager_Control_TogglePauseResumeHandler(void)
 {
   ProgramManager_gIsPaused ^= (uint8_t)0x01U;
-
-  // /* Program is not paused */
-  // if (ProgramManager_gIsPaused == (uint8_t)0U)
-  // {
-  //   ProgramManager_gCurrentOutput = ProgramManager_PauseOutput;
-  // }
-  // /* Program is paused */
-  // else
-  // {
-  //   ProgramManager_PauseOutput = ProgramManager_gCurrentOutput;
-  //   ProgramManager_gCurrentOutput = (uint32_t)0U;
-  // }
 }
 
 

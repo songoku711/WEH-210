@@ -158,7 +158,6 @@ static void ProgramManager_Init_SubMainFunction(void)
       /* Initialize program database by setting default factory value */
       ProgramManager_ParamConfigSetup_SetData((ProgramManager_ParamConfigSetupStruct *)&ProgramManager_gParamDefConfig);
       ProgramManager_AutoSeqConfig_SetData((ProgramManager_AutoSeqConfigStruct *)&ProgramManager_gAutoSeqDefConfig);
-      ProgramManager_ManualSeqConfig_SetData((ProgramManager_ManualSeqConfigStruct *)&ProgramManager_gManualSeqDefConfig);
 
       extMemIf.writeWord(PROGRAMMANAGER_MAGIC_NUMBER_BASE_ADDR, PROGRAMMANAGER_CONF_INIT_MAGIC_NUMBER);
 

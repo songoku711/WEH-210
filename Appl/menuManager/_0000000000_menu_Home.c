@@ -108,6 +108,7 @@ extern "C" {
 /** Menu manager main titles and child menu titles */
 static const uint8_t MenuManager_Home_SequenceIdxStr[] =              "PROGRAM %02d";
 static const uint8_t MenuManager_Home_StepIdxStr[] =                  "STEP %02d";
+static const uint8_t MenuManager_Home_ManualStr[] =                   "    MANUAL";
 
 static const uint8_t MenuManager_Home_NotifyNotAvailStr[] =           "NOT AVAILABLE      ";
 static const uint8_t MenuManager_Home_NotifyDoorOpenStr[] =           "DOOR OPEN          ";
@@ -157,23 +158,31 @@ static const uint8_t MenuManager_Home_BlankStr[] =                    "         
 
 
 /** Menu manager button event mapping array */
-static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[9] =
+static MenuManager_ButEventMapStruct MenuManager_Home_ButEventMap[17] =
 {
-  { IO_LONG_PRESS(IOMANAGER_BUTTON_STATE_START),                      MENUMANAGER_EVENT_LONG_START_BUT        },
-  { IO_LONG_PRESS(IOMANAGER_BUTTON_STATE_STOP),                       MENUMANAGER_EVENT_LONG_STOP_BUT         },
   { IOMANAGER_BUTTON_STATE_START,                                     MENUMANAGER_EVENT_START_BUT             },
   { IOMANAGER_BUTTON_STATE_STOP,                                      MENUMANAGER_EVENT_STOP_BUT              },
   { IOMANAGER_BUTTON_STATE_UP,                                        MENUMANAGER_EVENT_UP_BUT                },
   { IOMANAGER_BUTTON_STATE_DOWN,                                      MENUMANAGER_EVENT_DOWN_BUT              },
   { IOMANAGER_BUTTON_STATE_ADD,                                       MENUMANAGER_EVENT_ADD_BUT               },
   { IOMANAGER_BUTTON_STATE_SUB,                                       MENUMANAGER_EVENT_SUB_BUT               },
-  { IOMANAGER_BUTTON_STATE_UP | IOMANAGER_BUTTON_STATE_DOWN,          MENUMANAGER_EVENT_UP_DOWN_BUT           }
+  { IOMANAGER_BUTTON_STATE_UP | IOMANAGER_BUTTON_STATE_DOWN,          MENUMANAGER_EVENT_UP_DOWN_BUT           },
+  { IOMANAGER_BUTTON_STATE_WASH,                                      MENUMANAGER_EVENT_WASH_BUT              },
+  { IOMANAGER_BUTTON_STATE_COLD,                                      MENUMANAGER_EVENT_COLDWTR_BUT           },
+  { IOMANAGER_BUTTON_STATE_HOT,                                       MENUMANAGER_EVENT_HOTWTR_BUT            },
+  { IOMANAGER_BUTTON_STATE_HEAT,                                      MENUMANAGER_EVENT_HEAT_BUT              },
+  { IOMANAGER_BUTTON_STATE_LEVEL,                                     MENUMANAGER_EVENT_LEVEL_BUT             },
+  { IOMANAGER_BUTTON_STATE_SUPP1,                                     MENUMANAGER_EVENT_SUPP1_BUT             },
+  { IOMANAGER_BUTTON_STATE_SUPP2,                                     MENUMANAGER_EVENT_SUPP2_BUT             },
+  { IOMANAGER_BUTTON_STATE_SUPP3,                                     MENUMANAGER_EVENT_SUPP3_BUT             },
+  { IOMANAGER_BUTTON_STATE_DRAIN,                                     MENUMANAGER_EVENT_DRAIN_BUT             },
+  { IOMANAGER_BUTTON_STATE_EXTRACT,                                   MENUMANAGER_EVENT_EXTRACT_BUT           }
 };
 
 /** Menu manager button event mapping configuration */
 static MenuManager_ButEventMapConfStruct MenuManager_Home_ButEventMapConf =
 {
-  .butEventMapNum             = (uint8_t)9U,
+  .butEventMapNum             = (uint8_t)17U,
   .butEventMapCfg             = &MenuManager_Home_ButEventMap
 };
 
@@ -184,29 +193,45 @@ static Fsm_GuardType MenuManager_Home_Entry                           (Fsm_Conte
 static Fsm_GuardType MenuManager_Home_Exit                            (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_StartBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_StopBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_LongStartBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_LongStopBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_UpBut                           (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_DownBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_UpDownBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_AddBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 static Fsm_GuardType MenuManager_Home_SubBut                          (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
-static Fsm_GuardType MenuManager_Home_UpDownBut                       (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_WashBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_ColdWaterBut                    (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_HotWaterBut                     (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_HeatBut                         (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_LevelBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_Supply1But                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_Supply2But                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_Supply3But                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_DrainBut                        (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
+static Fsm_GuardType MenuManager_Home_ExtractBut                      (Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event);
 
 /** Menu manager state machine */
-Fsm_EventEntryStruct MenuManager_Home_StateMachine[12] =
+Fsm_EventEntryStruct MenuManager_Home_StateMachine[20] =
 {
   FSM_TRIGGER_ENTRY           (                                       MenuManager_Home_Entry                                                          ),
   FSM_TRIGGER_EXIT            (                                       MenuManager_Home_Exit                                                           ),
   FSM_TRIGGER_TRANSITION      ( MENUMANAGER_EVENT_SUBMENU_1,                                                  MENUMANAGER_STATE_MAIN_SETTING          ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_START_BUT,          MenuManager_Home_StartBut                                                       ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_STOP_BUT,           MenuManager_Home_StopBut                                                        ),
-  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_LONG_START_BUT,     MenuManager_Home_LongStartBut                                                   ),
-  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_LONG_STOP_BUT,      MenuManager_Home_LongStopBut                                                    ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_UP_BUT,             MenuManager_Home_UpBut                                                          ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_DOWN_BUT,           MenuManager_Home_DownBut                                                        ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_UP_DOWN_BUT,        MenuManager_Home_UpDownBut                                                      ),
   FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_ADD_BUT,            MenuManager_Home_AddBut                                                         ),
-  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUB_BUT,            MenuManager_Home_SubBut                                                         )
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUB_BUT,            MenuManager_Home_SubBut                                                         ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_WASH_BUT,           MenuManager_Home_WashBut                                                        ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_COLDWTR_BUT,        MenuManager_Home_ColdWaterBut                                                   ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_HOTWTR_BUT,         MenuManager_Home_HotWaterBut                                                    ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_HEAT_BUT,           MenuManager_Home_HeatBut                                                        ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_LEVEL_BUT,          MenuManager_Home_LevelBut                                                       ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUPP1_BUT,          MenuManager_Home_Supply1But                                                     ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUPP2_BUT,          MenuManager_Home_Supply2But                                                     ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_SUPP3_BUT,          MenuManager_Home_Supply3But                                                     ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_DRAIN_BUT,          MenuManager_Home_DrainBut                                                       ),
+  FSM_TRIGGER_INTERNAL        ( MENUMANAGER_EVENT_EXTRACT_BUT,        MenuManager_Home_ExtractBut                                                     )
 };
 
 
@@ -234,15 +259,29 @@ static void MenuManager_Home_LcdShowSequenceStep(void)
 {
   uint8_t tempStr[20];
 
-  sprintf((char *)tempStr, (const char *)MenuManager_Home_SequenceIdxStr, ProgramManager_gAutoSeqConfig.sequenceIndex + 1U);
+  /* IDLE or RUNNING AUTO state */
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateAuto())
+  {
+    sprintf((char *)tempStr, (const char *)MenuManager_Home_SequenceIdxStr, ProgramManager_gAutoSeqConfig.sequenceIndex + 1U);
 
-  LCD_SetCursorPos(MENUMANAGER_HOME_SEQUENCE_INDEX_XPOS, MENUMANAGER_HOME_SEQUENCE_INDEX_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString(tempStr);
+    LCD_SetCursorPos(MENUMANAGER_HOME_SEQUENCE_INDEX_XPOS, MENUMANAGER_HOME_SEQUENCE_INDEX_YPOS, LCD_CURSOR_BY_FONT);
+    LCD_PutString(tempStr);
 
-  sprintf((char *)tempStr, (const char *)MenuManager_Home_StepIdxStr, ProgramManager_gAutoSeqConfig.currentStep + 1U);
+    sprintf((char *)tempStr, (const char *)MenuManager_Home_StepIdxStr, ProgramManager_gAutoSeqConfig.currentStep + 1U);
 
-  LCD_SetCursorPos(MENUMANAGER_HOME_STEP_INDEX_XPOS, MENUMANAGER_HOME_STEP_INDEX_YPOS, LCD_CURSOR_BY_FONT);
-  LCD_PutString(tempStr);
+    LCD_SetCursorPos(MENUMANAGER_HOME_STEP_INDEX_XPOS, MENUMANAGER_HOME_STEP_INDEX_YPOS, LCD_CURSOR_BY_FONT);
+    LCD_PutString(tempStr);
+  }
+  /* RUNNING MANUAL state */
+  else if (ProgramManager_IsCurrentStateManual())
+  {
+    LCD_SetCursorPos(MENUMANAGER_HOME_SEQUENCE_INDEX_XPOS, MENUMANAGER_HOME_SEQUENCE_INDEX_YPOS, LCD_CURSOR_BY_FONT);
+    LCD_PutString((uint8_t *)MenuManager_Home_ManualStr);
+  }
+  else
+  {
+    /* Do nothing */
+  }
 }
 
 /*=============================================================================================*/
@@ -251,7 +290,7 @@ static void MenuManager_Home_LcdShowNotifyState(void)
   LCD_SetCursorPos(MENUMANAGER_HOME_NOTIFY_XPOS, MENUMANAGER_HOME_NOTIFY_YPOS, LCD_CURSOR_BY_FONT);
 
   /* IDLE state */
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     if (ProgramManager_gSensorDoorOpenErr != PROGRAMMANAGER_CONTROL_INPUT_SENSOR_NO_ERROR)
     {
@@ -267,9 +306,8 @@ static void MenuManager_Home_LcdShowNotifyState(void)
       LCD_PutString((uint8_t *)MenuManager_Home_NotifyReadyStr);
     }
   }
-  /* RUNNING state but no error */
-  else if ((ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE) && \
-           (ProgramManager_GetCurrentState() != PROGRAMMANAGER_STATE_FAIL))
+  /* RUNNING AUTO state */
+  else if (ProgramManager_IsCurrentStateAuto())
   {
     if (ProgramManager_Control_NotPaused())
     {
@@ -325,7 +363,7 @@ static void MenuManager_Home_LcdShowNotifyState(void)
       LCD_PutString((uint8_t *)MenuManager_Home_PausedStr);
     }
   }
-  else if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_FAIL)
+  else if (ProgramManager_IsCurrentStateFail())
   {
     LCD_PutString((uint8_t *)MenuManager_Home_StateErrorStr);
 
@@ -378,9 +416,8 @@ static void MenuManager_Home_LcdShowCountDown(void)
 
   LCD_PutString((uint8_t *)MenuManager_Home_BlankStr);
 
-  /* RUNNING state but no error */
-  if ((ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE) && \
-      (ProgramManager_GetCurrentState() != PROGRAMMANAGER_STATE_FAIL))
+  /* RUNNING AUTO state */
+  if (ProgramManager_IsCurrentStateAuto())
   {
     curOutput = ProgramManager_Control_GetOutput();
 
@@ -417,8 +454,7 @@ static void MenuManager_Home_LcdShowCountDown(void)
 
   LCD_SetCursorPos(MENUMANAGER_HOME_COUNTDOWN_XPOS, MENUMANAGER_HOME_COUNTDOWN_YPOS, LCD_CURSOR_BY_FONT);
 
-  if ((ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE) && \
-      (ProgramManager_GetCurrentState() != PROGRAMMANAGER_STATE_FAIL))
+  if (ProgramManager_IsCurrentStateAuto())
   {
     sprintf((char *)tempStr, (const char *)MenuManager_Home_CountdownEnableStr, \
                              ProgramManager_gTimeCountMin, \
@@ -559,13 +595,17 @@ static Fsm_GuardType MenuManager_Home_Exit(Fsm_ContextStructPtr const pFsmContex
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
   }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  else if (ProgramManager_IsCurrentStateAuto() || ProgramManager_IsCurrentStateManual())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME);
+  }
+  else
+  {
+    /* Do nothing here */
   }
 
   return FSM_GUARD_TRUE;
@@ -574,33 +614,7 @@ static Fsm_GuardType MenuManager_Home_StartBut(Fsm_ContextStructPtr const pFsmCo
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_StopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_STOP);
-  }
-
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_LongStartBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_START);
-  }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
-  {
-    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PAUSE_RESUME);
-  }
-
-  return FSM_GUARD_TRUE;
-}
-
-/*=============================================================================================*/
-static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
-{
-  if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateAuto() || ProgramManager_IsCurrentStateManual())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_STOP);
   }
@@ -611,7 +625,7 @@ static Fsm_GuardType MenuManager_Home_LongStopBut(Fsm_ContextStructPtr const pFs
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     if (ProgramManager_gAutoSeqConfig.sequenceIndex < ((uint8_t)(PROGRAMMANAGER_SEQUENCE_NUM_MAX) - (uint8_t)1U))
     {
@@ -625,7 +639,7 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  else if (ProgramManager_IsCurrentStateAuto())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_NEXT_SUBSTEP);
   }
@@ -640,7 +654,7 @@ static Fsm_GuardType MenuManager_Home_UpBut(Fsm_ContextStructPtr const pFsmConte
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     if (ProgramManager_gAutoSeqConfig.sequenceIndex > (uint8_t)0U)
     {
@@ -654,7 +668,7 @@ static Fsm_GuardType MenuManager_Home_DownBut(Fsm_ContextStructPtr const pFsmCon
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  else if (ProgramManager_IsCurrentStateAuto())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PREV_SUBSTEP);
   }
@@ -677,7 +691,7 @@ static Fsm_GuardType MenuManager_Home_UpDownBut(Fsm_ContextStructPtr const pFsmC
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_AddBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     if (ProgramManager_gAutoSeqConfig.currentStep < ((uint8_t)(PROGRAMMANAGER_STEP_NUM_MAX) - (uint8_t)1U))
     {
@@ -687,7 +701,7 @@ static Fsm_GuardType MenuManager_Home_AddBut(Fsm_ContextStructPtr const pFsmCont
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  else if (ProgramManager_IsCurrentStateAuto())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_NEXT_STEP);
   }
@@ -702,7 +716,7 @@ static Fsm_GuardType MenuManager_Home_AddBut(Fsm_ContextStructPtr const pFsmCont
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_SubBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_GetCurrentState() == PROGRAMMANAGER_STATE_IDLE)
+  if (ProgramManager_IsCurrentStateIdle())
   {
     if (ProgramManager_gAutoSeqConfig.currentStep > (uint8_t)0U)
     {
@@ -712,13 +726,123 @@ static Fsm_GuardType MenuManager_Home_SubBut(Fsm_ContextStructPtr const pFsmCont
     /* Reset counter */
     MenuManager_Home_SubMainFuncCounter = (uint32_t)0U;
   }
-  else if (ProgramManager_GetCurrentState() > PROGRAMMANAGER_STATE_IDLE)
+  else if (ProgramManager_IsCurrentStateAuto())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_PREV_STEP);
   }
   else
   {
     /* Should never executed here */
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_WashBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_ColdWaterBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_HotWaterBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_HeatBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_LevelBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_Supply1But(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_Supply2But(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_Supply3But(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_DrainBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN);
+  }
+
+  return FSM_GUARD_TRUE;
+}
+
+/*=============================================================================================*/
+static Fsm_GuardType MenuManager_Home_ExtractBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
+{
+  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  {
+    ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT);
   }
 
   return FSM_GUARD_TRUE;
