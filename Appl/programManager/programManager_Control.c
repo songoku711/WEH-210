@@ -581,6 +581,37 @@ void ProgramManager_Control_RetrieveCommand(uint8_t *command)
 
 
 /*=============================================================================================*/
+void ProgramManager_Control_UpdateDrainManualOption(void)
+{
+  if (ProgramManager_gParamConfig.machineFuncCfg.drainValveStatus == PROGRAMMANAGER_RELAY_ENABLE_STAT_NO)
+  {
+    /* Drain is opened */
+    if ( (uint16_t)0U == (ProgramManager_gCurrentOutput & PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK) )
+    {
+      ProgramManager_Control_ClearManualOptionDrain();
+    }
+    /* Drain is closed */
+    else
+    {
+      ProgramManager_Control_SetManualOptionDrain();
+    }
+  }
+  else
+  {
+    /* Drain is opened */
+    if ( (uint16_t)0U != (ProgramManager_gCurrentOutput & PROGRAMMANAGER_CONTROL_OUTPUT_DRAIN_VALVE_MASK) )
+    {
+      ProgramManager_Control_ClearManualOptionDrain();
+    }
+    /* Drain is closed */
+    else
+    {
+      ProgramManager_Control_SetManualOptionDrain();
+    }
+  }
+}
+
+/*=============================================================================================*/
 void ProgramManager_Control_ToggleManualOption(uint8_t command)
 {
   switch (command)
@@ -697,7 +728,31 @@ void ProgramManager_Control_ToggleManualOption(uint8_t command)
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
     {
-      // ProgramManager_Control_IsManualOptionDrain() ? ProgramManager_Control_ClearManualOptionDrain() : ProgramManager_Control_SetManualOptionDrain();
+      /* If drain is currently closed */
+      if (ProgramManager_Control_IsManualOptionDrain())
+      {
+        /* While opening, all manual option about COLD, HOT, HEAT, SUPPLY must be cleared */
+        ProgramManager_Control_ClearManualOptionColdWater();
+        ProgramManager_Control_ClearManualOptionHotWater();
+        ProgramManager_Control_ClearManualOptionHeat();
+        ProgramManager_Control_ClearManualOptionSupply1();
+        ProgramManager_Control_ClearManualOptionSupply2();
+        ProgramManager_Control_ClearManualOptionSupply3();
+
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER);
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER);
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT);
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1);
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2);
+        IoManager_ClearButtonLedIndication(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3);
+
+        ProgramManager_Control_ClearManualOptionDrain();
+      }
+      else
+      {
+        ProgramManager_Control_SetManualOptionDrain();
+      }
+
       break;
     }
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:

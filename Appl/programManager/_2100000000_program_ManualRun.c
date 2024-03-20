@@ -128,18 +128,18 @@ static bool ProgramManager_ManualRun_InternalCommandHandler(void)
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT:
-    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
-    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
     {
       /* Store which button is pressed when change to manual run state */
       ProgramManager_Control_ToggleManualOption(command);
 
       break;
     }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
     default:
       break;
   }
@@ -417,16 +417,32 @@ static void ProgramManager_ManualRun_InternalControlOutput(void)
     }
 
     /* Control drain valve */
-    if ( \
-        ProgramManager_Control_IsManualOptionColdWater() || \
-        ProgramManager_Control_IsManualOptionHotWater()  || \
-        ProgramManager_Control_IsManualOptionSupply1()   || \
-        ProgramManager_Control_IsManualOptionSupply2()   || \
-        ProgramManager_Control_IsManualOptionSupply3()   || \
-        ProgramManager_Control_IsManualOptionHeat()         \
-       )
+    if (ProgramManager_Control_IsManualOptionDrain())
     {
+      /* Drain is closed */
       ProgramManager_Control_DrainCloseHandler();
+    }
+    else
+    {
+      if ( \
+          ProgramManager_Control_IsManualOptionColdWater() || \
+          ProgramManager_Control_IsManualOptionHotWater()  || \
+          ProgramManager_Control_IsManualOptionSupply1()   || \
+          ProgramManager_Control_IsManualOptionSupply2()   || \
+          ProgramManager_Control_IsManualOptionSupply3()   || \
+          ProgramManager_Control_IsManualOptionHeat()         \
+        )
+      {
+        /* Drain is forced to be closed */
+        ProgramManager_Control_DrainCloseHandler();
+
+        ProgramManager_Control_ToggleManualOption(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN);
+      }
+      else
+      {
+        /* Drain is opened */
+        ProgramManager_Control_DrainOpenHandler();
+      }
     }
   }
   else

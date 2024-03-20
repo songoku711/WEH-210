@@ -167,7 +167,7 @@ static Fsm_GuardType ProgramManager_ManualPostRun_Entry(Fsm_ContextStructPtr con
   if (retVal == HAL_OK)
   {
     ProgramManager_ManualPostRun_PostExec = (uint32_t)0U;
-
+    
     ProgramManager_SubMainFunctionPush(ProgramManager_ManualPostRun_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_ManualPostRun_SubTickHandler;
 

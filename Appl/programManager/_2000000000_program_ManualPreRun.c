@@ -119,22 +119,25 @@ static bool ProgramManager_ManualPreRun_InternalCommandHandler(void)
 
       break;
     }
+    /* Temporary not handle any manual command during pre-run */
+#if 0
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_WASH:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_COLDWATER:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HOTWATER:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_HEAT:
-    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY1:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY2:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_SUPPLY3:
     case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN:
-    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
     {
       /* Store which button is pressed when change to manual run state */
       ProgramManager_Control_ToggleManualOption(command);
 
       break;
     }
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_LEVEL:
+    case PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_EXTRACT:
+#endif
     default:
       break;
   }
@@ -219,6 +222,18 @@ static void ProgramManager_ManualPreRun_InternalCheckStateTransit(void)
 static void ProgramManager_ManualPreRun_InternalControlOutput(void)
 {
   ProgramManager_Control_ClearAllOutputExceptDrain();
+
+  /* Control drain valve */
+  if (ProgramManager_Control_IsManualOptionDrain())
+  {
+    /* Drain is closed */
+    ProgramManager_Control_DrainCloseHandler();
+  }
+  else
+  {
+    /* Drain is opened */
+    ProgramManager_Control_DrainOpenHandler();
+  }
 }
 
 
@@ -257,6 +272,8 @@ static Fsm_GuardType ProgramManager_ManualPreRun_Entry(Fsm_ContextStructPtr cons
 
     /* Get default manual sequence parameters */
     ProgramManager_ManualSeqConfig_GetData(&ProgramManager_gManualSeqConfig);
+
+    ProgramManager_Control_UpdateDrainManualOption();
 
     ProgramManager_SubMainFunctionPush(ProgramManager_ManualPreRun_SubMainFunction);
     ProgramManager_SubTickHandler = ProgramManager_ManualPreRun_SubTickHandler;

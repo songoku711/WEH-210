@@ -160,7 +160,7 @@ extern "C" {
 #define ProgramManager_Control_SetManualOptionSupply1()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1)
 #define ProgramManager_Control_SetManualOptionSupply2()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2)
 #define ProgramManager_Control_SetManualOptionSupply3()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3)
-#define ProgramManager_Control_SetManualOptionDrain()                 (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN)
+#define ProgramManager_Control_SetManualOptionDrain()                 (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN) /* Set means closed */
 #define ProgramManager_Control_SetManualOptionExtract()               (ProgramManager_gManualOption |= PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT)
 
 #define ProgramManager_Control_ClearManualOptionWash()                (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_WASH)))
@@ -171,7 +171,7 @@ extern "C" {
 #define ProgramManager_Control_ClearManualOptionSupply1()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY1)))
 #define ProgramManager_Control_ClearManualOptionSupply2()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY2)))
 #define ProgramManager_Control_ClearManualOptionSupply3()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_SUPPLY3)))
-#define ProgramManager_Control_ClearManualOptionDrain()               (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN)))
+#define ProgramManager_Control_ClearManualOptionDrain()               (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_DRAIN))) /* Clear means opened */
 #define ProgramManager_Control_ClearManualOptionExtract()             (ProgramManager_gManualOption &= (uint16_t)(~(PROGRAMMANAGER_CONTROL_MANUAL_OPTION_EXTRACT)))
 
 #define ProgramManager_Control_ClearAllManualOption()                 (ProgramManager_gManualOption = (uint16_t)0u)
@@ -286,6 +286,7 @@ void ProgramManager_Control_Init(void);
 void ProgramManager_Control_SetCommand(uint8_t command);
 void ProgramManager_Control_RetrieveCommand(uint8_t *command);
 
+void ProgramManager_Control_UpdateDrainManualOption(void);
 void ProgramManager_Control_ToggleManualOption(uint8_t command);
 
 void ProgramManager_Control_TogglePauseResumeHandler(void);

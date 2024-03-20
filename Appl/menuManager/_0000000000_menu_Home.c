@@ -829,7 +829,7 @@ static Fsm_GuardType MenuManager_Home_Supply3But(Fsm_ContextStructPtr const pFsm
 /*=============================================================================================*/
 static Fsm_GuardType MenuManager_Home_DrainBut(Fsm_ContextStructPtr const pFsmContext, Fsm_EventType event)
 {
-  if (ProgramManager_IsCurrentStateIdle() || ProgramManager_IsCurrentStateManual())
+  if (ProgramManager_IsCurrentStateManual())
   {
     ProgramManager_Control_SetCommand(PROGRAMMANAGER_CONTROL_COMMAND_MANUAL_DRAIN);
   }
